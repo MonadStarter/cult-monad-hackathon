@@ -26,7 +26,8 @@
     "@typechain/ethers-v6": "~0.5.1",
     "dotenv": "~16.4.5",
     "envfile": "~7.1.0",
-    "qrcode": "~1.5.4"
+    "qrcode": "~1.5.4",
+    "solady": "^0.1.9"
   },
   "devDependencies": {
     "@ethersproject/abi": "~5.7.0",

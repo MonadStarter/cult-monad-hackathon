@@ -28,7 +28,7 @@ const config: HardhatUserConfig = {
   solidity: {
     compilers: [
       {
-        version: "0.8.20",
+        version: "0.8.28",
         settings: {
           optimizer: {
             enabled: true,
@@ -157,6 +157,10 @@ const config: HardhatUserConfig = {
     },
     celoAlfajores: {
       url: "https://alfajores-forno.celo-testnet.org",
+      accounts: [deployerPrivateKey],
+    },
+    monad: {
+      url: "https://testnet-rpc.monad.xyz",
       accounts: [deployerPrivateKey],
     },
   },
