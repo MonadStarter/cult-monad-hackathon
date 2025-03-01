@@ -1,0 +1,62 @@
+type CultToken @entity {
+  id: ID!
+  factoryAddress: Bytes! # address
+  tokenCreator: Account! # address
+  protocolFeeRecipient: Bytes! # address
+  bondingCurve: Bytes! # address
+  tokenURI: String! # string
+  name: String! # string
+  symbol: String! # string
+  tokenAddress: Bytes! # address
+  poolAddress: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+  holderCount: BigInt!
+  trades: [TokenTrade!]! @derivedFrom(field: "token")
+  balances: [TokenBalance!]! @derivedFrom(field: "token")
+  ipfsData: [TokenIPFSData!]! @derivedFrom(field: "token")
+}
+
+type TokenIPFSData @entity {
+  id: ID!
+  hash: String!
+  content: String!
+  token: CultToken!
+}
+
+enum TradeType {
+  BUY
+  SELL
+}
+
+type Account @entity {
+  id: ID! #address of the user
+  balances: [TokenBalance!]! @derivedFrom(field: "account")
+  created: [CultToken!]! @derivedFrom(field: "tokenCreator")
+}
+
+type TokenBalance @entity {
+  id: ID!
+  token: CultToken!
+  account: Account!
+  value: BigInt!
+}
+
+type TokenTrade @entity(immutable: true) {
+  id: Bytes!
+  token: CultToken!
+  tradeType: TradeType!
+  trader: Account! # Now an Account!
+  recipient: Account! # Now an Account!
+  orderReferrer: Account! # Now an Account!
+  totalEth: BigInt! # total ETH involved
+  ethFee: BigInt!
+  ethAmount: BigInt! # ethSold for buy, ethBought for sell
+  tokenAmount: BigInt! # tokensBought for buy, tokensSold for sell
+  traderTokenBalance: BigInt! # buyerTokenBalance or sellerTokenBalance
+  totalSupply: BigInt!
+  marketType: BigInt!
+  timestamp: BigInt! # block timestamp
+  transactionHash: Bytes! # transaction hash
+}
