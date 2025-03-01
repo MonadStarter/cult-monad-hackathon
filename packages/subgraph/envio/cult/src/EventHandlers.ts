@@ -12,7 +12,9 @@ import {
 } from "generated";
 
 CultFactory.CultTokenCreated.contractRegister(({ event, context }) => {
+  console.log("CultTokenCreated", event.params.tokenAddress);
   context.addCult(event.params.tokenAddress);
+  console.log("CultTokenCreated2", event.params.tokenAddress);
 },
   {
     preRegisterDynamicContracts: true
@@ -21,7 +23,7 @@ CultFactory.CultTokenCreated.contractRegister(({ event, context }) => {
 
 CultFactory.CultTokenCreated.handler(async ({ event, context }) => {
   const tokenAddress = event.params.tokenAddress;
-  const tokenCreator = loadOrCreateAccount(event.params.tokenCreator, context);
+  const tokenCreator = await loadOrCreateAccount(event.params.tokenCreator, context);
   const cultToken: CultToken = {
     id: tokenAddress,
     factoryAddress: event.params.factoryAddress,
@@ -35,29 +37,26 @@ CultFactory.CultTokenCreated.handler(async ({ event, context }) => {
     poolAddress: event.params.poolAddress,
     blockNumber: BigInt(event.block.number),
     blockTimestamp: BigInt(event.block.timestamp),
-    transactionHash: event.transaction.toString(),
+    transactionHash: event.block.hash, // block hash is available instead of transaction hash
     holderCount: BigInt(0),
   };
-
   context.CultToken.set(cultToken);
 
   // Handle IPFS data
-  const ipfsPrefix = "ipfs://";
+  const ipfsPrefix = "https://ipfs.io/ipfs/";
   const ipfsIndex = cultToken.tokenURI.indexOf(ipfsPrefix);
   if (ipfsIndex !== -1) {
     const hash = cultToken.tokenURI.substr(ipfsIndex + ipfsPrefix.length);
-
-    const response = await fetch(`https://ipfs.io/ipfs/${hash}/metadata.json`, {
+    const response = await fetch(`https://ipfs.io/ipfs/${hash}`, {
       headers: {
         Accept: "application/json",
       },
     });
     const content = await response.json();
-
     const ipfsData: TokenIPFSData = {
-      id: `${cultToken.id}_ipfs`,
-      hash: hash,
       content: JSON.stringify(content),
+      hash: hash,
+      id: `${cultToken.id}_ipfs`,
       token_id: cultToken.id
     };
     context.TokenIPFSData.set(ipfsData);
@@ -67,9 +66,9 @@ CultFactory.CultTokenCreated.handler(async ({ event, context }) => {
 Cult.CultTokenBuy.handler(async ({ event, context }) => {
   const tokenAddress = event.srcAddress;
   if (tokenAddress) {
-    const trader = loadOrCreateAccount(event.params.buyer, context);
-    const recipient = loadOrCreateAccount(event.params.recipient, context);
-    const orderReferrer = loadOrCreateAccount(event.params.orderReferrer, context);
+    const trader = await loadOrCreateAccount(event.params.buyer, context);
+    const recipient = await loadOrCreateAccount(event.params.recipient, context);
+    const orderReferrer = await loadOrCreateAccount(event.params.orderReferrer, context);
     const entity: TokenTrade = {
       id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
       tradeType: "BUY",
@@ -85,7 +84,7 @@ Cult.CultTokenBuy.handler(async ({ event, context }) => {
       totalSupply: event.params.totalSupply,
       marketType: BigInt(event.params.marketType),
       timestamp: BigInt(event.block.timestamp),
-      transactionHash: event.transaction.toString(),
+      transactionHash: event.block.hash,
     };
 
     context.TokenTrade.set(entity);
@@ -103,9 +102,9 @@ Cult.CultTokenBuy.handler(async ({ event, context }) => {
 Cult.CultTokenSell.handler(async ({ event, context }) => {
   const tokenAddress = event.srcAddress;
   if (tokenAddress) {
-    const trader = loadOrCreateAccount(event.params.seller, context);
-    const recipient = loadOrCreateAccount(event.params.recipient, context);
-    const orderReferrer = loadOrCreateAccount(event.params.orderReferrer, context);
+    const trader = await loadOrCreateAccount(event.params.seller, context);
+    const recipient = await loadOrCreateAccount(event.params.recipient, context);
+    const orderReferrer = await loadOrCreateAccount(event.params.orderReferrer, context);
     const entity: TokenTrade = {
       id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
       tradeType: "SELL",
@@ -121,7 +120,7 @@ Cult.CultTokenSell.handler(async ({ event, context }) => {
       totalSupply: event.params.totalSupply,
       marketType: BigInt(event.params.marketType),
       timestamp: BigInt(event.block.timestamp),
-      transactionHash: event.transaction.toString(),
+      transactionHash: event.block.hash,
     };
 
     context.TokenTrade.set(entity);
@@ -145,8 +144,8 @@ Cult.CultTokenTransfer.handler(async ({ event, context }) => {
   let from = event.params.from;
   let to = event.params.to;
 
-  let fromAccount = loadOrCreateAccount(from, context);
-  let toAccount = loadOrCreateAccount(to, context);
+  let fromAccount = await loadOrCreateAccount(from, context);
+  let toAccount = await loadOrCreateAccount(to, context);
 
   if (fromAccount.id !== "0x0000000000000000000000000000000000000000") {
     updateTokenBalance(token, fromAccount.id, event.params.fromTokenBalance, context);
@@ -156,8 +155,8 @@ Cult.CultTokenTransfer.handler(async ({ event, context }) => {
 
 
 // Function to load or create an account
-function loadOrCreateAccount(address: string, context: any): Account {
-  let account = context.Account.get(address);
+async function loadOrCreateAccount(address: string, context: any): Promise<Account> {
+  let account = await context.Account.get(address);
   if (!account) {
     account = { id: address };
     context.Account.set(account);
@@ -220,3 +219,7 @@ function updateTokenBalance(
 
   context.CultToken.set(updatedToken);
 }
+
+/// Note: Command to debug: 
+/// `pnpm run dev` - To run envio indexer (Hosura DB)
+/// `TUI_OFF=true pnpm start` in `subgraph/envio/cult` directory
