@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.28;
+pragma solidity ^0.8.23;
 
 import {FixedPointMathLib} from "solady/src/utils/FixedPointMathLib.sol";
 
@@ -23,9 +23,11 @@ contract BondingCurve {
 
     /// @notice The A parameter for the bonding curve equation
     uint256 public immutable A = 600000000000;
+    // uint256 public immutable A = 1060848709;
 
     /// @notice The B parameter for the bonding curve equation
     uint256 public immutable B = 693000000000;
+    // uint256 public immutable B = 4379701787;
 
     /// ==================== Errors ==================== ///
     error InsufficientLiquidity();

@@ -199,6 +199,7 @@ interface ICult {
         uint160 sqrtPriceLimitX96
     ) external returns (uint256);
 
+    // function transfer(address to, uint256 amount) external returns (bool);
     /// @notice Allows a holder to burn their tokens after the market has graduated
     /// @dev Emits a CultTokenTransfer event with the updated token balances and total supply
     /// @param tokensToBurn The number of tokens to burn
