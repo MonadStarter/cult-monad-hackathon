@@ -2,31 +2,144 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-:root,
-[data-theme] {
-  background: oklch(var(--b2));
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0d0916;
+    --foreground: #ededed;
+  }
 }
 
 body {
-  min-height: 100vh;
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-manrope-sans);
 }
 
-h1,
-h2,
-h3,
+.page {
+  max-width: 1284px;
+  margin: auto;
+  @apply px-5;
+}
+
+h1 {
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 56px;
+  letter-spacing: -0.01em;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+}
+
+h3 {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 40px;
+  letter-spacing: -0.01em;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+}
+
 h4 {
-  margin-bottom: 0.5rem;
-  line-height: 1;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 32px;
+  letter-spacing: -0.01em;
+}
+
+h5 {
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 24px;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+}
+
+h6 {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 24px;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
 }
 
 p {
-  margin: 1rem 0;
+  font-size: 18px;
+  line-height: 28px;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
 }
 
-.btn {
-  @apply shadow-md;
+@media (max-width: 480px) {
+  h1 {
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 40px;
+    letter-spacing: -0.01em;
+  }
+
+  p {
+    font-size: 16px;
+    line-height: 24px;
+  }
 }
 
-.btn.btn-ghost {
-  @apply shadow-none;
+button {
+  @apply py-3 px-4 font-bold rounded-xl flex gap-2 items-center w-max;
+}
+
+@layer utilities {
+  .badge {
+    @apply p-1 rounded-md h-6 font-bold text-xs;
+  }
+
+  .gray-badge {
+    @apply badge bg-gray-800;
+  }
+
+  .pill-badge {
+    @apply badge;
+    @apply px-2 rounded-full flex gap-1;
+  }
+
+  .content-wrapper-card {
+    @apply rounded-xl overflow-hidden border-2 border-solid border-gray-900;
+    background-color: #ffffff12;
+  }
+
+  .content-card-merger {
+    @apply flex flex-col gap-5;
+  }
+
+  .content-card-merger > .content-wrapper-card {
+    @apply border-none bg-transparent p-0;
+  }
+
+  .profile-icon {
+    width: 40px;
+    height: 40px;
+    @apply rounded-full;
+  }
+
+  .modal {
+    @apply rounded-xl border-2 border-solid bg-gray-950 border-white-12;
+    background-color: #100c20;
+  }
+}
+
+.pill-badge > img {
+  @apply rounded-full;
+}
+
+.navbar {
+  border-bottom: solid rgba(255, 255, 255, 0.12) 1px;
+  background-color: rgba(255, 255, 255, 0.04);
 }
