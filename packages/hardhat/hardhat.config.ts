@@ -11,6 +11,11 @@ import "hardhat-deploy";
 import "hardhat-deploy-ethers";
 import { task } from "hardhat/config";
 import generateTsAbis from "./scripts/generateTsAbis";
+import "@nomicfoundation/hardhat-toolbox"
+import "@openzeppelin/hardhat-upgrades"
+import "solidity-docgen"
+import "hardhat-abi-exporter"
+import "hardhat-contract-sizer"
 
 // If not set, it uses ours Alchemy's default API key.
 // You can get your own at https://dashboard.alchemyapi.io

@@ -1,13 +1,29 @@
 {
     "monadTestnet": {
-        "BondingCurve": "0x5441d4dACe413ab97D1Ee2461E5c77E825417911"
+        "Cult": "0xc63fc6bE9A45d3D96e849eC8c6489367a6f1Aa16",
+        "BondingCurve": "0x4B647116757619B7e24241828CCf054aE4a12ddd",
+        "CultRewards": "0xF4590dCEF3450b80ac2DF5c024A1fd0c152109dC",
+        "AirdropContract": "0x54c4D8235B407BC8F52C47b27F4E54f81ccaBa60",
+        "DiamondHandContract": "0xd2cBE00978f35306Ecda48DBbF7fe36A408955Da",
+        "CultFactory": "0x5B545F7742E4Edb6135ADd95866E6D5b0A8f6408",
+        "StartBlock": 5711206
     },
     "hardhat": {
-        "BondingCurve": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+        "Cult": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+        "BondingCurve": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+        "CultRewards": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+        "AirdropContract": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+        "DiamondHandContract": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+        "CultFactory": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
         "StartBlock": 0
     },
     "localhost": {
-        "BondingCurve": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
-        "StartBlock": 3
+        "Cult": "0xc63fc6bE9A45d3D96e849eC8c6489367a6f1Aa16",
+        "BondingCurve": "0x4B647116757619B7e24241828CCf054aE4a12ddd",
+        "CultRewards": "0xF4590dCEF3450b80ac2DF5c024A1fd0c152109dC",
+        "AirdropContract": "0x54c4D8235B407BC8F52C47b27F4E54f81ccaBa60",
+        "DiamondHandContract": "0xd2cBE00978f35306Ecda48DBbF7fe36A408955Da",
+        "CultFactory": "0x5B545F7742E4Edb6135ADd95866E6D5b0A8f6408",
+        "StartBlock": 5711206
     }
 }
