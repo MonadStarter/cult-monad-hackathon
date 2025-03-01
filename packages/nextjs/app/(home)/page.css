@@ -1,0 +1,74 @@
+.hero-section {
+    min-height: 558px;
+    background: radial-gradient(81.09% 81.09% at 50% 27.24%, rgba(151, 71, 255, 0) 0%, rgba(151, 71, 255, 0.0578248) 74.73%, rgba(151, 71, 255, 0.2) 100%);
+    background-color: rgba(13, 9, 22, 1);
+    max-width: 100%;
+}
+
+.hero-section > div {
+    max-width: 1284px;
+    margin: auto;
+}
+
+.hero-text-section {
+    width: 652px;
+    max-width: 100%;
+    @apply flex flex-col gap-4;
+}
+
+.topcoins-section {
+    background: radial-gradient(94.22% 94.22% at 8.8% 5.78%, #2D293B 0%, rgba(45, 41, 59, 0.4) 100%);
+    border-radius: 20px;
+    width: 524px;
+    max-width: 100%;
+    min-width: 345px;
+    @apply p-3 sm:p-5 flex flex-col gap-2 relative;
+}
+
+.topcoins-section img {
+    height: 90px;
+    width: 90px;
+    @apply rounded-lg
+}
+
+.coin-card-img {
+    height: 233px;
+}
+
+.ellipsised-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    max-height: calc(1.5em * 3);
+  }
+
+.platform-metrics-card {
+    background: radial-gradient(81.09% 81.09% at 50% 27.24%, rgba(151, 71, 255, 0) 0%, rgba(151, 71, 255, 0.0578248) 74.73%, rgba(151, 71, 255, 0.2) 100%);
+    padding-left: 94px;
+    padding-right: 94px;
+    border: 1px solid var(--color-white-12, rgba(255, 255, 255, 0.12));
+    @apply py-10 sm:py-20 rounded-3xl flex flex-col sm:flex-row justify-around gap-10 sm:gap-0;
+}
+
+.platform-metrics-card div {
+    @apply flex flex-col items-center justify-center;
+}
+
+.platform-metrics-card h1 {
+    background: linear-gradient(102.3deg, #FFFFFF 37.25%, rgba(255, 255, 255, 0.32) 78.76%);
+    background-clip: text;
+    color: transparent;
+}
+
+@media (max-width: 480px) {
+    .platform-metrics-card h1 {
+        font-size: 32px ;
+    background: linear-gradient(90.3deg, #FFFFFF 37.25%, rgba(255, 255, 255, 0.32) 78.76%);
+    background-clip: text;
+
+
+    }
+}
