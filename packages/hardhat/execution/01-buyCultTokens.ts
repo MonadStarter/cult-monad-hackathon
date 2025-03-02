@@ -27,36 +27,26 @@ const main = async () => {
 
   console.log(deployer);
 
-  const cultFactory: CultFactory = new ethers.Contract(
-    netMap[networkName].CultFactory,
-    CultFactoryABI,
+  const cult: Cult = new ethers.Contract(
+    "0xc539C3C96271124b2ceC2c0d79bfdA5B0d24b284",
+    CultABI,
     deployer
   );
 
-  const addresses = [
-    "0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2",
-    "0x7909bC836c98bE432c43CF58CE9442a6564026aE",
-  ];
-
-  const merkleRoot = await generateMerkleTreeAndProofs(addresses);
-
-  const balance = await ethers.provider.getBalance(deployer.address);
-  console.log("Balance", balance);
-  tx = await cultFactory.deploy(
-    deployer.address,
-    "ipfs://Qmchtxo6xqjASjfLa1SSxfs8HM1NW2ceshjNir1KXSy5Br",
-    "Cult Token",
-    "CT",
-    merkleRoot.root,
-    50000,
-    604800,
-    // {
-    //   value: ethers.parseEther("0.001"),
-    // }
-  );
+  tx = await cult.buy(
+    "0x9794d1a8EDAB5206C05177595B8588fa7d04C8D2",
+    "0x9794d1a8EDAB5206C05177595B8588fa7d04C8D2",
+    "0x9794d1a8EDAB5206C05177595B8588fa7d04C8D2",
+    "test",
+    "0",
+    "1000000000000000", //0.001,
+    "0",
+    {
+      value: ethers.parseEther("0.001"),
+    }
+  )
   txr = await tx.wait();
-  console.log("Cult Token deployed", tx.hash);
-  console.log("txr", txr?.logs);
+  console.log("tx", tx);
 
 }
 
