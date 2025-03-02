@@ -1,0 +1,19 @@
+"Get certain token trades"
+    query CertainTokenTrades {
+      CultToken(where: {id: {_eq: "${tokenID}"}}) {
+        tokenAddress
+        tokenCreator_id
+        protocolFeeRecipient
+        name
+        symbol
+        trades(limit: 5, order_by: {timestamp: desc}) {
+          tradeType
+          trader_id
+          recipient_id
+          ethAmount
+          tokenAmount
+          marketType
+          timestamp
+        }
+      }
+    }

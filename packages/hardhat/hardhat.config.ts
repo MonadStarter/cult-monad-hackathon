@@ -11,6 +11,11 @@ import "hardhat-deploy";
 import "hardhat-deploy-ethers";
 import { task } from "hardhat/config";
 import generateTsAbis from "./scripts/generateTsAbis";
+import "@nomicfoundation/hardhat-toolbox"
+import "@openzeppelin/hardhat-upgrades"
+import "solidity-docgen"
+import "hardhat-abi-exporter"
+import "hardhat-contract-sizer"
 
 // If not set, it uses ours Alchemy's default API key.
 // You can get your own at https://dashboard.alchemyapi.io
@@ -23,6 +28,7 @@ const deployerPrivateKey =
 const etherscanApiKey = process.env.ETHERSCAN_MAINNET_API_KEY || "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW";
 const etherscanOptimisticApiKey = process.env.ETHERSCAN_OPTIMISTIC_API_KEY || "RM62RDISS1RH448ZY379NX625ASG1N633R";
 const basescanApiKey = process.env.BASESCAN_API_KEY || "ZZZEIPMT1MNJ8526VV2Y744CA7TNZR64G6";
+const privateKeyAdmin = process.env.PRIVATE_KEY_ADMIN || "";
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -160,9 +166,9 @@ const config: HardhatUserConfig = {
       url: "https://alfajores-forno.celo-testnet.org",
       accounts: [deployerPrivateKey],
     },
-    monad: {
+    monadTestnet: {
       url: "https://testnet-rpc.monad.xyz",
-      accounts: [deployerPrivateKey],
+      accounts: [privateKeyAdmin],
     },
   },
   // configuration for harhdat-verify plugin
