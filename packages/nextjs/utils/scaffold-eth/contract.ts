@@ -1,6 +1,4 @@
-import { getParsedError } from "./getParsedError";
 import { AllowedChainIds } from "./networks";
-import { notification } from "./notification";
 import { MutateOptions } from "@tanstack/react-query";
 import {
   Abi,
@@ -25,7 +23,7 @@ import {
   WriteContractErrorType,
 } from "viem";
 import { Config, UseReadContractParameters, UseWatchContractEventParameters, UseWriteContractParameters } from "wagmi";
-import { WriteContractParameters, WriteContractReturnType, simulateContract } from "wagmi/actions";
+import { WriteContractParameters, WriteContractReturnType } from "wagmi/actions";
 import { WriteContractVariables } from "wagmi/query";
 import deployedContractsData from "~~/contracts/deployedContracts";
 import externalContractsData from "~~/contracts/externalContracts";
@@ -177,7 +175,6 @@ export type UseDeployedContractConfig<TContractName extends ContractName> = {
 export type UseScaffoldWriteConfig<TContractName extends ContractName> = {
   contractName: TContractName;
   chainId?: AllowedChainIds;
-  disableSimulate?: boolean;
   writeContractParams?: UseWriteContractParameters;
 };
 
@@ -331,19 +328,3 @@ export type UseScaffoldEventHistoryData<
   | undefined;
 
 export type AbiParameterTuple = Extract<AbiParameter, { type: "tuple" | `tuple[${string}]` }>;
-
-export const simulateContractWriteAndNotifyError = async ({
-  wagmiConfig,
-  writeContractParams: params,
-}: {
-  wagmiConfig: Config;
-  writeContractParams: WriteContractVariables<Abi, string, any[], Config, number>;
-}) => {
-  try {
-    await simulateContract(wagmiConfig, params);
-  } catch (error) {
-    const parsedError = getParsedError(error);
-    notification.error(parsedError);
-    throw error;
-  }
-};

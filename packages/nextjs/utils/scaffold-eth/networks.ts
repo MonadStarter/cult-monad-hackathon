@@ -1,5 +1,6 @@
 import * as chains from "viem/chains";
 import scaffoldConfig from "~~/scaffold.config";
+import { monadTestnet } from "~~/scaffold.config";
 
 type ChainAttributes = {
   // color | [lightThemeColor, darkThemeColor]
@@ -14,6 +15,7 @@ export type AllowedChainIds = (typeof scaffoldConfig.targetNetworks)[number]["id
 
 // Mapping of chainId to RPC chain name an format followed by alchemy and infura
 export const RPC_CHAIN_NAMES: Record<number, string> = {
+  [monadTestnet.id]: "monad-testnet",
   [chains.mainnet.id]: "eth-mainnet",
   [chains.goerli.id]: "eth-goerli",
   [chains.sepolia.id]: "eth-sepolia",
@@ -89,6 +91,9 @@ export const NETWORKS_EXTRA_DATA: Record<string, ChainAttributes> = {
   },
   [chains.celoAlfajores.id]: {
     color: "#476520",
+  },
+  [monadTestnet.id]: {
+    color: "#785889",
   },
 };
 
