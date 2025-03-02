@@ -22,12 +22,12 @@ contract BondingCurve {
     /// ==================== State variables ==================== ///
 
     /// @notice The A parameter for the bonding curve equation
-    uint256 public immutable A = 600000000000;
-    // uint256 public immutable A = 1060848709;
+    // uint256 public immutable A = 600000000000; // 0.0000006 MON
+    uint256 public immutable A = 1060848709;
 
     /// @notice The B parameter for the bonding curve equation
-    uint256 public immutable B = 693000000000;
-    // uint256 public immutable B = 4379701787;
+    // uint256 public immutable B = 693000000000; //  0.000000693 MON
+    uint256 public immutable B = 4379701787;
 
     /// ==================== Errors ==================== ///
     error InsufficientLiquidity();

@@ -4,6 +4,7 @@ import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-ethers";
 import "@nomicfoundation/hardhat-chai-matchers";
 import "@typechain/hardhat";
+import "hardhat-deploy";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
 import "@nomicfoundation/hardhat-verify";
@@ -31,6 +32,7 @@ const basescanApiKey = process.env.BASESCAN_API_KEY || "ZZZEIPMT1MNJ8526VV2Y744C
 const privateKeyAdmin = process.env.PRIVATE_KEY_ADMIN || "";
 
 const config: HardhatUserConfig = {
+  // defaultNetwork: "hardhat",
   solidity: {
     compilers: [
       {
@@ -46,7 +48,7 @@ const config: HardhatUserConfig = {
       },
     ],
   },
-  defaultNetwork: "localhost",
+  defaultNetwork: "hardhat",
   namedAccounts: {
     deployer: {
       // By default, it will take the first Hardhat account as the deployer
@@ -165,6 +167,14 @@ const config: HardhatUserConfig = {
     celoAlfajores: {
       url: "https://alfajores-forno.celo-testnet.org",
       accounts: [deployerPrivateKey],
+    },
+    localhost: {
+      chainId: 31337,
+      forking: {
+        url: "https://testnet-rpc.monad.xyz"
+        // blockNumber: 115142278
+      },
+      accounts: [privateKeyAdmin]
     },
     monadTestnet: {
       url: "https://testnet-rpc.monad.xyz",

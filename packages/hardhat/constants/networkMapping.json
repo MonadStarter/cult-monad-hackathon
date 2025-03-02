@@ -1,12 +1,12 @@
 {
     "monadTestnet": {
-        "Cult": "0xc63fc6bE9A45d3D96e849eC8c6489367a6f1Aa16",
-        "BondingCurve": "0x4B647116757619B7e24241828CCf054aE4a12ddd",
-        "CultRewards": "0xF4590dCEF3450b80ac2DF5c024A1fd0c152109dC",
-        "AirdropContract": "0x54c4D8235B407BC8F52C47b27F4E54f81ccaBa60",
-        "DiamondHandContract": "0xd2cBE00978f35306Ecda48DBbF7fe36A408955Da",
-        "CultFactory": "0x5B545F7742E4Edb6135ADd95866E6D5b0A8f6408",
-        "StartBlock": 5711206
+        "Cult": "0x9b861d08D829E0D8EDEcb2804ed3761e115fE800",
+        "BondingCurve": "0x560Ac99a96381Df163c94Cf4B6fFb351e972257c",
+        "CultRewards": "0x528325C8701cE261b27622376966B3DC87c70BdA",
+        "AirdropContract": "0x0a4Aa612D4BDbB8841A37F2c42e0cF59C04883b9",
+        "DiamondHandContract": "0xb34d9Dfc5E42F8AE5Ff06Fa88dad206c7630FC32",
+        "CultFactory": "0xCE0da95A45bFa6a5A3f7e777D20D218f7ae5624D",
+        "StartBlock": 5817822
     },
     "hardhat": {
         "Cult": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
@@ -18,12 +18,12 @@
         "StartBlock": 0
     },
     "localhost": {
-        "Cult": "0xc63fc6bE9A45d3D96e849eC8c6489367a6f1Aa16",
-        "BondingCurve": "0x4B647116757619B7e24241828CCf054aE4a12ddd",
-        "CultRewards": "0xF4590dCEF3450b80ac2DF5c024A1fd0c152109dC",
-        "AirdropContract": "0x54c4D8235B407BC8F52C47b27F4E54f81ccaBa60",
-        "DiamondHandContract": "0xd2cBE00978f35306Ecda48DBbF7fe36A408955Da",
-        "CultFactory": "0x5B545F7742E4Edb6135ADd95866E6D5b0A8f6408",
-        "StartBlock": 5711206
+        "Cult": "0x560Ac99a96381Df163c94Cf4B6fFb351e972257c",
+        "BondingCurve": "0x0a4Aa612D4BDbB8841A37F2c42e0cF59C04883b9",
+        "CultRewards": "0x9b861d08D829E0D8EDEcb2804ed3761e115fE800",
+        "AirdropContract": "0xb34d9Dfc5E42F8AE5Ff06Fa88dad206c7630FC32",
+        "DiamondHandContract": "0xCE0da95A45bFa6a5A3f7e777D20D218f7ae5624D",
+        "CultFactory": "0x87ED0d54E1613CD1c0fDAB2032b4DD4809F064F7",
+        "StartBlock": 5811830
     }
 }

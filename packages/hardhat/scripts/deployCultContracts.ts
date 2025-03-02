@@ -25,9 +25,13 @@ export const setupContracts = async () => {
     const CULT_RECS = "0x60187Bc4949eE2F01b507a9F77ad615093f44260"; // CultRecs multisig wallet
     const protocolFeeRecipient = CULT_RECS;
     const protocolRewards = cultRewards.target;
-    const weth = "0x4200000000000000000000000000000000000006";
-    const nonfungiblePositionManager = "0x46A15B0b27311cedF172AB29E4f4766fbE7F4364";
-    const swapRouter = "0x1b81D678ffb9C0263b24A97847620C99d213eB14";
+    // const weth = "0x4200000000000000000000000000000000000006";
+    // const nonfungiblePositionManager = "0x46A15B0b27311cedF172AB29E4f4766fbE7F4364";
+    // const swapRouter = "0x1b81D678ffb9C0263b24A97847620C99d213eB14";
+    //monad testnet addresses
+    const weth = "0x261D8c5e9742e6f7f1076Fa1F560894524e19cad";
+    const nonfungiblePositionManager = "0x50ff23E9A8D5DAc05744C367c9DDd588D027982B";
+    const swapRouter = "0x201B36B26b816D061fC552B679f8279Db0Fbbc6A";
 
     // Deploy Contract
     const CultToken = await ethers.getContractFactory("Cult")
