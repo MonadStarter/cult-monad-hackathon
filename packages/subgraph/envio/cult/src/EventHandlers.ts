@@ -43,7 +43,7 @@ CultFactory.CultTokenCreated.handler(async ({ event, context }) => {
   context.CultToken.set(cultToken);
 
   // Handle IPFS data
-  const ipfsPrefix = "https://ipfs.io/ipfs/";
+  const ipfsPrefix = "ipfs://";
   const ipfsIndex = cultToken.tokenURI.indexOf(ipfsPrefix);
   if (ipfsIndex !== -1) {
     const hash = cultToken.tokenURI.substr(ipfsIndex + ipfsPrefix.length);
