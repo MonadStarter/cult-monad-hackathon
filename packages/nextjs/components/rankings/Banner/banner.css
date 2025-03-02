@@ -1,0 +1,8 @@
+.rankings-banner-section {
+  background: radial-gradient(
+      81.09% 81.09% at 50% 27.24%,
+      rgba(151, 71, 255, 0) 0%,
+      rgba(151, 71, 255, 0.0578248) 74.73%,
+      rgba(151, 71, 255, 0.2) 100%
+    );
+}

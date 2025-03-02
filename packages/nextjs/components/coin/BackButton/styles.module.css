@@ -1,0 +1,8 @@
+.back_button {
+  gap: 3px;
+  @apply inline-flex items-center text-gray-500 cursor-pointer max-sm:ml-2;
+}
+
+.back_button:hover {
+  @apply text-white-500;
+}
