@@ -1,0 +1,12 @@
+export const TEST_MERKE_ROOT = "0x5a5cafa93d753e8edd361f8b15dc879bacd79e660cc46dea8952b6d16d342e13";
+
+export const MERKLE_PROOFS = [
+  {
+    MERKLE_ROOT: "0x5a5cafa93d753e8edd361f8b15dc879bacd79e660cc46dea8952b6d16d342e13",
+    addresses: ["0x60187Bc4949eE2F01b507a9F77ad615093f44260", "0xA2A0a7C6C29143bF7F9612B0025CBB61c74bC06d"],
+    merkleProofs: [
+      "0x5a5cafa93d753e8edd361f8b15dc879bacd79e660cc46dea8952b6d16d342e13",
+      "0x60a64c03e232af0472106a3c7ac8ea916fa559f38b4964435e642a452e23f435",
+    ],
+  },
+];
