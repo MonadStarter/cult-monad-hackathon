@@ -1,7 +1,7 @@
 import assert from "assert";
 import { 
   TestHelpers,
-  CultFactory_CultTokenCreated
+  CultTokenCreated
 } from "generated";
 const { MockDb, CultFactory } = TestHelpers;
 
@@ -20,12 +20,12 @@ describe("CultFactory contract CultTokenCreated event tests", () => {
     });
 
     // Getting the actual entity from the mock database
-    let actualCultFactoryCultTokenCreated = mockDbUpdated.entities.CultFactory_CultTokenCreated.get(
+    let actualCultFactoryCultTokenCreated = mockDbUpdated.entities.CultToken.get(
       `${event.chainId}_${event.block.number}_${event.logIndex}`
     );
 
     // Creating the expected entity
-    const expectedCultFactoryCultTokenCreated: CultFactory_CultTokenCreated = {
+    const expectedCultFactoryCultTokenCreated: CultTokenCreated = {
       id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
       factoryAddress: event.params.factoryAddress,
       tokenCreator: event.params.tokenCreator,
