@@ -1,0 +1,27 @@
+.back-button {
+    gap: 3px;
+    @apply inline-flex items-center text-gray-500 cursor-pointer;
+}
+
+.back-button:hover {
+    @apply text-white-500;
+}
+
+.coin-image {
+    width: 384px;
+    height: 284px;
+    @apply object-cover;
+}
+
+.coin-specs-container {
+    border-top: 1px solid #ffffff0f;
+    border-bottom: 1px solid #ffffff0f;
+}
+  
+.ql-editor.ql-blank:before {
+    @apply !text-gray-600 !text-sm !not-italic;
+}
+
+.ql-editor > p {
+ @apply !text-sm;
+}
