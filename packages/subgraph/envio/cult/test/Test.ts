@@ -1,7 +1,7 @@
 import assert from "assert";
 import { 
   TestHelpers,
-  CultFactory_CultTokenCreated
+  CultToken
 } from "generated";
 const { MockDb, CultFactory } = TestHelpers;
 
@@ -20,15 +20,15 @@ describe("CultFactory contract CultTokenCreated event tests", () => {
     });
 
     // Getting the actual entity from the mock database
-    let actualCultFactoryCultTokenCreated = mockDbUpdated.entities.CultFactory_CultTokenCreated.get(
+    let actualCultFactoryCultTokenCreated = mockDbUpdated.entities.CultToken.get(
       `${event.chainId}_${event.block.number}_${event.logIndex}`
     );
 
     // Creating the expected entity
-    const expectedCultFactoryCultTokenCreated: CultFactory_CultTokenCreated = {
+    const expectedCultFactoryCultTokenCreated: CultToken = {
       id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
       factoryAddress: event.params.factoryAddress,
-      tokenCreator: event.params.tokenCreator,
+      tokenCreator_id: event.params.tokenCreator,
       protocolFeeRecipient: event.params.protocolFeeRecipient,
       bondingCurve: event.params.bondingCurve,
       tokenURI: event.params.tokenURI,
@@ -36,8 +36,10 @@ describe("CultFactory contract CultTokenCreated event tests", () => {
       symbol: event.params.symbol,
       tokenAddress: event.params.tokenAddress,
       poolAddress: event.params.poolAddress,
-      airdropContract: event.params.airdropContract,
-      diamondHandContract: event.params.diamondHandContract,
+      blockNumber: BigInt(event.block.number),
+      blockTimestamp: BigInt(event.block.timestamp),
+      holderCount: BigInt(0),
+      transactionHash: event.block.hash,
     };
     // Asserting that the entity in the mock database is the same as the expected entity
     assert.deepEqual(actualCultFactoryCultTokenCreated, expectedCultFactoryCultTokenCreated, "Actual CultFactoryCultTokenCreated should be the same as the expectedCultFactoryCultTokenCreated");

@@ -5,14 +5,14 @@ networks:
     start_block: 0
     contracts:
       - name: CultFactory
-        abi_file_path: ../../../hardhat/constants/abis/CultFactory.json
+        abi_file_path: abis/CultFactory.json
         address:
           - 0xCE0da95A45bFa6a5A3f7e777D20D218f7ae5624D
         handler: src/EventHandlers.ts
         events:
           - event: CultTokenCreated(address indexed factoryAddress, address indexed tokenCreator, address protocolFeeRecipient, address bondingCurve, string tokenURI, string name, string symbol, address tokenAddress, address poolAddress, address airdropContract, address diamondHandContract)
       - name: Cult
-        abi_file_path: ../../../hardhat/constants/abis/Cult.json
+        abi_file_path: abis/Cult.json
         handler: src/EventHandlers.ts
         events:
           - event: CultTokenBuy(address indexed buyer, address indexed recipient, address indexed orderReferrer, uint256 totalEth, uint256 ethFee, uint256 ethSold, uint256 tokensBought, uint256 buyerTokenBalance, string comment, uint256 totalSupply, uint8 marketType)
