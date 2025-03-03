@@ -223,6 +223,11 @@ const CreateTokenForm: FC = () => {
           />
         </div>
 
+        <label htmlFor="" className="flex flex-col items-start">
+          <span>All tokens have mandatory 10% airdrop to probabilisitcally selected diamonad handers</span>
+          <span>Users can choose to diamond hand for 1-24 days</span>
+        </label>
+
         <button
           type="submit"
           className="bg-primary-500 text-white-500 w-full justify-center p-2 rounded disabled:opacity-50"
