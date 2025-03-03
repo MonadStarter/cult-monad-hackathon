@@ -1,5 +1,5 @@
 import { BigNumber } from "bignumber.js";
-import { fetchTokenTrades } from "~~/graphql/graphQlClient";
+import { fetchTokenTrades } from "~~/graphql/graphQlClient2";
 // Install: npm install bignumber.js
 import { TokenTrade } from "~~/types/types";
 

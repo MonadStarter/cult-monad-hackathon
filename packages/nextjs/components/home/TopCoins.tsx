@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
-import { fetchTopCoins } from "~~/graphql/graphQlClient";
+import { fetchTopCoins } from "~~/graphql/graphQlClient2";
 import { ellipsisToken } from "~~/lib/utils";
 import { CultTokenMetadata, CultTokensResponse } from "~~/types/types";
 import { parseIPFSMetadata } from "~~/utils/externalAPIs/ipfs";
@@ -14,7 +14,6 @@ function TopCoins() {
       return await fetchTopCoins();
     },
   });
-
   if (isLoading) {
     return (
       <div className="topcoins-section">

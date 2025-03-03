@@ -6,7 +6,7 @@ import DiscoverFilters from "./Filters";
 import LoadMoreButton from "./LoadMoreButton";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { dummyMetadata } from "~~/constants/content";
-import { fetchDiscoverTokenData } from "~~/graphql/graphQlClient";
+import { fetchDiscoverTokenData } from "~~/graphql/graphQlClient2";
 import { RefreshIcon, SettingsIcon } from "~~/icons/actions";
 import { CultTokenMetadata, TokenMetadata } from "~~/types/types";
 import { parseIPFSMetadata } from "~~/utils/externalAPIs/ipfs";
@@ -31,6 +31,7 @@ function DiscoverCoins() {
       return fetchDiscoverTokenData(ITEMS_PER_PAGE, skip);
     },
     getNextPageParam: (lastPage, allPages) => {
+      console.log("RENDERING", lastPage);
       return lastPage.cultTokens.length === ITEMS_PER_PAGE ? allPages.length + 1 : undefined;
     },
     // getPreviousPageParam: (firstPage, allPages) => {

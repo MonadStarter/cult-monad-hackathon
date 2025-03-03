@@ -4,7 +4,7 @@ import DiscoverCoins from "~~/components/home/DiscoverCoins";
 import LaunchToken from "~~/components/home/LaunchToken";
 import PlatformMetrics from "~~/components/home/PlatformMetrics";
 import TopCoins from "~~/components/home/TopCoins";
-import { fetchDiscoverTokenData, fetchTopCoins } from "~~/graphql/graphQlClient";
+import { fetchDiscoverTokenData, fetchTopCoins } from "~~/graphql/graphQlClient2";
 import { CultTokensResponse } from "~~/types/types";
 
 const ITEMS_PER_PAGE = 12;

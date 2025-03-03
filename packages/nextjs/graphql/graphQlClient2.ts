@@ -1,5 +1,11 @@
 import { gql, request } from "graphql-request";
-import { CultTokenPageData, CultTokensResponse, TokenTradesData, TopHoldersResponse } from "~~/types/types";
+import {
+  CultTokenMetadata,
+  CultTokenPageData,
+  CultTokensResponse,
+  TokenTradesData,
+  TopHoldersResponse,
+} from "~~/types/types";
 
 //const endpoint = "https://api.studio.thegraph.com/query/103833/culttokens/version/latest";
 // const endpoint = "https://api.goldsky.com/api/public/project_cm7aysf582k9p01sq9o2vfkrn/subgraphs/culttokens/v0.0.17/gn";
@@ -45,12 +51,18 @@ const TopCoins = gql`
 `;
 
 export async function fetchTopCoins(): Promise<CultTokensResponse> {
-  return await request(envioEndpoint, TopCoins);
+  const response: {
+    CultToken: CultTokenMetadata[];
+  } = await request(envioEndpoint, TopCoins);
+
+  return {
+    cultTokens: response.CultToken,
+  };
 }
 
 const TokenPageData = gql`
   query GetCultTokenData($tokenAddress: String_comparison_exp = {}) {
-    CultToken(where: {tokenAddress: $tokenAddress}) {
+    CultToken(where: { tokenAddress: $tokenAddress }) {
       id
       tokenCreator {
         id
@@ -79,7 +91,7 @@ export const fetchTokenPageData = async (
 
 const TopHolders = gql`
   query TopHolders($tokenAddress: CultToken_bool_exp = {}, $first: Int, $skip: Int) {
-    TokenBalance(where: {token: $tokenAddress}, order_by: {value: desc}, limit: $first, offset: $skip) {
+    TokenBalance(where: { token: $tokenAddress }, order_by: { value: desc }, limit: $first, offset: $skip) {
       account {
         id
       }
@@ -105,8 +117,8 @@ export const fetchTopHolders = async (
 };
 
 const TokenTrades = gql`
-   query GetTokenTradesPaginated($tokenAddress: CultToken_bool_exp = {}, $first: Int, $skip: Int) {
-    TokenTrade(where: {token: $tokenAddress}, order_by: {timestamp: desc}, limit: $first, offset: $skip) {
+  query GetTokenTradesPaginated($tokenAddress: CultToken_bool_exp = {}, $first: Int, $skip: Int) {
+    TokenTrade(where: { token: $tokenAddress }, order_by: { timestamp: desc }, limit: $first, offset: $skip) {
       id
       tradeType
       trader {

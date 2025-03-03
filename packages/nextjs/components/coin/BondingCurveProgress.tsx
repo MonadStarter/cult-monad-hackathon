@@ -5,7 +5,7 @@ import { Address } from "../scaffold-eth";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Address as AddressType, formatEther } from "viem";
 import Table, { TableColumnInterface, TableValueInterface } from "~~/components/common/Table";
-import { fetchTopHolders } from "~~/graphql/graphQlClient";
+import { fetchTopHolders } from "~~/graphql/graphQlClient2";
 import useGetMktCap from "~~/hooks/fetchPrice";
 import { UserIcon } from "~~/icons/symbols";
 import { ellipsisToken, formatLargeNumber } from "~~/lib/utils";

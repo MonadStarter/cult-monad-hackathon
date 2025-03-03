@@ -8,7 +8,7 @@ import { formatDistanceToNow } from "date-fns";
 import { Address as AddressType, formatEther } from "viem";
 //import { TRANSACTIONS_DUMMY_DATA } from "~~/constants/mockData";
 import { columns } from "~~/constants/transactionTableColumn";
-import { fetchTokenTrades } from "~~/graphql/graphQlClient";
+import { fetchTokenTrades } from "~~/graphql/graphQlClient2";
 import { formatLargeNumber } from "~~/lib/utils";
 import { TokenTrade } from "~~/types/types";
 

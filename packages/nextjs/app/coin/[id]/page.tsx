@@ -16,7 +16,7 @@ import TradingViewChart from "~~/components/coin/TradingView";
 import TransactionHistory from "~~/components/coin/TransactionHistory";
 import SegmentedPanel from "~~/components/common/SegmentedPanel";
 import { dummyMetadata } from "~~/constants/content";
-import { fetchTokenPageData } from "~~/graphql/graphQlClient";
+import { fetchTokenPageData } from "~~/graphql/graphQlClient2";
 import useGetMktCap from "~~/hooks/fetchPrice";
 import { useTokenStore } from "~~/stores/tokenStore";
 import { TradeOptions } from "~~/types/types";
