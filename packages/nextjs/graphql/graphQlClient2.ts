@@ -33,7 +33,6 @@ export const fetchDiscoverTokenData = async (first: number, skip: number): Promi
   const response: {
     CultToken: CultTokenMetadata[];
   } = await request(envioEndpoint, cultTokensQuery, { first, skip });
-  console.log("fetchDiscoverTokenData", response);
 
   return {
     cultTokens: response.CultToken,
@@ -137,13 +136,11 @@ export const fetchTopHolders = async (
   first: number = 10,
   skip: number = 0,
 ): Promise<TopHoldersResponse> => {
-  console.log("FETCHING TOP HOLDER", tokenAddress, first, skip);
   const response: TopHoldersResponse = await request(envioEndpoint, TopHolders, {
     tokenAddress,
     first,
     skip,
   });
-  console.log("RESPONSE", response);
 
   return response;
 };
