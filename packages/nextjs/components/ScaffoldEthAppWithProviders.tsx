@@ -2,16 +2,18 @@
 
 //import { useEffect, useState } from "react";
 import Topbar from "./Topbar";
-import { RainbowKitProvider, darkTheme, lightTheme } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider, isServer } from "@tanstack/react-query";
 import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
 //import { useTheme } from "next-themes";
 import { Toaster } from "react-hot-toast";
 import { WagmiProvider } from "wagmi";
 import Footer from "~~/components/Footer";
-import { BlockieAvatar } from "~~/components/scaffold-eth";
 //import { useInitializeNativeCurrencyPrice } from "~~/hooks/scaffold-eth";
 import { wagmiConfig } from "~~/services/web3/wagmiConfig";
+import {PrivyProvider} from '@privy-io/react-auth';
+import scaffoldConfig from "~~/scaffold.config";
+import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { BlockieAvatar } from "./scaffold-eth";
 
 const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
   //useInitializeNativeCurrencyPrice();
@@ -76,10 +78,24 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
       <QueryClientProvider client={queryClient}>
         <ProgressBar height="3px" color="#2299dd" />
         <RainbowKitProvider
-          avatar={BlockieAvatar}
-          //theme={mounted ? (isDarkMode ? darkTheme() : lightTheme()) : lightTheme()}
+          avatar={BlockieAvatar}>
+        <PrivyProvider
+            appId={scaffoldConfig.privy.appId}
+            config={{
+              // Customize Privy's appearance in your app
+              appearance: {
+                theme: 'light',
+                accentColor: '#676FFF',
+                logo: 'https://your-logo-url',
+              },
+              // Create embedded wallets for users who don't have a wallet
+              embeddedWallets: {
+                createOnLogin: 'users-without-wallets',
+              },
+            }}
         >
           <ScaffoldEthApp>{children}</ScaffoldEthApp>
+        </PrivyProvider>
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
