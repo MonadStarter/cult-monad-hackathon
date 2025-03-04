@@ -23,20 +23,20 @@ import { TradeOptions } from "~~/types/types";
 import { CultTokenPageData, TokenMetadata } from "~~/types/types";
 import { fetchMetadataFromIPFS, parseIPFSMetadata } from "~~/utils/externalAPIs/ipfs";
 
-const Transactions = React.memo(TransactionHistory);
+// const Transactions = React.memo(TransactionHistory);
 
-const LEFT_PANEL = [
-  {
-    id: "TRANSACTION_HISTORY",
-    label: "Transaction history",
-    content: <Transactions />,
-  },
-  {
-    id: "COMMENTS",
-    label: "Comments",
-    content: <CommentsSection />,
-  },
-];
+// const LEFT_PANEL = [
+//   {
+//     id: "TRANSACTION_HISTORY",
+//     label: "Transaction history",
+//     content: <Transactions />,
+//   },
+//   {
+//     id: "COMMENTS",
+//     label: "Comments",
+//     content: <CommentsSection />,
+//   },
+// ];
 
 const TRADE_OPTIONS = [
   {
@@ -60,32 +60,33 @@ function InfoSection() {
   );
 }
 
-const MOBILE_SEGMENTED_LAYOUT = [
-  {
-    id: "INFO",
-    label: "Info",
-    content: <InfoSection />,
-  },
-  {
-    id: "TRADE",
-    label: "Trade",
-    content: <Transactions />,
-  },
-  {
-    id: "COMMENTS",
-    label: "Comments",
-    content: <CommentsSection />,
-  },
-];
+// const MOBILE_SEGMENTED_LAYOUT = [
+//   {
+//     id: "INFO",
+//     label: "Info",
+//     content: <InfoSection />,
+//   },
+//   {
+//     id: "TRADE",
+//     label: "Trade",
+//     content: <Transactions />,
+//   },
+//   {
+//     id: "COMMENTS",
+//     label: "Comments",
+//     content: <CommentsSection />,
+//   },
+// ];
 
 export default function CoinPage() {
   const params = useParams();
   const tokenaddy = params?.id as `0x${string}`;
   const { address: accountAddress } = useAccount();
-  const { price, marketCap, circulatingSupply } = useGetMktCap({ tokenAddress: tokenaddy });
-
-  const { setUserAddress, setTokenAddress, setMetadata, setSubgraphData, setLoading, setError, setRefetch } =
-    useTokenStore();
+  //const { price, marketCap, circulatingSupply } = useGetMktCap({ tokenAddress: tokenaddy });
+  const price = "0";
+  const marketCap = "0";
+  const circulatingSupply = "0";
+  const { setStateFromSubgraph } = useTokenStore();
 
   // Fetch subgraph data via React Query using the store's tokenAddress.
   const {
@@ -98,6 +99,9 @@ export default function CoinPage() {
     queryFn: () => fetchTokenPageData(tokenaddy!),
     enabled: !!tokenaddy,
   });
+
+  console.log("subgraphDataFromQuery", subgraphDataFromQuery);
+
   // Update store based on query results.
   useEffect(() => {
     const ipfsMetadata = subgraphDataFromQuery?.cultToken?.ipfsData?.content
@@ -116,28 +120,31 @@ export default function CoinPage() {
     };
 
     if (subgraphDataFromQuery) {
-      setUserAddress(accountAddress as `0x${string}`);
-      setTokenAddress(tokenaddy);
-      setMetadata(metadata);
-      setSubgraphData(subgraphDataFromQuery);
-      setLoading(false);
-      setRefetch(refetch);
+      setStateFromSubgraph(accountAddress as `0x${string}`, tokenaddy, metadata, subgraphDataFromQuery, refetch);
     }
   }, [subgraphDataFromQuery]);
 
-  useEffect(() => {
-    if (queryError) {
-      setError(queryError);
-      setLoading(false);
-    }
-  }, [queryError]);
+  if (queryError) {
+    console.log("queryError", queryError);
+  }
 
-  // Reflect query loading state in the store.
-  useEffect(() => {
-    if (queryLoading) {
-      setLoading(queryLoading);
-    }
-  }, [queryLoading]);
+  if (queryLoading) {
+    console.log("queryLoading", queryLoading);
+  }
+
+  // useEffect(() => {
+  //   if (queryError) {
+  //     setError(queryError);
+  //     setLoading(false);
+  //   }
+  // }, [queryError]);
+
+  // // Reflect query loading state in the store.
+  // useEffect(() => {
+  //   if (queryLoading) {
+  //     setLoading(queryLoading);
+  //   }
+  // }, [queryLoading]);
 
   return (
     <div className={"page pt-4"}>
@@ -145,11 +152,10 @@ export default function CoinPage() {
 
       <BackButton />
       <CoinDetailCard />
-      <SegmentedPanel panels={MOBILE_SEGMENTED_LAYOUT} className="sm:hidden" />
+      {/* <SegmentedPanel panels={MOBILE_SEGMENTED_LAYOUT} className="sm:hidden" /> */}
       <div className="flex gap-4 max-sm:hidden">
         <div className="w-2/3 flex flex-col gap-4">
-          {/* <TradingViewChart tokenAddress={tokenaddy} interval="H" theme="light" autosize={true} /> */}
-          <SegmentedPanel panels={LEFT_PANEL} segmentedClassName="w-1/2" />
+          {/* <SegmentedPanel panels={LEFT_PANEL} segmentedClassName="w-1/2" /> */}
         </div>
         <div className="w-1/3 flex flex-col gap-4">
           <SegmentedPanel panels={TRADE_OPTIONS} />

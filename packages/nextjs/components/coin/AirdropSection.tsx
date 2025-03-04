@@ -1,3 +1,5 @@
+"use client";
+
 import ProgressBar from "../common/ProgressBar";
 import { formatEther, parseEther } from "viem";
 import { useContractReads, useWriteContract } from "wagmi";

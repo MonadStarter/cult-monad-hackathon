@@ -1,3 +1,5 @@
+"use client";
+
 import { useParams } from "next/navigation";
 import Pagination from "../common/Pagination";
 import Table from "../common/Table";
@@ -27,18 +29,7 @@ const ITEMS_PER_PAGE = 20;
 function TransactionHistory() {
   const params = useParams();
   const tokenaddy = params?.id as `0x${string}`;
-  const {
-    data,
-    isLoading,
-    isError,
-    // isFetchingNextPage,
-    // isFetchingPreviousPage,
-    // fetchNextPage,
-    // fetchPreviousPage,
-    // hasNextPage,
-    // hasPreviousPage,
-    // refetch,
-  } = useInfiniteQuery({
+  const { data, isLoading, isError } = useInfiniteQuery({
     queryKey: ["tokenTrades", tokenaddy],
     queryFn: async ({ pageParam = 1 }) => {
       const skip = (pageParam - 1) * ITEMS_PER_PAGE;

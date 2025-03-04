@@ -3,6 +3,7 @@ import {
   CultTokenMetadata,
   CultTokenPageData,
   CultTokensResponse,
+  TokenTrade,
   TokenTradesData,
   TopHoldersResponse,
 } from "~~/types/types";
@@ -29,8 +30,14 @@ export const cultTokensQuery = gql`
 
 // Function to fetch data with pagination
 export const fetchDiscoverTokenData = async (first: number, skip: number): Promise<CultTokensResponse> => {
-  const response: CultTokensResponse = await request(envioEndpoint, cultTokensQuery, { first, skip });
-  return response;
+  const response: {
+    CultToken: CultTokenMetadata[];
+  } = await request(envioEndpoint, cultTokensQuery, { first, skip });
+  console.log("fetchDiscoverTokenData", response);
+
+  return {
+    cultTokens: response.CultToken,
+  };
 };
 
 // This is to get top performing coins for homepage
@@ -61,7 +68,7 @@ export async function fetchTopCoins(): Promise<CultTokensResponse> {
 }
 
 const TokenPageData = gql`
-  query GetCultTokenData($tokenAddress: String_comparison_exp = {}) {
+  query GetCultTokenData($tokenAddress: String_comparison_exp!) {
     CultToken(where: { tokenAddress: $tokenAddress }) {
       id
       tokenCreator {
@@ -80,13 +87,38 @@ const TokenPageData = gql`
   }
 `;
 
-// Function to fetch data with pagination
-export const fetchTokenPageData = async (
-  tokenAddress: `0x${string}`,
-  //accountAddress: string,
-): Promise<CultTokenPageData> => {
-  const response: CultTokenPageData = await request(envioEndpoint, TokenPageData, { tokenAddress });
-  return response;
+export const fetchTokenPageData = async (tokenAddress: `0x${string}`): Promise<CultTokenPageData> => {
+  // Pass _eq as part of the comparison_exp object
+  const variables = { tokenAddress: { _eq: tokenAddress } };
+  const response = await request<{ CultToken: any[] }>(envioEndpoint, TokenPageData, variables);
+
+  // Grab the first (or only) item in the CultToken array
+  const token = response?.CultToken?.[0];
+  if (!token) {
+    return { cultToken: null };
+  }
+
+  // If there’s an ipfsData array, use the first element
+  const ipfsDataItem = token.ipfsData?.[0] ?? { content: "" };
+
+  // Shape the data to match CultTokenPageData
+  return {
+    cultToken: {
+      id: token.id,
+      tokenCreator: {
+        id: token.tokenCreator?.id ?? "",
+      },
+      bondingCurve: token.bondingCurve,
+      name: token.name,
+      symbol: token.symbol,
+      poolAddress: token.poolAddress,
+      blockTimestamp: Number(token.blockTimestamp), // ensure it's a number
+      holderCount: token.holderCount,
+      ipfsData: {
+        content: ipfsDataItem.content,
+      },
+    },
+  };
 };
 
 const TopHolders = gql`
@@ -145,6 +177,22 @@ export const fetchTokenTrades = async (
   first: number = 20,
   skip: number = 0,
 ): Promise<TokenTradesData> => {
-  const response: TokenTradesData = await request(envioEndpoint, TokenTrades, { tokenAddress, first, skip });
-  return response;
+  // Pass an object shaped according to CultToken_bool_exp:
+  // { tokenAddress: { _eq: "0x..." } }
+  const variables = {
+    tokenAddress: {
+      tokenAddress: {
+        _eq: tokenAddress,
+      },
+    },
+    first,
+    skip,
+  };
+
+  const response = await request<{ TokenTrade: TokenTrade[] }>(envioEndpoint, TokenTrades, variables);
+
+  // Return the data under "tokenTrades" instead of "TokenTrade"
+  return {
+    tokenTrades: response.TokenTrade,
+  };
 };

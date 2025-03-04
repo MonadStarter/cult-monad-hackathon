@@ -31,7 +31,6 @@ function DiscoverCoins() {
       return fetchDiscoverTokenData(ITEMS_PER_PAGE, skip);
     },
     getNextPageParam: (lastPage, allPages) => {
-      console.log("RENDERING", lastPage);
       return lastPage.cultTokens.length === ITEMS_PER_PAGE ? allPages.length + 1 : undefined;
     },
     // getPreviousPageParam: (firstPage, allPages) => {
@@ -42,7 +41,6 @@ function DiscoverCoins() {
 
     initialPageParam: 1,
   });
-
   const tokens: CultTokenMetadata[] = tokenListData?.pages.flatMap(page => page.cultTokens) || [];
 
   if (isLoading || tokens.length === 0) {

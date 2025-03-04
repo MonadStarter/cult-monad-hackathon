@@ -1,3 +1,5 @@
+"use client";
+
 import { ReactElement, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Pagination from "../common/Pagination";
