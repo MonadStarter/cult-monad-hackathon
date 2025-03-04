@@ -19,7 +19,7 @@ export const monadTestnet = defineChain({
   },
   rpcUrls: {
     default: {
-      http: ["c"],
+      http: [process.env.MONAD_RPC_URL || ""],
       //webSocket: ['wss://rpc.zora.energy'],
     },
   },
