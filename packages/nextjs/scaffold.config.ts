@@ -7,6 +7,11 @@ export type ScaffoldConfig = {
   alchemyApiKey: string;
   walletConnectProjectId: string;
   onlyLocalBurnerWallet: boolean;
+  privy: {
+    appId: string;
+    apiSecretKey: string;
+    jwksUrl: string;
+  };
 };
 
 export const monadTestnet = defineChain({
@@ -58,6 +63,13 @@ const scaffoldConfig = {
 
   // Only show the Burner Wallet when running on hardhat network
   onlyLocalBurnerWallet: true,
+  
+  // Privy configuration
+  privy: {
+    appId: process.env.NEXT_PUBLIC_PRIVY_APP_ID || "",
+    apiSecretKey: process.env.NEXT_PUBLIC_PRIVY_API_SECRET_KEY || "",
+    jwksUrl: process.env.NEXT_PUBLIC_PRIVY_JWKS_URL || "",
+  },
 } as const satisfies ScaffoldConfig;
 
 export default scaffoldConfig;

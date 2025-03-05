@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Navbar from "../common/Navbar";
 import Socials from "../common/Socials";
-import { RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
 import { routerItemsList } from "~~/constants/routes";
+import PrivyLoginButton from "../privy/PrivyLoginButton";
 
 export default function Topbar() {
   return (
@@ -13,7 +13,7 @@ export default function Topbar() {
       </div>
       <div className="flex gap-5 items-center">
         <Socials discord="#" telegram="#" x="#" className="max-sm:hidden" />
-        <RainbowKitCustomConnectButton />
+     <PrivyLoginButton />
       </div>
     </nav>
   );
