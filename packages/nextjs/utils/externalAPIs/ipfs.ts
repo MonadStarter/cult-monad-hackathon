@@ -105,7 +105,6 @@ export function parseIPFSMetadata(jsonString: string): IPFSMetadata | null {
   }
 }
 
-
 export const fetchMetadataFromIPFS = async (tokenURI?: string): Promise<IPFSMetadata | undefined> => {
   if (!tokenURI) return;
 

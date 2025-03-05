@@ -30,12 +30,19 @@ export const cultTokensQuery = gql`
 
 // Function to fetch data with pagination
 export const fetchDiscoverTokenData = async (first: number, skip: number): Promise<CultTokensResponse> => {
-  const response: {
-    CultToken: CultTokenMetadata[];
-  } = await request(envioEndpoint, cultTokensQuery, { first, skip });
+  const response: any = await request(envioEndpoint, TopCoins);
+
+  // Transform each token so ipfsData is a single object rather than an array.
+  const normalizedCultTokens = response.CultToken.map((token: any) => {
+    return {
+      ...token,
+      ipfsData: token.ipfsData?.[0] ?? { content: "" },
+      // Fallback to an empty content if the array is empty
+    };
+  });
 
   return {
-    cultTokens: response.CultToken,
+    cultTokens: normalizedCultTokens,
   };
 };
 
@@ -56,13 +63,22 @@ const TopCoins = gql`
   }
 `;
 
+//updated the function to work with existing schema
 export async function fetchTopCoins(): Promise<CultTokensResponse> {
-  const response: {
-    CultToken: CultTokenMetadata[];
-  } = await request(envioEndpoint, TopCoins);
+  // We're using 'any' for the response so we can transform it freely.
+  const response: any = await request(envioEndpoint, TopCoins);
+
+  // Transform each token so ipfsData is a single object rather than an array.
+  const normalizedCultTokens = response.CultToken.map((token: any) => {
+    return {
+      ...token,
+      ipfsData: token.ipfsData?.[0] ?? { content: "" },
+      // Fallback to an empty content if the array is empty
+    };
+  });
 
   return {
-    cultTokens: response.CultToken,
+    cultTokens: normalizedCultTokens,
   };
 }
 

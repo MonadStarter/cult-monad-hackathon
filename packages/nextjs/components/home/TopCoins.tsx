@@ -33,8 +33,6 @@ function TopCoins() {
     return <div>No data available</div>;
   }
 
-  // console.log("TOP COINS", data);
-
   return (
     <div className="topcoins-section">
       {data.cultTokens.slice(0, 3).map((coin: CultTokenMetadata) => {
