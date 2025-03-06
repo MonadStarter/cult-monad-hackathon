@@ -11,7 +11,8 @@ interface TokenCreationData {
   description: string;
   socials: SocialLink;
   tokenLogo: string | File | null;
-  initialBuyAmount: string | number;
+  categories?: string[];
+  initialBuyAmount?: string | number;
 }
 
 interface UseTokenCreationProps {
@@ -54,6 +55,9 @@ export const useTokenCreation = ({ onSuccess, onError }: UseTokenCreationProps =
       //   args: [BigInt(10000000), formData.initialBuyAmount],
       //   watch: true,
       // });
+
+      formData.categories = formData.categories || [];
+      //get merkle root for the categories
 
       // Create token transaction
       await cultFactory({

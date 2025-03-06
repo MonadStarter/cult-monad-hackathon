@@ -10,3 +10,12 @@ export const MERKLE_PROOFS = [
     ],
   },
 ];
+
+export const NFTList = [
+  { value: "monadverse", label: "Monadverse" },
+  { value: "azuki", label: "azuki" },
+  { value: "pudgyPenguin", label: "Pudgy Penguins" },
+  { value: "milady", label: "Milady" },
+];
+
+export const diamondList = [];
