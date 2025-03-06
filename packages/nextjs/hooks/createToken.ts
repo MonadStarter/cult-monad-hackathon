@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAccount } from "wagmi";
-import { MERKLE_PROOFS, TEST_MERKE_ROOT } from "~~/constants/merkleRoots";
-import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { COMMUNITY_MERKLE_PROOFS, MERKLE_PROOFS } from "~~/constants/merkleRoots";
+import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { SocialLink } from "~~/types/types";
 import { uploadMetadata, uploadToIPFS } from "~~/utils/externalAPIs/ipfs";
 
@@ -11,7 +11,7 @@ interface TokenCreationData {
   description: string;
   socials: SocialLink;
   tokenLogo: string | File | null;
-  categories?: string[];
+  airdrop?: string[];
   initialBuyAmount?: string | number;
 }
 
@@ -56,13 +56,19 @@ export const useTokenCreation = ({ onSuccess, onError }: UseTokenCreationProps =
       //   watch: true,
       // });
 
-      formData.categories = formData.categories || [];
+      const airdropList = formData.airdrop || [];
+      let airdropMerkleRoot = "";
+      if (airdropList.length > 0) {
+        airdropMerkleRoot = COMMUNITY_MERKLE_PROOFS[airdropList[0]].MERKLE_ROOT;
+      } else {
+        airdropMerkleRoot = MERKLE_PROOFS[0].MERKLE_ROOT;
+      }
       //get merkle root for the categories
 
       // Create token transaction
       await cultFactory({
         functionName: "deploy",
-        args: [user.address, metadataUri, formData.name, formData.symbol, MERKLE_PROOFS[0].MERKLE_ROOT, 50000, 604800],
+        args: [user.address, metadataUri, formData.name, formData.symbol, airdropMerkleRoot, 50000, 604800],
         //value: 0,
       });
       return metadataUri;

@@ -25,7 +25,7 @@ const TYPE_COLUMN: TableColumnInterface = {
 };
 
 const ETH_COLUMN: TableColumnInterface = {
-  title: "ETH",
+  title: "TMON",
   accessor: (rowData: TableValueInterface) => rowData[ETH],
   widthPercentage: 13,
   renderer: (value: string | number) => <h6 className="font-semibold">{value}</h6>,

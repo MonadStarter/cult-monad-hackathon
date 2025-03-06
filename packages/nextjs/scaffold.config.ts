@@ -19,7 +19,7 @@ export const monadTestnet = defineChain({
   },
   rpcUrls: {
     default: {
-      http: [process.env.MONAD_RPC_URL || "https://testnet-rpc.monad.xyz/"],
+      http: ["https://monad-testnet.g.alchemy.com/v2/Rkik2kU2CR1Dd0z-FkhGSUsAiIx6EuES"], //[process.env.MONAD_RPC_URL || "https://testnet-rpc.monad.xyz/"],
       //webSocket: ['wss://rpc.zora.energy'],
     },
   },

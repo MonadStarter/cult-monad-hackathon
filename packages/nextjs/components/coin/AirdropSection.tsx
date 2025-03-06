@@ -11,7 +11,7 @@ import { useTokenStore } from "~~/stores/tokenStore";
 //TODO: this should be from contract or store in event
 function AirdropSection() {
   const { userAddress, subgraphData } = useTokenStore();
-  const airdropContractaddress = "0x44143C32EE5921c37ddE78F68648685EbC834Fd1";
+  const airdropContractaddress = "0x181e11B8E4826bF31FCF5b0e8Fd181954B1A1735";
   const { writeContractAsync } = useWriteContract();
   const writeTx = useTransactor();
   const { data, isError, isLoading } = useContractReads({

@@ -23,7 +23,7 @@ import { CultTokenPageData, TokenMetadata } from "~~/types/types";
 import { parseIPFSMetadata } from "~~/utils/externalAPIs/ipfs";
 
 const Transactions = React.memo(TransactionHistory);
-const CoinDetail = React.memo(CoinDetailCard);
+//const CoinDetail = React.memo(CoinDetailCard);
 const LEFT_PANEL = [
   {
     id: "TRANSACTION_HISTORY",
@@ -138,7 +138,7 @@ export default function CoinPage() {
       {/* <TradingViewChart tokenAddress={tokenaddy} interval="H" theme="light" autosize={true} /> */}
 
       <BackButton />
-      <CoinDetail />
+      <CoinDetailCard />
       {/* <SegmentedPanel panels={MOBILE_SEGMENTED_LAYOUT} className="sm:hidden" /> */}
       <div className="flex gap-4 max-sm:hidden">
         <div className="w-2/3 flex flex-col gap-4">
@@ -146,7 +146,7 @@ export default function CoinPage() {
         </div>
         <div className="w-1/3 flex flex-col gap-4">
           <SegmentedPanel panels={TRADE_OPTIONS} />
-          {/* <AirdropSection /> */}
+          <AirdropSection />
           {/* <BondingCurveProgress /> */}
         </div>
       </div>

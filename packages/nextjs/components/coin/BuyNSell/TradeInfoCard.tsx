@@ -77,7 +77,7 @@ function TradeInfoCard({
         : "0.00"; // Consistent formatting with buy side
 
   // Display symbol based on mode
-  const displaySymbol = mode === "buy" ? "ETH" : metadata.symbol;
+  const displaySymbol = mode === "buy" ? "TMON" : metadata.symbol;
 
   return (
     <div className="border border-1 border-gray-800 bg-white-4 rounded-2xl py-3 px-4">

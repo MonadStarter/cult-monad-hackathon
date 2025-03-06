@@ -16,7 +16,7 @@ export const routerItemsList: NavigationItem[] = [
   {
     id: "launch",
     label: "Launch",
-    href: "/launch",
+    href: "/create",
   },
   {
     id: "rankings",

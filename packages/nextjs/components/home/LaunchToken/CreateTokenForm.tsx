@@ -1,20 +1,15 @@
 "use client";
 
 import { FC, useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronsUpDown, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import InputField from "~~/components/common/InputField";
 import { NFTList } from "~~/constants/merkleRoots";
 import { useTokenCreation } from "~~/hooks/createToken";
 import { DiscordIcon, GlobeIcon, TelegramIcon, XIcon } from "~~/icons/socials";
-import { cn } from "~~/lib/utils";
-import { Button } from "~~/src/components/ui/button";
+import { MultiSelect } from "~~/src/components/ui/multiselect";
 import { IPFSMetadata } from "~~/types/types";
 import { resizeImage } from "~~/utils/imageHandler";
 
@@ -24,7 +19,7 @@ const CreateTokenSchema = z.object({
   name: z.string().nonempty({ message: "Token name is required" }),
   symbol: z.string().nonempty({ message: "Token symbol is required" }),
   description: z.string().default(""),
-  categories: z.array(z.string()).default([]),
+  airdrop: z.array(z.string()).default([]),
   socials: z
     .object({
       twitter: z.string().optional(),
@@ -38,87 +33,6 @@ const CreateTokenSchema = z.object({
 
 const SocialIcon = ({ icon }: { icon: React.ReactNode }) => <div className="p-2 bg-primary-500 rounded-lg">{icon}</div>;
 
-const MultiSelect = ({
-  options,
-  selected,
-  onChange,
-}: {
-  options: { value: string; label: string }[];
-  selected: string[];
-  onChange: (values: string[]) => void;
-}) => {
-  const [open, setOpen] = useState(false);
-
-  // Ensure selected is always an array
-  const selectedValues = Array.isArray(selected) ? selected : [];
-
-  const handleSelect = (value: string) => {
-    if (selectedValues.includes(value)) {
-      onChange(selectedValues.filter(item => item !== value));
-    } else {
-      onChange([...selectedValues, value]);
-    }
-  };
-
-  const handleRemove = (value: string) => {
-    onChange(selectedValues.filter(item => item !== value));
-  };
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-full justify-between h-auto min-h-10"
-        >
-          <div className="flex flex-wrap gap-1">
-            {selectedValues.length === 0 ? (
-              <span className="text-muted-foreground">Select Communities</span>
-            ) : (
-              selectedValues.map(value => {
-                const option = options.find(opt => opt.value === value);
-                return (
-                  <Badge key={value} variant="secondary" className="flex items-center gap-1">
-                    {option?.label}
-                    <button
-                      onClick={e => {
-                        e.stopPropagation();
-                        handleRemove(value);
-                      }}
-                      className="ml-1 h-4 w-4 rounded-full flex items-center justify-center"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                );
-              })
-            )}
-          </div>
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-full p-0">
-        <Command>
-          <CommandInput placeholder="Search category..." />
-          <CommandEmpty>No category found.</CommandEmpty>
-          <CommandGroup className="max-h-64 overflow-auto">
-            {options.map(option => (
-              <CommandItem key={option.value} value={option.value} onSelect={() => handleSelect(option.value)}>
-                <Check
-                  className={cn("mr-2 h-4 w-4", selectedValues.includes(option.value) ? "opacity-100" : "opacity-0")}
-                />
-                {option.label}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </Command>
-      </PopoverContent>
-    </Popover>
-  );
-};
-
 const CreateTokenForm: FC = () => {
   //   const { toast } = useToast();
   const [isUploading, setIsUploading] = useState(false);
@@ -130,7 +44,7 @@ const CreateTokenForm: FC = () => {
       name: "",
       symbol: "",
       description: "",
-      categories: [],
+      airdrop: [],
       socials: {},
       imageUrl: null,
     },
@@ -147,7 +61,7 @@ const CreateTokenForm: FC = () => {
     },
   });
 
-  const onSubmit = async (data: IPFSMetadata) => {
+  const onSubmit = async (data: IPFSMetadata & { airdrop: string[] }) => {
     setIsUploading(true);
 
     try {
@@ -156,6 +70,7 @@ const CreateTokenForm: FC = () => {
         symbol: data.symbol,
         description: data.description,
         socials: data.socials,
+        airdrop: data.airdrop,
         tokenLogo: data.imageUrl, // Assuming imageUrl is the File object
         initialBuyAmount: 0, // Add this to your form schema if not already present
       });
@@ -316,12 +231,21 @@ const CreateTokenForm: FC = () => {
         </div>
 
         <FormField
-          name="categories"
+          name="airdrop"
           render={({ field }) => (
             <FormItem className="flex flex-col gap-1 mb-12">
               <FormLabel>Airdrop Community</FormLabel>
               <FormControl>
-                <MultiSelect options={NFTList} selected={field.value || []} onChange={field.onChange} />
+                <MultiSelect
+                  options={NFTList}
+                  onValueChange={field.onChange}
+                  defaultValue={[]}
+                  placeholder="Select Communities"
+                  variant="default"
+                  className=""
+                  animation={2}
+                  maxCount={10}
+                />
               </FormControl>
               <FormMessage className="text-red-500" />
             </FormItem>
@@ -329,8 +253,10 @@ const CreateTokenForm: FC = () => {
         />
 
         <label htmlFor="" className="flex flex-col items-start mb-12">
-          <span>All tokens have mandatory 10% airdrop to probabilisitcally selected diamonad handers</span>
-          <span>Users can choose to diamond hand for 1-24 days</span>
+          <span>
+            All tokens have mandatory 5% airdrop to probabilisitcally selected diamonad handers. Or creator can choose
+            existing communities
+          </span>
         </label>
 
         <button

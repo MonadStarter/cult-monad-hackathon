@@ -8,7 +8,7 @@ export default function Topbar() {
   return (
     <nav className="navbar h-16 flex justify-between items-center px-4 sm:px-10">
       <div className="flex gap-10 items-center">
-        <Image src="/logo.svg" width={149} height="100" alt="Mopo.fun" />
+        <Image src="/cultLogo.jpg" width={30} height={30} alt="Cult Trade" />
         <Navbar navItems={routerItemsList} className="max-sm:hidden" />
       </div>
       <div className="flex gap-5 items-center">
