@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import { useParams } from "next/navigation";
 import TradeButton from "./PlaceTradeButton";
 import TradeInfoCard from "./TradeInfoCard";
 import { formatUnits, parseEther, parseUnits } from "viem";
-import { useAccount, useBalance, useContractRead } from "wagmi";
+import { useBalance, useContractRead } from "wagmi";
 import { CultContractABI } from "~~/constants/abis";
-import DeployedContracts from "~~/contracts/deployedContracts";
 import { useTokenStore } from "~~/stores/tokenStore";
 // import { useTokenStore } from "~~/stores/tokenStore";
 import { TradeOptions } from "~~/types/types";
@@ -13,10 +11,10 @@ import { TradeOptions } from "~~/types/types";
 const STEPPER_PERCENTAGES = ["25", "50", "75", "100"];
 
 function Trade({ tradeType }: { tradeType: TradeOptions }) {
-  const { tokenAddress, metadata, isLoading, error, refetch } = useTokenStore();
+  const { tokenAddress, userAddress, metadata, isLoading, error, refetch } = useTokenStore();
   //const { tokenAddress, userAddress, refetch } = useTokenStore();
   const [amount, setAmount] = useState("");
-  const { address: userAddress } = useAccount();
+  //const { address: userAddress } = useAccount();
 
   const { data: ethBuyQuote } = useContractRead({
     address: tokenAddress,

@@ -53,7 +53,6 @@ function DiscoverCoins() {
     </section>;
   }
 
-  //console.log("RENDERING", tokenListData, tokens, isLoading);
   return (
     <section className="page py-20 flex flex-col gap-12 justify-center items-center">
       <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">

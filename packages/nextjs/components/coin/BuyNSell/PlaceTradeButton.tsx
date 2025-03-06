@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { parseEther } from "viem";
-import { useAccount, useContractRead, useWriteContract } from "wagmi";
+import { useContractRead, useWriteContract } from "wagmi";
 import { CultContractABI } from "~~/constants/abis";
 import { useTransactor } from "~~/hooks/scaffold-eth";
 import { TradeOptions } from "~~/types/types";
@@ -18,7 +18,6 @@ export default function TradeButton({
   userAddress: `0x${string}`;
   refetchData: (() => void) | null;
 }) {
-  const { chain } = useAccount();
   const { writeContractAsync, isPending } = useWriteContract();
   const writeTx = useTransactor();
 
@@ -39,9 +38,9 @@ export default function TradeButton({
 
   //console.log("Allowance", hasApproval, hasApproval);
 
-  useEffect(() => {
-    refetch();
-  }, [userAddress, tokenAddress]);
+  // useEffect(() => {
+  //   refetch();
+  // }, [userAddress, tokenAddress]);
 
   const writeBuyAsyncWithParams = async () => {
     setIsPendingBuy(true);

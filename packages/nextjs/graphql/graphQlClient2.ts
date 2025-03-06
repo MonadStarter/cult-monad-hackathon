@@ -10,7 +10,8 @@ import {
 
 //const endpoint = "https://api.studio.thegraph.com/query/103833/culttokens/version/latest";
 // const endpoint = "https://api.goldsky.com/api/public/project_cm7aysf582k9p01sq9o2vfkrn/subgraphs/culttokens/v0.0.17/gn";
-const envioEndpoint = "http://localhost:8080/v1/graphql";
+//const envioEndpoint = "http://localhost:8080/v1/graphql";
+const envioEndpoint = "https://indexer.dev.hyperindex.xyz/27960d7/v1/graphql";
 // This is to get latest coins for homepage
 export const cultTokensQuery = gql`
   query GetCultTokens($first: Int, $skip: Int) {
@@ -30,8 +31,7 @@ export const cultTokensQuery = gql`
 
 // Function to fetch data with pagination
 export const fetchDiscoverTokenData = async (first: number, skip: number): Promise<CultTokensResponse> => {
-  const response: any = await request(envioEndpoint, TopCoins);
-
+  const response: any = await request(envioEndpoint, cultTokensQuery, { first, skip });
   // Transform each token so ipfsData is a single object rather than an array.
   const normalizedCultTokens = response.CultToken.map((token: any) => {
     return {
@@ -137,8 +137,8 @@ export const fetchTokenPageData = async (tokenAddress: `0x${string}`): Promise<C
 };
 
 const TopHolders = gql`
-  query TopHolders($tokenAddress: CultToken_bool_exp = {}, $first: Int, $skip: Int) {
-    TokenBalance(where: { token: $tokenAddress }, order_by: { value: desc }, limit: $first, offset: $skip) {
+  query TopHolders($tokenFilter: CultToken_bool_exp, $first: Int, $skip: Int) {
+    TokenBalance(where: { token: $tokenFilter }, order_by: { value: desc }, limit: $first, offset: $skip) {
       account {
         id
       }
@@ -147,17 +147,24 @@ const TopHolders = gql`
   }
 `;
 
-export const fetchTopHolders = async (
-  tokenAddress: string,
-  first: number = 10,
-  skip: number = 0,
-): Promise<TopHoldersResponse> => {
-  const response: TopHoldersResponse = await request(envioEndpoint, TopHolders, {
-    tokenAddress,
+export const fetchTopHolders = async (tokenAddress: string, first = 10, skip = 0): Promise<TopHoldersResponse> => {
+  // Build the filter object that matches CultToken_bool_exp
+  // For a single token address, you usually want something like:
+  // { tokenAddress: { _eq: "0x123..." } }
+  const tokenFilter = {
+    tokenAddress: {
+      _eq: tokenAddress,
+    },
+  };
+
+  // Make the request
+  const response = await request<TopHoldersResponse>(envioEndpoint, TopHolders, {
+    tokenFilter,
     first,
     skip,
   });
 
+  console.log("RESPONSE", response);
   return response;
 };
 

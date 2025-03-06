@@ -1,14 +1,12 @@
-import { ReactElement, useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+"use client";
+
 import Pagination from "../common/Pagination";
 import { Address } from "../scaffold-eth";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Address as AddressType, formatEther } from "viem";
 import Table, { TableColumnInterface, TableValueInterface } from "~~/components/common/Table";
 import { fetchTopHolders } from "~~/graphql/graphQlClient2";
-import useGetMktCap from "~~/hooks/fetchPrice";
 import { UserIcon } from "~~/icons/symbols";
-import { ellipsisToken, formatLargeNumber } from "~~/lib/utils";
 import { useTokenStore } from "~~/stores/tokenStore";
 
 export enum ColumnType {
@@ -33,7 +31,7 @@ const PERCENTAGE_COLUMN: TableColumnInterface = {
 const BONDING_CURVE_TABLE_COLUMNS = [HOLDER_COLUMN, PERCENTAGE_COLUMN];
 const ITEMS_PER_PAGE = 10;
 function BondingCurveProgress() {
-  const { tokenAddress, subgraphData, metadata, isLoading, error } = useTokenStore();
+  const { tokenAddress, subgraphData, metadata, isLoading } = useTokenStore();
 
   const {
     data,
@@ -59,6 +57,8 @@ function BondingCurveProgress() {
     },
     initialPageParam: 1,
   });
+
+  console.log("RENDERED HOLDER", data);
 
   const renderedHolders: TableValueInterface[] =
     data?.pages.flatMap(page =>

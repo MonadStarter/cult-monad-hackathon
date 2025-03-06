@@ -1,4 +1,3 @@
-import { ReactElement } from "react";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -26,13 +25,13 @@ function EllipsisTransaction({ value }: { value: string }) {
   const shortValue = ellipsisTransaction(value);
 
   return (
-    <a href={`https://testnet.monadexplorer.com/${value}`} target="_blank" rel="noreferrer">
+    <a href={`https://testnet.monadexplorer.com/tx/${value}`} target="_blank" rel="noreferrer">
       {shortValue}
     </a>
   );
 }
 
-function formatLargeNumber(num: number | BigInt | string, decimalsForSmall: number = 2): string {
+function formatLargeNumber(num: number | bigint | string, decimalsForSmall: number = 2): string {
   const suffixes = [
     { value: 1_000_000_000n, symbol: "B" }, // Billion
     { value: 1_000_000n, symbol: "M" }, // Million

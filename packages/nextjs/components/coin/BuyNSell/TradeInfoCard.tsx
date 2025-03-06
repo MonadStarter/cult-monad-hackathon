@@ -1,6 +1,6 @@
 import React from "react";
+import Image from "next/image";
 import { formatEther, formatUnits } from "viem";
-import { formatLargeNumber } from "~~/lib/utils";
 import { useTokenStore } from "~~/stores/tokenStore";
 import { TokenMetadata, TradeOptions } from "~~/types/types";
 
@@ -91,7 +91,7 @@ function TradeInfoCard({
         />
         <div className="pill-badge !bg-white-7 flex items-center gap-2">
           {mode === "sell" && metadata?.image && (
-            <img
+            <Image
               src={metadata.image}
               width="16"
               height="16"

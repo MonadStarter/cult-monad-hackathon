@@ -1,10 +1,9 @@
 "use client";
 
-import ProgressBar from "../common/ProgressBar";
-import { formatEther, parseEther } from "viem";
+import { formatEther } from "viem";
 import { useContractReads, useWriteContract } from "wagmi";
 import { AirdropContractABI } from "~~/constants/abis";
-import { MERKLE_PROOFS, TEST_MERKE_ROOT } from "~~/constants/merkleRoots";
+import { MERKLE_PROOFS } from "~~/constants/merkleRoots";
 import { useTransactor } from "~~/hooks/scaffold-eth/useTransactor";
 //import { UserIcon } from "~~/icons/symbols";
 import { useTokenStore } from "~~/stores/tokenStore";
@@ -13,7 +12,7 @@ import { useTokenStore } from "~~/stores/tokenStore";
 function AirdropSection() {
   const { userAddress, subgraphData } = useTokenStore();
   const airdropContractaddress = "0x44143C32EE5921c37ddE78F68648685EbC834Fd1";
-  const { writeContractAsync, isPending } = useWriteContract();
+  const { writeContractAsync } = useWriteContract();
   const writeTx = useTransactor();
   const { data, isError, isLoading } = useContractReads({
     contracts: [
@@ -37,7 +36,7 @@ function AirdropSection() {
           address: airdropContractaddress,
           abi: AirdropContractABI,
           functionName: "claim",
-          args: [500000, [MERKLE_PROOFS[0].merkleProofs[0]]],
+          args: [BigInt(500000), [MERKLE_PROOFS[0].merkleProofs[0]]],
         }),
       );
     } catch (e: any) {

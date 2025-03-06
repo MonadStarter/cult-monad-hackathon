@@ -21,6 +21,7 @@ interface UseTokenPriceResult {
 }
 
 const useGetMktCap = ({ tokenAddress }: UseTokenPriceProps) => {
+  if (!tokenAddress) return;
   const {
     data: priceData,
     refetch: priceRefetch,
@@ -29,21 +30,18 @@ const useGetMktCap = ({ tokenAddress }: UseTokenPriceProps) => {
   } = useContractReads({
     contracts: [
       {
-        address: "0x0555de41fef0cdc94b8af276e12c75d14ae2bc76",
+        address: tokenAddress,
         abi: CultContractABI,
         functionName: "getTokenBuyQuote",
         args: [parseEther("1")],
       },
       {
-        address: "0x0555de41fef0cdc94b8af276e12c75d14ae2bc76",
+        address: tokenAddress,
         abi: CultContractABI,
         functionName: "totalSupply",
       },
     ],
   });
-
-  console.log("Address", tokenAddress as Address);
-  console.log("CultContractABI", CultContractABI);
 
   let price: string | undefined = undefined;
   let circulatingSupply: string | undefined = undefined;

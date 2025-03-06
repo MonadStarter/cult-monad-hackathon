@@ -1,16 +1,13 @@
 import React from "react";
 import { Address } from "../scaffold-eth/Address/Address";
-import { AddressLinkWrapper } from "../scaffold-eth/Address/AddressLinkWrapper";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import updateLocale from "dayjs/plugin/updateLocale";
-import useGetMktCap from "~~/hooks/fetchPrice";
-import { CopyIcon, RoundedStar } from "~~/icons/actions";
+import { RoundedStar } from "~~/icons/actions";
 import { GlobeIcon, TelegramIcon, XIcon } from "~~/icons/socials";
 import { PriceIncreaseIcon } from "~~/icons/symbols";
-import { ellipsisToken, formatLargeNumber } from "~~/lib/utils";
+import { formatLargeNumber } from "~~/lib/utils";
 import { useTokenStore } from "~~/stores/tokenStore";
-import { CultTokenPageData, TokenMetadata } from "~~/types/types";
 
 // Initialize dayjs plugins
 dayjs.extend(relativeTime);
@@ -92,7 +89,8 @@ export const CoinDetailCard = () => {
   const tokenInfo = subgraphData.cultToken;
 
   const coinStats = [
-    { label: "Price", value: `$${formatLargeNumber(Number(metadata.price) * ETH_PRICE_USD)}` },
+    //{ label: "Price", value: `$${formatLargeNumber(Number(metadata.price) * ETH_PRICE_USD)}` },
+    { label: "Price", value: `$${Number(metadata.price) * ETH_PRICE_USD}` },
     { label: "Market Cap", value: `$${formatLargeNumber(Number(metadata.marketCap || "0").toFixed(2))}` },
     { label: "Circ Supply", value: `${formatLargeNumber(metadata.circulatingSupply || "0")}` },
     // { label: "ETH Reserve", value: `${formatLargeNumber(tokenData.ethReserve)} ETH` },

@@ -2,7 +2,7 @@
 
 //import { useEffect, useState } from "react";
 import Topbar from "./Topbar";
-import { RainbowKitProvider, darkTheme, lightTheme } from "@rainbow-me/rainbowkit";
+import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider, isServer } from "@tanstack/react-query";
 import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
 //import { useTheme } from "next-themes";
