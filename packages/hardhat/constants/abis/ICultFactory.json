@@ -61,12 +61,6 @@
                 "internalType": "address",
                 "name": "airdropContract",
                 "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "address",
-                "name": "diamondHandContract",
-                "type": "address"
             }
         ],
         "name": "CultTokenCreated",
@@ -103,11 +97,6 @@
                 "internalType": "uint16",
                 "name": "_airdropPercent",
                 "type": "uint16"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_diamondHandDuration",
-                "type": "uint256"
             }
         ],
         "name": "deploy",

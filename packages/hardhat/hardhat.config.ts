@@ -17,6 +17,7 @@ import "@openzeppelin/hardhat-upgrades"
 import "solidity-docgen"
 import "hardhat-abi-exporter"
 import "hardhat-contract-sizer"
+import "hardhat-abi-exporter"
 
 // If not set, it uses ours Alchemy's default API key.
 // You can get your own at https://dashboard.alchemyapi.io
@@ -180,6 +181,20 @@ const config: HardhatUserConfig = {
       url: "https://testnet-rpc.monad.xyz",
       accounts: [privateKeyAdmin],
     },
+  },
+  abiExporter: {
+    path: "./constants/abis",
+    runOnCompile: true,
+    clear: true,
+    flat: true,
+    spacing: 4,
+    only: [
+      "CultRewards",
+      "AirdropContract",
+      "BondingCurve",
+      "Cult",
+      "CultFactory",
+    ]
   },
   // configuration for harhdat-verify plugin
   etherscan: {

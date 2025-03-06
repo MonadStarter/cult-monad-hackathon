@@ -64,7 +64,6 @@ main()
 //   "BondingCurve": "0x5441d4dACe413ab97D1Ee2461E5c77E825417911",
 //   "CultRewards": "0xF4590dCEF3450b80ac2DF5c024A1fd0c152109dC",
 //   "AirdropContract": "0xF241d9BdEb9c5a4ffCDD7FDDb539cFD16C0649d7",
-//   "DiamondHandContract": "0x4fCA044ef3406d2d6d36123003797F790085e6bc",
 //   "CultFactory": "0x86CF9229546e021b2C926E208591A8A312aC52f0",
 //   "StartBlock": 4946342
 // },

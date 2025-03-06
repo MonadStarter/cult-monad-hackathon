@@ -50,10 +50,8 @@ const predefinedContracts = {
   CultRewards: "0x528325C8701cE261b27622376966B3DC87c70BdA",
   BondingCurve: "0x560Ac99a96381Df163c94Cf4B6fFb351e972257c",
   AirdropContract: "0x0a4Aa612D4BDbB8841A37F2c42e0cF59C04883b9",
-  DiamondHandContract: "0xb5CAe94454c99F82f658A8df106D1F3840d70238",
   Cult: "0x9b861d08D829E0D8EDEcb2804ed3761e115fE800",
   CultFactory: "0xCE0da95A45bFa6a5A3f7e777D20D218f7ae5624D",
-  DiamondHandContract: "0xb34d9Dfc5E42F8AE5Ff06Fa88dad206c7630FC32",
 };
 
 const deployedContracts = {};
@@ -129,7 +127,6 @@ async function main() {
   const bondingCurveAddress = await deployContract("BondingCurve");
 
   const airdropContract = await deployContract("AirdropContract");
-  const diamondHandContract = await deployContract("DiamondHandContract");
 
   const cultImpl = await deployContract("Cult", [
     wallet.address,
@@ -148,7 +145,6 @@ async function main() {
   //   cultImpl,
   //   bondingCurveAddress,
   //   airdropContract,
-  //   diamondHandContract,
   // ]);
   // await cultFactory.waitForDeployment();
   // const cultFactoryAddress = cultFactory.target;
@@ -157,7 +153,6 @@ async function main() {
     { name: "CultToken", address: cultImpl },
     { name: "BondingCurve", address: bondingCurveAddress },
     { name: "AirdropContract", address: airdropContract },
-    { name: "DiamondHandContract", address: diamondHandContract },
     { name: "CultFactory", address: CultFactory },
     // { name: "StartBlock", address: startBlock.number },
     {

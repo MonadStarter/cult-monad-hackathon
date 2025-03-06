@@ -9,7 +9,6 @@ import {ERC1967Utils} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Utils.s
 import {ICultFactory} from "./interfaces/ICultFactory.sol";
 import {Cult} from "./Cult.sol";
 import {AirdropContract} from "./AirdropContract.sol";
-import {DiamondHandContract} from "./DiamondHandContract.sol";
 
 /// @title CultFactory
 /// @notice This contract is responsible for deploying Cult tokens with bonding curve mechanics and associated contracts.
@@ -28,9 +27,6 @@ contract CultFactory is
 
     /// @notice Address of the bonding curve contract
     address public bondingCurve;
-
-    /// @notice Address of the diamond hand implementation contract
-    address public diamondHandImplementation;
 
     /// @notice Counter for the number of tokens created
     uint256 public tokenCount;
@@ -57,7 +53,6 @@ contract CultFactory is
     /// @param _symbol The ERC20 token symbol
     /// @param merkleRoot The Merkle root for airdrop verification
     /// @param airdropPercent The percentage of tokens to be airdropped
-    /// @param diamondHandDuration The duration for the diamond hand contract
     /// @return The address of the newly created Cult token
     function deploy(
         address _tokenCreator,
@@ -65,8 +60,7 @@ contract CultFactory is
         string memory _name,
         string memory _symbol,
         bytes32 merkleRoot,
-        uint16 airdropPercent,
-        uint256 diamondHandDuration
+        uint16 airdropPercent
     ) external payable nonReentrant returns (address) {
         bytes32 salt = _generateSalt(_tokenCreator, _tokenURI);
         _validateCreateTokenParams(
@@ -91,25 +85,6 @@ contract CultFactory is
             merkleRoot,
             airdropAmount
         );
-        // AirdropContract airdropContract = new AirdropContract(
-        //     address(token),
-        //     _tokenCreator,
-        //     merkleRoot,
-        //     airdropAmount
-        // );
-
-        address diamondHandContract = Clones.clone(diamondHandImplementation);
-
-        DiamondHandContract(diamondHandContract).initialize(
-            address(token),
-            _tokenCreator,
-            diamondHandDuration
-        );
-        // DiamondHandContract diamondHandContract = new DiamondHandContract(
-        //     address(token),
-        //     _tokenCreator,
-        //     diamondHandDuration
-        // );
 
         token.initialize{value: msg.value}(
             _tokenCreator,
@@ -134,8 +109,7 @@ contract CultFactory is
             _symbol,
             address(token),
             token.poolAddress(),
-            address(airdropContract),
-            address(diamondHandContract)
+            address(airdropContract)
         );
 
         return address(token);
@@ -148,8 +122,7 @@ contract CultFactory is
         address _owner,
         address _tokenImplementation,
         address _bondingCurve,
-        address _airdropImplementation,
-        address _diamondHandImplementation
+        address _airdropImplementation
     ) external initializer {
         __UUPSUpgradeable_init();
         __ReentrancyGuard_init();
@@ -158,7 +131,6 @@ contract CultFactory is
         tokenImplementation = _tokenImplementation;
         bondingCurve = _bondingCurve;
         airdropImplementation = _airdropImplementation;
-        diamondHandImplementation = _diamondHandImplementation;
     }
 
     /// @notice The implementation address of the factory contract

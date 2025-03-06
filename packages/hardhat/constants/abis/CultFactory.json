@@ -16,6 +16,11 @@
         "type": "error"
     },
     {
+        "inputs": [],
+        "name": "ERC1167FailedCreateClone",
+        "type": "error"
+    },
+    {
         "inputs": [
             {
                 "internalType": "address",
@@ -33,28 +38,7 @@
     },
     {
         "inputs": [],
-        "name": "FailedCall",
-        "type": "error"
-    },
-    {
-        "inputs": [],
-        "name": "FailedDeployment",
-        "type": "error"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "balance",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "needed",
-                "type": "uint256"
-            }
-        ],
-        "name": "InsufficientBalance",
+        "name": "FailedInnerCall",
         "type": "error"
     },
     {
@@ -186,12 +170,6 @@
                 "indexed": false,
                 "internalType": "address",
                 "name": "airdropContract",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "address",
-                "name": "diamondHandContract",
                 "type": "address"
             }
         ],
@@ -326,11 +304,6 @@
                 "internalType": "uint16",
                 "name": "airdropPercent",
                 "type": "uint16"
-            },
-            {
-                "internalType": "uint256",
-                "name": "diamondHandDuration",
-                "type": "uint256"
             }
         ],
         "name": "deploy",
@@ -342,19 +315,6 @@
             }
         ],
         "stateMutability": "payable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "diamondHandImplementation",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -390,11 +350,6 @@
             {
                 "internalType": "address",
                 "name": "_airdropImplementation",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "_diamondHandImplementation",
                 "type": "address"
             }
         ],
