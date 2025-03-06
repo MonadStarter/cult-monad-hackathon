@@ -30,14 +30,14 @@ interface ICultFactory {
     /// @param _tokenURI The ERC20z token URI
     /// @param _name The ERC20 token name
     /// @param _symbol The ERC20 token symbol
-    /// @param _merkleRoot The merkle root of the airdrop
+    /// @param _merkleRoots The merkle roots of the airdrop
     /// @param _airdropPercent The percentage of the airdrop
     function deploy(
         address _tokenCreator,
         string memory _tokenURI,
         string memory _name,
         string memory _symbol,
-        bytes32 _merkleRoot,
+        bytes32[] calldata _merkleRoots,
         uint16 _airdropPercent
     ) external payable returns (address);
 }

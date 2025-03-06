@@ -296,13 +296,13 @@
                 "type": "string"
             },
             {
-                "internalType": "bytes32",
-                "name": "merkleRoot",
-                "type": "bytes32"
+                "internalType": "bytes32[]",
+                "name": "_merkleRoots",
+                "type": "bytes32[]"
             },
             {
                 "internalType": "uint16",
-                "name": "airdropPercent",
+                "name": "_airdropPercent",
                 "type": "uint16"
             }
         ],
