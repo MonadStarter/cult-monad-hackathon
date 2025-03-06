@@ -11,29 +11,37 @@ import { useTokenStore } from "~~/stores/tokenStore";
 //TODO: this should be from contract or store in event
 function AirdropSection() {
   const { userAddress, subgraphData } = useTokenStore();
-  const airdropContractaddress = "0x181e11B8E4826bF31FCF5b0e8Fd181954B1A1735";
+
   const { writeContractAsync } = useWriteContract();
   const writeTx = useTransactor();
+
   const { data, isError, isLoading } = useContractReads({
     contracts: [
       {
-        address: airdropContractaddress,
+        address: subgraphData?.cultToken?.airdropContract.id,
         abi: AirdropContractABI,
         functionName: "totalAirdropAmount",
       },
       {
-        address: airdropContractaddress,
+        address: subgraphData?.cultToken?.airdropContract.id,
         abi: AirdropContractABI,
         functionName: "canClaim",
         args: [userAddress, BigInt(500000), [MERKLE_PROOFS[0].merkleProofs[0]]], //TODO: change to user address, amount should come from event
       },
     ],
+    query: {
+      enabled: !!subgraphData?.cultToken?.airdropContract.id,
+    },
   });
+  if (subgraphData?.cultToken?.airdropContract.id === undefined) {
+    return <div>Loading...</div>;
+  }
+
   const writeBuyAsyncWithParams = async () => {
     try {
       await writeTx(() =>
         writeContractAsync({
-          address: airdropContractaddress,
+          address: subgraphData?.cultToken?.airdropContract.id!,
           abi: AirdropContractABI,
           functionName: "claim",
           args: [BigInt(500000), [MERKLE_PROOFS[0].merkleProofs[0]]],

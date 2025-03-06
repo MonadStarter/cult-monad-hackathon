@@ -28,9 +28,17 @@ CultFactory.CultTokenCreated.handler(async ({ event, context }) => {
     event.params.tokenCreator,
     context
   );
+  const slug = "Aidrop Contract";
+  const airdropContract = await loadOrCreateAccount(
+    event.params.airdropContract,
+    context,
+    slug
+  );
+
   const cultToken: CultToken = {
     id: tokenAddress,
     factoryAddress: event.params.factoryAddress,
+    airdropContract_id: airdropContract.id,
     tokenCreator_id: tokenCreator.id,
     protocolFeeRecipient: event.params.protocolFeeRecipient,
     bondingCurve: event.params.bondingCurve,
@@ -189,11 +197,12 @@ Cult.CultTokenTransfer.handler(async ({ event, context }) => {
 // Function to load or create an account
 async function loadOrCreateAccount(
   address: string,
-  context: any
+  context: any,
+  slug?: string
 ): Promise<Account> {
   let account = await context.Account.get(address);
   if (!account) {
-    account = { id: address };
+    account = { id: address, slug: slug || "" };
     context.Account.set(account);
   }
   return account;

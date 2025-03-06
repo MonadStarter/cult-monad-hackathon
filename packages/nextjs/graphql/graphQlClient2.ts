@@ -10,8 +10,8 @@ import {
 
 //const endpoint = "https://api.studio.thegraph.com/query/103833/culttokens/version/latest";
 // const endpoint = "https://api.goldsky.com/api/public/project_cm7aysf582k9p01sq9o2vfkrn/subgraphs/culttokens/v0.0.17/gn";
-//const envioEndpoint = "http://localhost:8080/v1/graphql";
-const envioEndpoint = "https://indexer.dev.hyperindex.xyz/27960d7/v1/graphql";
+const envioEndpoint = "http://localhost:8080/v1/graphql";
+//const envioEndpoint = "https://indexer.dev.hyperindex.xyz/27960d7/v1/graphql";
 // This is to get latest coins for homepage
 export const cultTokensQuery = gql`
   query GetCultTokens($first: Int, $skip: Int) {
@@ -89,6 +89,9 @@ const TokenPageData = gql`
       tokenCreator {
         id
       }
+      airdropContract {
+        id
+      }
       bondingCurve
       name
       symbol
@@ -115,13 +118,15 @@ export const fetchTokenPageData = async (tokenAddress: `0x${string}`): Promise<C
 
   // If there’s an ipfsData array, use the first element
   const ipfsDataItem = token.ipfsData?.[0] ?? { content: "" };
-
   // Shape the data to match CultTokenPageData
   return {
     cultToken: {
       id: token.id,
       tokenCreator: {
         id: token.tokenCreator?.id ?? "",
+      },
+      airdropContract: {
+        id: token.airdropContract?.id ?? "",
       },
       bondingCurve: token.bondingCurve,
       name: token.name,

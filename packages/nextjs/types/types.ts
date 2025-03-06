@@ -109,6 +109,9 @@ export type CultTokenPageData = {
     tokenCreator: {
       id: string;
     };
+    airdropContract: {
+      id: string;
+    };
     bondingCurve: string;
     name: string;
     symbol: string;
