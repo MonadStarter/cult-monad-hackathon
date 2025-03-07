@@ -1001,9 +1001,9 @@
                 "type": "string"
             },
             {
-                "internalType": "bytes32[]",
+                "internalType": "bytes32[4]",
                 "name": "_merkleRoots",
-                "type": "bytes32[]"
+                "type": "bytes32[4]"
             },
             {
                 "internalType": "uint256",

@@ -59,7 +59,7 @@ contract CultFactory is
         string memory _tokenURI,
         string memory _name,
         string memory _symbol,
-        bytes32[] calldata _merkleRoots,
+        bytes32[4] calldata _merkleRoots,
         uint16 _airdropPercent
     ) external payable nonReentrant returns (address) {
         bytes32 salt = _generateSalt(_tokenCreator, _tokenURI);
@@ -152,7 +152,7 @@ contract CultFactory is
         string memory _symbol,
         string memory _tokenURI,
         address _tokenCreator,
-        bytes32[] calldata _merkleRoots,
+        bytes32[4] calldata _merkleRoots,
         uint16 _airdropPercent
     ) private pure {
         if (
