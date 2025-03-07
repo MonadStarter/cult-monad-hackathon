@@ -30,12 +30,12 @@ contract AirdropContract is Initializable, ReentrancyGuardUpgradeable {
     mapping(address => bool) public hasClaimed;
 
     /// ==================== Events ==================== ///
-    event MerkleRootSet(address indexed token, bytes32[] merkleRoots);
+    event MerkleRootSet(address indexed token, bytes32[4] merkleRoots);
     event TokensClaimed(address indexed token, address indexed recipient, uint256 percentage, uint256 amount);
     event AirdropContractInitialized(
         address indexed token,
         address indexed createdBy,
-        bytes32[] merkleRoots,
+        bytes32[4] merkleRoots,
         uint256 amount
     );
 
@@ -57,7 +57,7 @@ contract AirdropContract is Initializable, ReentrancyGuardUpgradeable {
     function initialize(
         address _token,
         address _tokenCreator,
-        bytes32[] calldata _merkleRoots,
+        bytes32[4] calldata _merkleRoots,
         uint256 _totalAmount
     ) external initializer {
         __ReentrancyGuard_init();

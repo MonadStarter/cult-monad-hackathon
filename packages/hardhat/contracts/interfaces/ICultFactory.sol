@@ -37,7 +37,7 @@ interface ICultFactory {
         string memory _tokenURI,
         string memory _name,
         string memory _symbol,
-        bytes32[] calldata _merkleRoots,
+        bytes32[4] calldata _merkleRoots,
         uint16 _airdropPercent
     ) external payable returns (address);
 }

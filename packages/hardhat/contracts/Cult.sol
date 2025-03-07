@@ -128,7 +128,7 @@ contract Cult is
         string memory _tokenURI,
         string memory _name,
         string memory _symbol,
-        bytes32[] calldata _merkleRoots,
+        bytes32[4] calldata _merkleRoots,
         uint256 airdropAmount,
         address airdropContract
     ) public payable initializer {
