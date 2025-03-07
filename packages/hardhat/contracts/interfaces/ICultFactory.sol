@@ -12,7 +12,6 @@ interface ICultFactory {
     /// @param tokenAddress The address of the token
     /// @param poolAddress The address of the pool
     /// @param airdropContract The address of the airdrop contract
-    /// @param diamondHandContract The address of the diamond hand contract
     event CultTokenCreated(
         address indexed factoryAddress,
         address indexed tokenCreator,
@@ -23,8 +22,7 @@ interface ICultFactory {
         string symbol,
         address tokenAddress,
         address poolAddress,
-        address airdropContract,
-        address diamondHandContract
+        address airdropContract
     );
 
     /// @notice Deploys a Cult ERC20 token
@@ -32,16 +30,14 @@ interface ICultFactory {
     /// @param _tokenURI The ERC20z token URI
     /// @param _name The ERC20 token name
     /// @param _symbol The ERC20 token symbol
-    /// @param _merkleRoot The merkle root of the airdrop
+    /// @param _merkleRoots The merkle roots of the airdrop
     /// @param _airdropPercent The percentage of the airdrop
-    /// @param _diamondHandDuration The duration of the diamond hand
     function deploy(
         address _tokenCreator,
         string memory _tokenURI,
         string memory _name,
         string memory _symbol,
-        bytes32 _merkleRoot,
-        uint16 _airdropPercent,
-        uint256 _diamondHandDuration
+        bytes32[] calldata _merkleRoots,
+        uint16 _airdropPercent
     ) external payable returns (address);
 }

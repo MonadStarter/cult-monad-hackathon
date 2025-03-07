@@ -9,7 +9,6 @@ import {ERC1967Utils} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Utils.s
 import {ICultFactory} from "./interfaces/ICultFactory.sol";
 import {Cult} from "./Cult.sol";
 import {AirdropContract} from "./AirdropContract.sol";
-import {DiamondHandContract} from "./DiamondHandContract.sol";
 
 /// @title CultFactory
 /// @notice This contract is responsible for deploying Cult tokens with bonding curve mechanics and associated contracts.
@@ -28,9 +27,6 @@ contract CultFactory is
 
     /// @notice Address of the bonding curve contract
     address public bondingCurve;
-
-    /// @notice Address of the diamond hand implementation contract
-    address public diamondHandImplementation;
 
     /// @notice Counter for the number of tokens created
     uint256 public tokenCount;
@@ -55,18 +51,16 @@ contract CultFactory is
     /// @param _tokenURI The ERC20z token URI
     /// @param _name The ERC20 token name
     /// @param _symbol The ERC20 token symbol
-    /// @param merkleRoot The Merkle root for airdrop verification
-    /// @param airdropPercent The percentage of tokens to be airdropped
-    /// @param diamondHandDuration The duration for the diamond hand contract
+    /// @param _merkleRoots The Merkle roots for airdrop verification
+    /// @param _airdropPercent The percentage of tokens to be airdropped
     /// @return The address of the newly created Cult token
     function deploy(
         address _tokenCreator,
         string memory _tokenURI,
         string memory _name,
         string memory _symbol,
-        bytes32 merkleRoot,
-        uint16 airdropPercent,
-        uint256 diamondHandDuration
+        bytes32[] calldata _merkleRoots,
+        uint16 _airdropPercent
     ) external payable nonReentrant returns (address) {
         bytes32 salt = _generateSalt(_tokenCreator, _tokenURI);
         _validateCreateTokenParams(
@@ -74,12 +68,12 @@ contract CultFactory is
             _symbol,
             _tokenURI,
             _tokenCreator,
-            merkleRoot,
-            airdropPercent
+            _merkleRoots,
+            _airdropPercent
         );
 
         uint256 airdropAmount = (10_000_000_000 ether / BASIS_POINTS) *
-            airdropPercent;
+            _airdropPercent;
         Cult token = Cult(
             payable(Clones.cloneDeterministic(tokenImplementation, salt))
         );
@@ -88,28 +82,9 @@ contract CultFactory is
         AirdropContract(airdropContract).initialize(
             address(token),
             _tokenCreator,
-            merkleRoot,
+            _merkleRoots,
             airdropAmount
         );
-        // AirdropContract airdropContract = new AirdropContract(
-        //     address(token),
-        //     _tokenCreator,
-        //     merkleRoot,
-        //     airdropAmount
-        // );
-
-        address diamondHandContract = Clones.clone(diamondHandImplementation);
-
-        DiamondHandContract(diamondHandContract).initialize(
-            address(token),
-            _tokenCreator,
-            diamondHandDuration
-        );
-        // DiamondHandContract diamondHandContract = new DiamondHandContract(
-        //     address(token),
-        //     _tokenCreator,
-        //     diamondHandDuration
-        // );
 
         token.initialize{value: msg.value}(
             _tokenCreator,
@@ -117,7 +92,7 @@ contract CultFactory is
             _tokenURI,
             _name,
             _symbol,
-            merkleRoot,
+            _merkleRoots,
             airdropAmount,
             address(airdropContract)
         );
@@ -134,8 +109,7 @@ contract CultFactory is
             _symbol,
             address(token),
             token.poolAddress(),
-            address(airdropContract),
-            address(diamondHandContract)
+            address(airdropContract)
         );
 
         return address(token);
@@ -148,8 +122,7 @@ contract CultFactory is
         address _owner,
         address _tokenImplementation,
         address _bondingCurve,
-        address _airdropImplementation,
-        address _diamondHandImplementation
+        address _airdropImplementation
     ) external initializer {
         __UUPSUpgradeable_init();
         __ReentrancyGuard_init();
@@ -158,7 +131,6 @@ contract CultFactory is
         tokenImplementation = _tokenImplementation;
         bondingCurve = _bondingCurve;
         airdropImplementation = _airdropImplementation;
-        diamondHandImplementation = _diamondHandImplementation;
     }
 
     /// @notice The implementation address of the factory contract
@@ -173,15 +145,15 @@ contract CultFactory is
     /// @param _symbol The ERC20 token symbol
     /// @param _tokenURI The ERC20z token URI
     /// @param _tokenCreator The address of the token creator
-    /// @param merkleRoot The Merkle root for airdrop verification
-    /// @param airdropPercent The percentage of tokens to be airdropped
+    /// @param _merkleRoots The Merkle roots for airdrop verification
+    /// @param _airdropPercent The percentage of tokens to be airdropped
     function _validateCreateTokenParams(
         string memory _name,
         string memory _symbol,
         string memory _tokenURI,
         address _tokenCreator,
-        bytes32 merkleRoot,
-        uint16 airdropPercent
+        bytes32[] calldata _merkleRoots,
+        uint16 _airdropPercent
     ) private pure {
         if (
             bytes(_name).length == 0 ||
@@ -191,12 +163,12 @@ contract CultFactory is
         ) revert InvalidParameters();
         /// @dev The airdrop percentage is calculated in basis points, where 100% is equivalent to 1,000,000.
         /// Therefore, an airdrop percentage of 10,000 represents 1% of the total supply.
-        if (airdropPercent > 0) {
-            require(merkleRoot != bytes32(0), InvalidMerkleRoot());
-            require(
-                airdropPercent > 10000 && airdropPercent <= (BASIS_POINTS / 2),
-                InvalidAirdropPercentage()
-            );
+        if (_airdropPercent > 0) {
+            for (uint256 i = 0; i < _merkleRoots.length; i++) {
+                if (_merkleRoots[i] == bytes32(0)) revert InvalidMerkleRoot();
+            }
+            if (_airdropPercent > 10000 && _airdropPercent <= (BASIS_POINTS / 2))
+                revert InvalidAirdropPercentage();
         }
     }
 

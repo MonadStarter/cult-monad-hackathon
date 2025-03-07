@@ -79,7 +79,7 @@ contract Cult is
     /// @notice URI for the ERC20 token metadata.
     string public tokenURI;
     /// @notice Merkle root for airdrop verification.
-    bytes32 public merkleRoot;
+    bytes32[] public merkleRoots;
     /// @notice Bonding curve module for the Cult token.
     BondingCurve public bondingCurve;
     /// @notice Current market type (BONDING_CURVE or UNISWAP_POOL).
@@ -119,7 +119,7 @@ contract Cult is
     /// @param _tokenURI The ERC20 token URI.
     /// @param _name The token name.
     /// @param _symbol The token symbol.
-    /// @param _merkleRoot The merkle root for airdrop verification.
+    /// @param _merkleRoots The merkle roots for airdrop verification.
     /// @param airdropAmount The amount of tokens to airdrop.
     /// @param airdropContract The address of the airdrop contract.
     function initialize(
@@ -128,12 +128,12 @@ contract Cult is
         string memory _tokenURI,
         string memory _name,
         string memory _symbol,
-        bytes32 _merkleRoot,
+        bytes32[] calldata _merkleRoots,
         uint256 airdropAmount,
         address airdropContract
     ) public payable initializer {
-        // Set the merkle root
-        merkleRoot = _merkleRoot;
+        // Set the merkle roots
+        merkleRoots = _merkleRoots;
 
         // Validate the creation parameters
         if (_tokenCreator == address(0)) revert AddressZero();

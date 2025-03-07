@@ -31,6 +31,28 @@
         "type": "constructor"
     },
     {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "target",
+                "type": "address"
+            }
+        ],
+        "name": "AddressEmptyCode",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            }
+        ],
+        "name": "AddressInsufficientBalance",
+        "type": "error"
+    },
+    {
         "inputs": [],
         "name": "AddressZero",
         "type": "error"
@@ -129,6 +151,11 @@
     {
         "inputs": [],
         "name": "EthTransferFailed",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "FailedInnerCall",
         "type": "error"
     },
     {
@@ -974,9 +1001,9 @@
                 "type": "string"
             },
             {
-                "internalType": "bytes32",
-                "name": "_merkleRoot",
-                "type": "bytes32"
+                "internalType": "bytes32[]",
+                "name": "_merkleRoots",
+                "type": "bytes32[]"
             },
             {
                 "internalType": "uint256",
@@ -1021,8 +1048,14 @@
         "type": "function"
     },
     {
-        "inputs": [],
-        "name": "merkleRoot",
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "merkleRoots",
         "outputs": [
             {
                 "internalType": "bytes32",

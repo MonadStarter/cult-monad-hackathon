@@ -49,13 +49,8 @@ export const setupContracts = async () => {
     await airdropContract.waitForDeployment()
     console.log("AirdropContract deployed:", airdropContract.target)
 
-    const DiamondHandContract = await ethers.getContractFactory("DiamondHandContract")
-    const diamondHandContract = await DiamondHandContract.deploy()
-    await diamondHandContract.waitForDeployment()
-    console.log("DiamondHandContract deployed:", diamondHandContract.target)
-
     const CultFactory = await ethers.getContractFactory("CultFactory")
-    const cultFactory = await upgrades.deployProxy(CultFactory, [owner, cultToken.target, bondingCurve.target, airdropContract.target, diamondHandContract.target])
+    const cultFactory = await upgrades.deployProxy(CultFactory, [owner, cultToken.target, bondingCurve.target, airdropContract.target])
     await cultFactory.waitForDeployment()
     console.log("CultFactory deployed:", cultFactory.target)
 
@@ -64,7 +59,6 @@ export const setupContracts = async () => {
         { name: "BondingCurve", address: bondingCurve.target },
         { name: "CultRewards", address: cultRewards.target },
         { name: "AirdropContract", address: airdropContract.target },
-        { name: "DiamondHandContract", address: diamondHandContract.target },
         { name: "CultFactory", address: cultFactory.target },
         { name: "StartBlock", address: startBlock.number },
     ]
@@ -81,8 +75,7 @@ export const setupContracts = async () => {
         // await verify(cultToken.target.toString(), [protocolFeeRecipient, protocolRewards, weth, nonfungiblePositionManager, swapRouter])
         // await verify(bondingCurve.target.toString(), [])
         // await verify(airdropContract.target.toString(), [])
-        // await verify(diamondHandContract.target.toString(), [])
-        // await verify(cultFactory.target.toString(), [cultToken.target, bondingCurve.target, airdropContract.target, diamondHandContract.target])
+        // await verify(cultFactory.target.toString(), [cultToken.target, bondingCurve.target, airdropContract.target])
     }
     console.log("🚀🚀🚀 Cult Deployment Successful 🚀🚀🚀")
 }
