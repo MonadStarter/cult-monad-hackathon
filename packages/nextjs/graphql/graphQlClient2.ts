@@ -7,6 +7,7 @@ import {
   TokenTrade,
   TokenTradesData,
   TokensCreatedResponse,
+  TopHolders,
   TopHoldersResponse,
 } from "~~/types/types";
 import { parseIPFSMetadata } from "~~/utils/externalAPIs/ipfs";
@@ -14,7 +15,7 @@ import { parseIPFSMetadata } from "~~/utils/externalAPIs/ipfs";
 //const endpoint = "https://api.studio.thegraph.com/query/103833/culttokens/version/latest";
 // const endpoint = "https://api.goldsky.com/api/public/project_cm7aysf582k9p01sq9o2vfkrn/subgraphs/culttokens/v0.0.17/gn";
 const envioEndpoint = "http://localhost:8080/v1/graphql";
-//const envioEndpoint = "https://indexer.dev.hyperindex.xyz/27960d7/v1/graphql";
+//const envioEndpoint = "https://indexer.dev.hyperindex.xyz/730e4f1/v1/graphql";
 // This is to get latest coins for homepage
 export const cultTokensQuery = gql`
   query GetCultTokens($first: Int, $skip: Int) {
@@ -145,35 +146,33 @@ export const fetchTokenPageData = async (tokenAddress: `0x${string}`): Promise<C
 };
 
 const TopHolders = gql`
-  query TopHolders($tokenFilter: CultToken_bool_exp, $first: Int, $skip: Int) {
-    TokenBalance(where: { token: $tokenFilter }, order_by: { value: desc }, limit: $first, offset: $skip) {
+  query TopHolders($tokenAddress: CultToken_bool_exp, $first: Int, $skip: Int) {
+    TokenBalance(where: { token: $tokenAddress }, order_by: { value: desc }, limit: $first, offset: $skip) {
+      value
       account {
         id
       }
-      value
     }
   }
 `;
-
 export const fetchTopHolders = async (tokenAddress: string, first = 10, skip = 0): Promise<TopHoldersResponse> => {
-  // Build the filter object that matches CultToken_bool_exp
-  // For a single token address, you usually want something like:
-  // { tokenAddress: { _eq: "0x123..." } }
-  const tokenFilter = {
+  // Build the filter object that matches CultToken_bool_exp for a token's id
+  const variables = {
     tokenAddress: {
-      _eq: tokenAddress,
+      id: {
+        _eq: tokenAddress,
+      },
     },
+    first,
+    skip,
   };
 
   // Make the request
-  const response = await request<TopHoldersResponse>(envioEndpoint, TopHolders, {
-    tokenFilter,
-    first,
-    skip,
-  });
+  const response: any = await request<{ TokenBalance: TopHolders[] }>(envioEndpoint, TopHolders, variables);
 
-  console.log("RESPONSE", response);
-  return response;
+  return {
+    tokenBalances: response.TokenBalance,
+  };
 };
 
 const TokenTrades = gql`
@@ -243,14 +242,20 @@ const TokensCreated = gql`
         lastSold
         token_id
         value
+        token {
+          name
+          symbol
+          ipfsData {
+            content
+          }
+        }
       }
     }
   }
 `;
-
 export const fetchTokensCreated = async (accountId: string): Promise<TokensCreatedResponse> => {
   const response: any = await request(envioEndpoint, TokensCreated, { accountId });
-
+  console.log("RESPONSE", response);
   const accountData: AccountData | null = response?.Account?.[0]
     ? {
         created: response.Account[0].created.map((token: any) => {
@@ -272,9 +277,9 @@ export const fetchTokensCreated = async (accountId: string): Promise<TokensCreat
         }),
         balances: response.Account[0].balances.map((balance: any) => {
           let image: string | undefined;
-          if (balance.token?.ipfsData?.content) {
+          if (balance.token?.ipfsData?.[0]?.content) {
             try {
-              const metadata = parseIPFSMetadata(balance.token.ipfsData.content);
+              const metadata = parseIPFSMetadata(balance.token.ipfsData[0].content);
               image = metadata?.imageUrl || undefined;
             } catch (error) {
               console.error("Error parsing IPFS metadata for balance:", error);
@@ -285,6 +290,8 @@ export const fetchTokensCreated = async (accountId: string): Promise<TokensCreat
             lastBought: balance.lastBought,
             lastSold: balance.lastSold,
             token_id: balance.token_id,
+            name: balance.token.name,
+            symbol: balance.token.symbol,
             value: balance.value,
             image,
           };

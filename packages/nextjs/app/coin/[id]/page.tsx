@@ -148,7 +148,7 @@ export default function CoinPage() {
         <div className="w-1/3 flex flex-col gap-4">
           <SegmentedPanel panels={TRADE_OPTIONS} />
           <AirdropSection />
-          {/* <HolderDistribution /> */}
+          <HolderDistribution />
         </div>
       </div>
     </div>

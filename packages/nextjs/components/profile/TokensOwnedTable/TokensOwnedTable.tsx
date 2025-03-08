@@ -25,13 +25,29 @@ const TokensOwnedTable = ({ tokensOwned }: { tokensOwned: Balance[] | [] }) => {
     return <div>You do not have any coins, buy some</div>;
   }
 
+  // const tableValues: TableValueInterface[] = tokensOwned.map(token => ({
+  //   ID: token.token_id,
+  //   "Last Bought": token.lastBought,
+  //   "Last Sold": token.lastSold,
+  //   Name: token.name,
+  //   Symbol: token.symbol,
+  //   Value: token.value,
+  //   Image: token.image ? <img src={token.image as string} alt="Token Image" width="50" height="50" /> : "No Image",
+  // }));
+
   const tableValues: TableValueInterface[] = tokensOwned.map(token => ({
-    "Token ID": token.token_id,
-    "Last Bought": token.lastBought,
-    "Last Sold": token.lastSold,
-    Value: token.value,
-    Image: token.image ? <img src={token.image as string} alt="Token Image" width="50" height="50" /> : "No Image",
+    id: token.id,
+    name: token.name,
+    symbol: token.symbol,
+    value: token.value,
+    image: token.image
+      ? typeof token.image === "string"
+        ? token.image
+        : URL.createObjectURL(token.image)
+      : "No Image",
   }));
+
+  console.log("tokensOwned", tokensOwned, tableValues);
 
   return (
     <div className="flex flex-col gap-2">

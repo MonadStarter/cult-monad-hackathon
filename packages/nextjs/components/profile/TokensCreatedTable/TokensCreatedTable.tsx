@@ -37,8 +37,6 @@ const TokenCreatedTable = ({ tokensCreated }: { tokensCreated: TokenCreated[] | 
       : "No Image",
   }));
 
-  console.log("tableValues", tableValues);
-
   return (
     <div className="flex flex-col gap-2">
       <div className="flex justify-end gap-4">

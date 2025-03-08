@@ -1,77 +1,77 @@
 import Image from "next/image";
+import { formatEther } from "viem";
 import { TableColumnInterface, TableValueInterface } from "~~/components/common/Table";
 import { TopRightArrow } from "~~/icons/actions";
 
-const SERIAL_NUMBER = "serialNumber";
-const PROFILE_URL = "profileUrl";
-const COIN_OWNED = "coinOwned";
-const COIN_SYMBOL = "coinSymbol";
-const CHAIN_COIN_OWNED = "chainCoinWOwned";
-const CHAIN_COIN_SYMBOL = "chainCoinSymbol";
+const LAST_BOUGHT = "Last Bought";
+const LAST_SOLD = "Last Sold";
+const VALUE = "value";
+const ID = "id";
+const NAME = "name";
+const SYMBOL = "symbol";
+const IMAGE = "image";
 
-const SERIAL_NUMBER_COLUMN: TableColumnInterface = {
-  title: "Sr",
-  accessor: (rowData: TableValueInterface) => rowData[SERIAL_NUMBER],
-  widthPercentage: 5,
-  renderer: (value: string | number) => {
-    return <h6 className="text-center">{value}</h6>;
+const IMAGE_COLUMN: TableColumnInterface = {
+  title: "Image",
+  accessor: (rowData: TableValueInterface) => rowData[IMAGE],
+  widthPercentage: 20,
+  renderer: (value: string | File | undefined) => {
+    if (typeof value === "string") {
+      return <Image src={value} alt="Token Image" width={35} height={35} className="rounded-full" />;
+    } else if (value) {
+      // Handle File object if needed
+      return <p>File Image</p>; // Or your file rendering logic
+    }
+    return <p>No Image</p>;
   },
-  columnHeaderTextAlign: "text-center",
-  columnTextAlign: "text-center",
+  columnHeaderTextAlign: "text-left",
+  columnTextAlign: "text-left",
 };
 
 const NAME_COLUMN: TableColumnInterface = {
   title: "Name",
-  accessor: (rowData: TableValueInterface) => {
-    const profileUrl = rowData[PROFILE_URL];
-    const coinOwned = rowData[COIN_OWNED];
-    const coinSymbol = rowData[COIN_SYMBOL];
-    const chainCoinWOwned = rowData[CHAIN_COIN_OWNED];
-    const chainCoinSymbol = rowData[CHAIN_COIN_SYMBOL];
-    return {
-      profileUrl,
-      coinOwned,
-      coinSymbol,
-      chainCoinWOwned,
-      chainCoinSymbol,
-    };
+  accessor: (rowData: TableValueInterface) => rowData[NAME],
+  widthPercentage: 25,
+  renderer: (value: string | number) => {
+    return <h6 className="text-left">{value}</h6>;
   },
-  widthPercentage: 41,
-  renderer: ({
-    profileUrl,
-    coinOwned,
-    coinSymbol,
-    chainCoinWOwned,
-    chainCoinSymbol,
-  }: {
-    profileUrl: string;
-    coinOwned: string;
-    coinSymbol: string;
-    chainCoinWOwned: string;
-    chainCoinSymbol: string;
-  }) => (
-    <div className="flex gap-2 items-center">
-      <Image src={profileUrl} alt={"profile"} width={28} height={28} className="rounded-full" />
-      <div className="flex flex-col">
-        <h6 className="text-white-100">
-          {coinOwned} {coinSymbol}
-        </h6>
-        <p className="text-xs text-white-76">
-          {chainCoinWOwned} {chainCoinSymbol}
-        </p>
-      </div>
-    </div>
-  ),
+  columnHeaderTextAlign: "text-left",
+  columnTextAlign: "text-left",
+};
+
+const SYMBOL_COLUMN: TableColumnInterface = {
+  title: "Symbol",
+  accessor: (rowData: TableValueInterface) => rowData[SYMBOL],
+  widthPercentage: 15,
+  renderer: (value: string | number) => {
+    return <h6 className="text-left">{value}</h6>;
+  },
+  columnHeaderTextAlign: "text-left",
+  columnTextAlign: "text-left",
+};
+
+const VALUE_COLUMN: TableColumnInterface = {
+  title: "Value",
+  accessor: (rowData: TableValueInterface) => rowData[VALUE],
+  widthPercentage: 25,
+  renderer: (value: string | number) => {
+    return <h6 className="text-left">{Number(formatEther(BigInt(value))).toFixed(2)}</h6>;
+  },
+  columnHeaderTextAlign: "text-left",
+  columnTextAlign: "text-left",
 };
 
 const ACTION_COLUMN: TableColumnInterface = {
   title: "Action",
-  accessor: (rowData: TableValueInterface) => {},
-  widthPercentage: 54,
-  renderer: () => {
+  accessor: (rowData: TableValueInterface) => rowData[ID],
+  widthPercentage: 20,
+  renderer: (value: string) => {
+    const formattedValue = value.split("-")[0];
     return (
       <div className="flex gap-1 items-center justify-end">
-        <h6 className="text-primary-500">View Coin</h6>
+        <a className="text-primary-500" href={`/coin/${formattedValue}`}>
+          View Coin
+        </a>
         <TopRightArrow />
       </div>
     );
@@ -80,6 +80,6 @@ const ACTION_COLUMN: TableColumnInterface = {
   columnTextAlign: "text-right",
 };
 
-const COLUMNS = [SERIAL_NUMBER_COLUMN, NAME_COLUMN, ACTION_COLUMN];
+const COLUMNS = [IMAGE_COLUMN, NAME_COLUMN, SYMBOL_COLUMN, VALUE_COLUMN, ACTION_COLUMN];
 
 export default COLUMNS;

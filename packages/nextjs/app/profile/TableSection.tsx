@@ -29,6 +29,9 @@ export default function TableSection() {
   if (queryLoading) {
     console.log("queryLoading", queryLoading);
   }
+
+  console.log("PROFILE DATA", profileData);
+
   let tokensOwned = profileData?.accountData?.balances;
   if (!tokensOwned || tokensOwned.length === 0) {
     tokensOwned = [];

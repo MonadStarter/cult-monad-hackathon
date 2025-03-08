@@ -65,6 +65,8 @@ export interface Balance {
   token_id: string;
   value: string;
   image?: string | File;
+  name: string;
+  symbol: string;
 }
 
 export interface AccountData {
@@ -95,13 +97,17 @@ export interface IPFSMetadata {
   imageUrl: File | string | null; // For file input
 }
 
-export interface TopHoldersResponse {
+export interface TopHolders {
   tokenBalances: {
     account: {
       id: string;
     };
     value: string;
-  }[];
+  };
+}
+
+export interface TopHoldersResponse {
+  tokenBalances: TopHolders[];
 }
 
 export type TokenTrade = {
