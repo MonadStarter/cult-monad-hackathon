@@ -1,6 +1,6 @@
 import { ethers, network } from "hardhat";
 import { networkConfig } from "../helper-hardhat-config.js";
-
+import { CultFactory } from "../typechain-types";
 export const updateMerkleRoot = async () => {
   // Expect three parameters: factory address, merkle root, and holder count.
   const factoryAddress = "0x817e5E8409130C2bFd1C23c00a0F36d13fFe9093";
@@ -19,14 +19,14 @@ export const updateMerkleRoot = async () => {
 
   // Connect to the CultFactory contract instance at the provided factory address.
   const CultFactory = await ethers.getContractFactory("CultFactory");
-  const cultFactory = CultFactory.attach(factoryAddress);
+  const cultFactory: CultFactory = CultFactory.attach(factoryAddress);
   console.log("Connected to CultFactory at:", factoryAddress);
 
   // Call updateMerkleRoot function.
   const tx = await cultFactory.updateMerkleRoot(merkleRoot, holderCount);
   console.log("Transaction submitted. Waiting for confirmation...");
   const receipt = await tx.wait();
-  console.log("Merkle root updated successfully in tx:", receipt.transactionHash);
+  console.log("Merkle root updated successfully in tx:", tx.hash);
 };
 
 updateMerkleRoot()

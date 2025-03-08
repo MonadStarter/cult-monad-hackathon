@@ -11,7 +11,7 @@ import "@nomicfoundation/hardhat-verify";
 import "hardhat-deploy";
 import "hardhat-deploy-ethers";
 import { task } from "hardhat/config";
-import generateTsAbis from "./scripts/generateTsAbis";
+// import generateTsAbis from "./scripts/generateTsAbis";
 import "@nomicfoundation/hardhat-toolbox"
 import "@openzeppelin/hardhat-upgrades"
 import "solidity-docgen"
@@ -216,7 +216,7 @@ task("deploy").setAction(async (args, hre, runSuper) => {
   // Run the original deploy task
   await runSuper(args);
   // Force run the generateTsAbis script
-  await generateTsAbis(hre);
+  // await generateTsAbis(hre);
 });
 
 export default config;
