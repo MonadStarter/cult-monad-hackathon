@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { NetworkOptions } from "./NetworkOptions";
+import { UserIcon } from "lucide-react";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { getAddress } from "viem";
 import { Address } from "viem";
@@ -61,6 +62,12 @@ export const AddressInfoDropdown = ({
         >
           <NetworkOptions hidden={!selectingNetwork} />
           <li className={selectingNetwork ? "hidden" : ""}>
+            <a href="/profile" className="btn-sm !rounded-xl flex gap-3 py-3">
+              <UserIcon className="h-6 w-4 ml-2 sm:ml-0" />
+              <span className="whitespace-nowrap">View Profile</span>
+            </a>
+          </li>
+          <li className={selectingNetwork ? "hidden" : ""}>
             {addressCopied ? (
               <div className="btn-sm !rounded-xl flex gap-3 py-3">
                 <CheckCircleIcon
@@ -108,7 +115,7 @@ export const AddressInfoDropdown = ({
               </a>
             </button>
           </li>
-          {allowedNetworks.length > 1 ? (
+          {/* {allowedNetworks.length > 1 ? (
             <li className={selectingNetwork ? "hidden" : ""}>
               <button
                 className="btn-sm !rounded-xl flex gap-3 py-3"
@@ -120,7 +127,7 @@ export const AddressInfoDropdown = ({
                 <ArrowsRightLeftIcon className="h-6 w-4 ml-2 sm:ml-0" /> <span>Switch Network</span>
               </button>
             </li>
-          ) : null}
+          ) : null} */}
           <li className={selectingNetwork ? "hidden" : ""}>
             <button
               className="menu-item text-error btn-sm !rounded-xl flex gap-3 py-3"

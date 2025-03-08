@@ -7,11 +7,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useAccount } from "wagmi";
 import AirdropSection from "~~/components/coin/AirdropSection";
 import BackButton from "~~/components/coin/BackButton";
-import BondingCurveProgress from "~~/components/coin/BondingCurveProgress";
 import TradeInfo from "~~/components/coin/BuyNSell";
 import CoinDetailCard from "~~/components/coin/CoinDetailCard";
 import CommentsSection from "~~/components/coin/Comments";
-import TradingViewChart from "~~/components/coin/TradingView";
+import HolderDistribution from "~~/components/coin/HolderDistribution";
+import TradingViewChart from "~~/components/coin/TradingView.jsx";
 import TransactionHistory from "~~/components/coin/TransactionHistory";
 import SegmentedPanel from "~~/components/common/SegmentedPanel";
 import { dummyMetadata } from "~~/constants/content";
@@ -23,7 +23,7 @@ import { CultTokenPageData, TokenMetadata } from "~~/types/types";
 import { parseIPFSMetadata } from "~~/utils/externalAPIs/ipfs";
 
 const Transactions = React.memo(TransactionHistory);
-//const CoinDetail = React.memo(CoinDetailCard);
+const CoinDetail = React.memo(CoinDetailCard);
 const LEFT_PANEL = [
   {
     id: "TRANSACTION_HISTORY",
@@ -101,7 +101,7 @@ export default function CoinPage() {
     enabled: !!tokenaddy,
   });
 
-  console.log("subgraphDataFromQuery", subgraphDataFromQuery);
+  //console.log("subgraphDataFromQuery", subgraphDataFromQuery);
 
   // Update store based on query results.
   useEffect(() => {
@@ -142,12 +142,13 @@ export default function CoinPage() {
       {/* <SegmentedPanel panels={MOBILE_SEGMENTED_LAYOUT} className="sm:hidden" /> */}
       <div className="flex gap-4 max-sm:hidden">
         <div className="w-2/3 flex flex-col gap-4">
+          {/* <TradingViewChart tokenAddress={tokenaddy} interval="H" theme="light" autosize={true} /> */}
           <SegmentedPanel panels={LEFT_PANEL} segmentedClassName="w-1/2" />
         </div>
         <div className="w-1/3 flex flex-col gap-4">
           <SegmentedPanel panels={TRADE_OPTIONS} />
           <AirdropSection />
-          {/* <BondingCurveProgress /> */}
+          {/* <HolderDistribution /> */}
         </div>
       </div>
     </div>

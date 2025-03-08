@@ -1,12 +1,15 @@
 import { gql, request } from "graphql-request";
 import {
+  AccountData,
   CultTokenMetadata,
   CultTokenPageData,
   CultTokensResponse,
   TokenTrade,
   TokenTradesData,
+  TokensCreatedResponse,
   TopHoldersResponse,
 } from "~~/types/types";
+import { parseIPFSMetadata } from "~~/utils/externalAPIs/ipfs";
 
 //const endpoint = "https://api.studio.thegraph.com/query/103833/culttokens/version/latest";
 // const endpoint = "https://api.goldsky.com/api/public/project_cm7aysf582k9p01sq9o2vfkrn/subgraphs/culttokens/v0.0.17/gn";
@@ -219,5 +222,77 @@ export const fetchTokenTrades = async (
   // Return the data under "tokenTrades" instead of "TokenTrade"
   return {
     tokenTrades: response.TokenTrade,
+  };
+};
+
+// GraphQL query
+const TokensCreated = gql`
+  query TokensCreated($accountId: String!) {
+    Account(where: { id: { _eq: $accountId } }) {
+      created {
+        id
+        name
+        symbol
+        ipfsData {
+          content
+        }
+      }
+      balances {
+        id
+        lastBought
+        lastSold
+        token_id
+        value
+      }
+    }
+  }
+`;
+
+export const fetchTokensCreated = async (accountId: string): Promise<TokensCreatedResponse> => {
+  const response: any = await request(envioEndpoint, TokensCreated, { accountId });
+
+  const accountData: AccountData | null = response?.Account?.[0]
+    ? {
+        created: response.Account[0].created.map((token: any) => {
+          let image: string | undefined;
+          if (token.ipfsData?.[0]?.content) {
+            try {
+              const metadata = parseIPFSMetadata(token.ipfsData[0].content);
+              image = metadata?.imageUrl || undefined;
+            } catch (error) {
+              console.error("Error parsing IPFS metadata:", error);
+            }
+          }
+          return {
+            id: token.id,
+            name: token.name,
+            symbol: token.symbol,
+            image,
+          };
+        }),
+        balances: response.Account[0].balances.map((balance: any) => {
+          let image: string | undefined;
+          if (balance.token?.ipfsData?.content) {
+            try {
+              const metadata = parseIPFSMetadata(balance.token.ipfsData.content);
+              image = metadata?.imageUrl || undefined;
+            } catch (error) {
+              console.error("Error parsing IPFS metadata for balance:", error);
+            }
+          }
+          return {
+            id: balance.id,
+            lastBought: balance.lastBought,
+            lastSold: balance.lastSold,
+            token_id: balance.token_id,
+            value: balance.value,
+            image,
+          };
+        }),
+      }
+    : null;
+
+  return {
+    accountData,
   };
 };

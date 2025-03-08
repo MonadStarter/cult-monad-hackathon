@@ -30,7 +30,7 @@ const PERCENTAGE_COLUMN: TableColumnInterface = {
 
 const BONDING_CURVE_TABLE_COLUMNS = [HOLDER_COLUMN, PERCENTAGE_COLUMN];
 const ITEMS_PER_PAGE = 10;
-function BondingCurveProgress() {
+function HolderDistribution() {
   const { tokenAddress, subgraphData, metadata, isLoading } = useTokenStore();
 
   const {
@@ -104,4 +104,4 @@ function BondingCurveProgress() {
   );
 }
 
-export default BondingCurveProgress;
+export default HolderDistribution;

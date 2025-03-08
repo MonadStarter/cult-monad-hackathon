@@ -24,6 +24,13 @@
       }
     ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "lib/tradingView/tradingviewDataFeed.s"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "lib/tradingView/tradingviewDataFeed.js",
+    "components/coin/TradingView.jsx"
+  ],
   "exclude": ["node_modules"]
 }

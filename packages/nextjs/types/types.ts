@@ -51,6 +51,31 @@ export type CultTokenMetadata = {
   };
 };
 
+export interface TokenCreated {
+  id: string;
+  name: string;
+  symbol: string;
+  image?: string | File; // Add the image field
+}
+
+export interface Balance {
+  id: string;
+  lastBought: string;
+  lastSold: string;
+  token_id: string;
+  value: string;
+  image?: string | File;
+}
+
+export interface AccountData {
+  created: TokenCreated[];
+  balances: Balance[];
+}
+
+export interface TokensCreatedResponse {
+  accountData: AccountData | null;
+}
+
 export interface CultTokensResponse {
   cultTokens: CultTokenMetadata[];
 }

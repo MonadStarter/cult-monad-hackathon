@@ -21,7 +21,7 @@ body {
 }
 
 .page {
-  max-width: 1284px;
+  max-width: 80%;
   margin: auto;
   @apply px-5;
 }
