@@ -16,6 +16,11 @@
         "type": "error"
     },
     {
+        "inputs": [],
+        "name": "ERC1167FailedCreateClone",
+        "type": "error"
+    },
+    {
         "inputs": [
             {
                 "internalType": "address",
@@ -33,28 +38,7 @@
     },
     {
         "inputs": [],
-        "name": "FailedCall",
-        "type": "error"
-    },
-    {
-        "inputs": [],
-        "name": "FailedDeployment",
-        "type": "error"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "balance",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "needed",
-                "type": "uint256"
-            }
-        ],
-        "name": "InsufficientBalance",
+        "name": "FailedInnerCall",
         "type": "error"
     },
     {
@@ -449,6 +433,24 @@
     {
         "inputs": [
             {
+                "internalType": "bytes32",
+                "name": "_merkleRoot",
+                "type": "bytes32"
+            },
+            {
+                "internalType": "uint32",
+                "name": "_holderCount",
+                "type": "uint32"
+            }
+        ],
+        "name": "updateMerkleRoot",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "address",
                 "name": "newImplementation",
                 "type": "address"
@@ -462,6 +464,25 @@
         "name": "upgradeToAndCall",
         "outputs": [],
         "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "",
+                "type": "bytes32"
+            }
+        ],
+        "name": "validMerkleRoots",
+        "outputs": [
+            {
+                "internalType": "uint32",
+                "name": "",
+                "type": "uint32"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     }
 ]

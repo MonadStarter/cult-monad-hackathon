@@ -28,6 +28,9 @@ contract AirdropContract is Initializable, ReentrancyGuardUpgradeable {
     /// @notice Mapping to track if an address has claimed their tokens
     mapping(address => bool) public hasClaimed;
 
+    /// @notice The number of recipients for the airdrop
+    uint256 public totalAirdropRecipientCount;
+
     /// ==================== Events ==================== ///
     event MerkleRootSet(address indexed token, bytes32[] merkleRoots);
     event TokensClaimed(address indexed token, address indexed recipient, uint256 percentage, uint256 amount);
@@ -46,6 +49,7 @@ contract AirdropContract is Initializable, ReentrancyGuardUpgradeable {
     error InvalidParameters();
     error InvalidMerkleRoot();
     error InvalidTotalAmount();
+    error InvalidAirdropRecipientCount();
 
     /// ==================== Initializer ==================== ///
     /// @notice Initializes the airdrop contract with the token address and owner
@@ -53,11 +57,13 @@ contract AirdropContract is Initializable, ReentrancyGuardUpgradeable {
     /// @param _tokenCreator The token creator
     /// @param _merkleRoots The merkle roots for verifying claims
     /// @param _totalAmount The total amount of tokens available for airdrop
+    /// @param _totalAirdropRecipientCount The number of recipients for the airdrop
     function initialize(
         address _token,
         address _tokenCreator,
         bytes32[] calldata _merkleRoots,
-        uint256 _totalAmount
+        uint256 _totalAmount,
+        uint256 _totalAirdropRecipientCount
     ) external initializer {
         __ReentrancyGuard_init();
         if (_token == address(0) || _tokenCreator == address(0)) revert InvalidParameters();
@@ -71,21 +77,21 @@ contract AirdropContract is Initializable, ReentrancyGuardUpgradeable {
 
         token = _token;
         tokenCreator = _tokenCreator;
+        totalAirdropRecipientCount = _totalAirdropRecipientCount;
         emit AirdropContractInitialized(token, _tokenCreator, _merkleRoots, _totalAmount);
     }
 
     /// ==================== External Functions ==================== ///
     /// @notice Allows a recipient to claim their tokens
     /// @dev The function is non-reentrant
-    /// @param percentage The percentage of airdrop amount (in basis points)
     /// @param merkleProof The merkle proof verifying the recipient's claim
-    function claim(uint256 percentage, bytes32[] calldata merkleProof) external nonReentrant {
+    function claim(bytes32[] calldata merkleProof) external nonReentrant {
         // Validations
         if (hasClaimed[msg.sender]) revert AlreadyClaimed();
-        if (percentage > BASIS_POINTS) revert InvalidPercentage();
-
+        // if (percentage > BASIS_POINTS) revert InvalidPercentage(); // @note: not needed as we are calculating amount per recipient
+        if (totalAirdropRecipientCount == 0) revert InvalidAirdropRecipientCount();
         // Verify the merkle proof
-        bytes32 node = keccak256(abi.encodePacked(msg.sender, percentage));
+        bytes32 node = keccak256(abi.encodePacked(msg.sender));
         bool validProof = false;
         for (uint256 i = 0; i < merkleRoots.length; i++) {
             if (MerkleProof.verify(merkleProof, merkleRoots[i], node)) {
@@ -98,7 +104,9 @@ contract AirdropContract is Initializable, ReentrancyGuardUpgradeable {
         }
 
         // Calculate actual token amount
-        uint256 amount = (totalAirdropAmount * percentage) / BASIS_POINTS;
+        // uint256 amount = (totalAirdropAmount * percentage) / BASIS_POINTS;
+        uint256 amount = totalAirdropAmount / totalAirdropRecipientCount;
+        uint256 percentage = (amount * BASIS_POINTS) / totalAirdropAmount;
 
         // Mark as claimed
         hasClaimed[msg.sender] = true;
