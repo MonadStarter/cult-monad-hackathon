@@ -59,7 +59,7 @@ function AirdropSection() {
     console.log("loading", isLoading);
   }
 
-  const claimAmount = data?.[0].result ? formatEther(data?.[0].result.toString()) : 0;
+  const claimAmount = data?.[0].result ? formatEther(data?.[0].result.toString()) / 2 : 0;
   const canClaim = data?.[1].result ? data?.[1].result : false;
 
   console.log("claimAmount", subgraphData);
@@ -88,19 +88,12 @@ function AirdropSection() {
         </p>
       )}
 
-      {canClaim ? (
+      {canClaim && (
         <button
           onClick={() => writeBuyAsyncWithParams()}
           className="bg-primary-500 w-full mt-2 justify-center px-4 py-2 rounded-lg text-white hover:bg-primary-600 disabled:bg-gray-600 disabled:cursor-not-allowed"
         >
           Claim
-        </button>
-      ) : (
-        <button
-          onClick={() => console.log("show popup to diamond hand user owned tokens to increase probability")}
-          className="bg-primary-500 w-full mt-2 justify-center px-4 py-2 rounded-lg text-white hover:bg-primary-600 disabled:bg-gray-600 disabled:cursor-not-allowed"
-        >
-          Diamond Hand
         </button>
       )}
     </div>

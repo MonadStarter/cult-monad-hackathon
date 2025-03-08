@@ -2,7 +2,7 @@ const { ethers, utils } = require("ethers");
 const fs = require("fs");
 const path = require("path");
 require("dotenv").config();
-const { getArtifactOfContract, getInheritedFunctions } = require("../scripts-js/generateTsAbis.js");
+const { getArtifactOfContract, getInheritedFunctions } = require("./generateTsAbis.js");
 
 // Load ABI and Bytecode for all contracts
 const loadContractData = contractName => {
@@ -47,11 +47,11 @@ const predefinedContracts = {
   //AirdropContract:""
 
   //MONAD TESTNET
-  CultRewards: "0x528325C8701cE261b27622376966B3DC87c70BdA",
-  BondingCurve: "0x560Ac99a96381Df163c94Cf4B6fFb351e972257c",
-  AirdropContract: "0x0a4Aa612D4BDbB8841A37F2c42e0cF59C04883b9",
-  Cult: "0x9b861d08D829E0D8EDEcb2804ed3761e115fE800",
-  CultFactory: "0xCE0da95A45bFa6a5A3f7e777D20D218f7ae5624D",
+  CultRewards: "0x397685024E7D31AE1C1B619fF19103b02bA3d0df",
+  BondingCurve: "0x83Ff5537119D0236333915cDF140Db4b42E46Ed4",
+  AirdropContract: "0x4Fa7A395637B7a47499FEd1ceF739aa258887D2f",
+  Cult: "0x9575d997Bb5C511D2c829dAB0f847aAbe90f979A",
+  CultFactory: "0xC4E98eBE6837B8Db78Bf14cF65F82Ad7c5418929",
 };
 
 const deployedContracts = {};

@@ -202,7 +202,7 @@ async function loadOrCreateAccount(
 ): Promise<Account> {
   let account = await context.Account.get(address);
   if (!account) {
-    account = { id: address, slug: slug || "" };
+    account = { id: address, slug: slug || "", diamondHandProbability: 0 };
     context.Account.set(account);
   }
   return account;
@@ -227,6 +227,9 @@ function updateTokenBalance(
       token_id: token.id,
       account_id: accountId,
       value: BigInt(newValue.toString()),
+      lastBought: BigInt(Date.now()),
+      lastSold: BigInt(0), // Default to 0 for no sale
+      heldFor: BigInt(0),
     };
     context.TokenBalance.set(entity);
     tokenBalance = entity;

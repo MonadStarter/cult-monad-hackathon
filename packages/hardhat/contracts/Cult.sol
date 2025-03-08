@@ -1,31 +1,25 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.23;
 
-import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
-import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
-import {ReentrancyGuardUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {ICult} from "./interfaces/ICult.sol";
-import {INonfungiblePositionManager} from "./interfaces/INonfungiblePositionManager.sol";
-import {IUniswapV3Pool} from "./interfaces/IUniswapV3Pool.sol";
-import {ISwapRouter} from "./interfaces/ISwapRouter.sol";
-import {ICultRewards} from "./interfaces/ICultRewards.sol";
-import {IWETH} from "./interfaces/IWETH.sol";
-import {BondingCurve} from "./BondingCurve.sol";
+import { Initializable } from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import { IERC721Receiver } from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import { ERC20Upgradeable } from "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+import { ReentrancyGuardUpgradeable } from "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
+import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import { SafeERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import { ICult } from "./interfaces/ICult.sol";
+import { INonfungiblePositionManager } from "./interfaces/INonfungiblePositionManager.sol";
+import { IUniswapV3Pool } from "./interfaces/IUniswapV3Pool.sol";
+import { ISwapRouter } from "./interfaces/ISwapRouter.sol";
+import { ICultRewards } from "./interfaces/ICultRewards.sol";
+import { IWETH } from "./interfaces/IWETH.sol";
+import { BondingCurve } from "./BondingCurve.sol";
 
 /**
  * @title Cult
  * @dev Implementation of the Cult token with bonding curve and Uniswap V3 pool functionalities.
  */
-contract Cult is
-    ICult,
-    Initializable,
-    ERC20Upgradeable,
-    ReentrancyGuardUpgradeable,
-    IERC721Receiver
-{
+contract Cult is ICult, Initializable, ERC20Upgradeable, ReentrancyGuardUpgradeable, IERC721Receiver {
     /// ==================== Constants ==================== ///
     /// @notice Maximum total supply of the Cult token (10B tokens)
     uint256 public constant MAX_TOTAL_SUPPLY = 10_000_000_000e18;
@@ -44,11 +38,9 @@ contract Cult is
     /// @notice Minimum order size in ETH.
     uint256 public constant MIN_ORDER_SIZE = 0.0000001 ether;
     /// @notice Initial square root price for the WETH token in the Uniswap V3 pool.
-    uint160 internal constant POOL_SQRT_PRICE_X96_WETH_0 =
-        400950665883918763141200546267337;
+    uint160 internal constant POOL_SQRT_PRICE_X96_WETH_0 = 400950665883918763141200546267337;
     /// @notice Initial square root price for the Cult token in the Uniswap V3 pool.
-    uint160 internal constant POOL_SQRT_PRICE_X96_TOKEN_0 =
-        15655546353934715619853339;
+    uint160 internal constant POOL_SQRT_PRICE_X96_TOKEN_0 = 15655546353934715619853339;
     /// @notice Liquidity provider fee in basis points for the Uniswap V3 pool.
     uint24 internal constant LP_FEE = 10000;
     /// @notice Lower tick boundary for the Uniswap V3 pool.
@@ -128,7 +120,7 @@ contract Cult is
         string memory _tokenURI,
         string memory _name,
         string memory _symbol,
-        bytes32[4] calldata _merkleRoots,
+        bytes32[] calldata _merkleRoots,
         uint256 airdropAmount,
         address airdropContract
     ) public payable initializer {
@@ -152,31 +144,20 @@ contract Cult is
         // Determine the token0, token1, and sqrtPriceX96 values for the Uniswap V3 pool
         address token0 = WETH < address(this) ? WETH : address(this);
         address token1 = WETH < address(this) ? address(this) : WETH;
-        uint160 sqrtPriceX96 = token0 == WETH
-            ? POOL_SQRT_PRICE_X96_WETH_0
-            : POOL_SQRT_PRICE_X96_TOKEN_0;
+        uint160 sqrtPriceX96 = token0 == WETH ? POOL_SQRT_PRICE_X96_WETH_0 : POOL_SQRT_PRICE_X96_TOKEN_0;
 
         _mint(airdropContract, airdropAmount);
         // Create and initialize the Uniswap V3 pool
-        poolAddress = INonfungiblePositionManager(nonfungiblePositionManager)
-            .createAndInitializePoolIfNecessary(
-                token0,
-                token1,
-                LP_FEE,
-                sqrtPriceX96
-            );
+        poolAddress = INonfungiblePositionManager(nonfungiblePositionManager).createAndInitializePoolIfNecessary(
+            token0,
+            token1,
+            LP_FEE,
+            sqrtPriceX96
+        );
 
         // Execute the initial buy order if any ETH was sent
         if (msg.value > 0) {
-            buy(
-                _tokenCreator,
-                _tokenCreator,
-                address(0),
-                "",
-                MarketType.BONDING_CURVE,
-                0,
-                0
-            );
+            buy(_tokenCreator, _tokenCreator, address(0), "", MarketType.BONDING_CURVE, 0, 0);
         }
     }
 
@@ -225,20 +206,19 @@ contract Cult is
             _disperseFees(fee, orderReferrer);
 
             // Convert the ETH to WETH and approve the swap router
-            IWETH(WETH).deposit{value: totalCost}();
+            IWETH(WETH).deposit{ value: totalCost }();
             IWETH(WETH).approve(swapRouter, totalCost);
 
             // Set up the swap parameters
-            ISwapRouter.ExactInputSingleParams memory params = ISwapRouter
-                .ExactInputSingleParams({
-                    tokenIn: WETH,
-                    tokenOut: address(this),
-                    fee: LP_FEE,
-                    recipient: recipient,
-                    amountIn: totalCost,
-                    amountOutMinimum: minOrderSize,
-                    sqrtPriceLimitX96: sqrtPriceLimitX96
-                });
+            ISwapRouter.ExactInputSingleParams memory params = ISwapRouter.ExactInputSingleParams({
+                tokenIn: WETH,
+                tokenOut: address(this),
+                fee: LP_FEE,
+                recipient: recipient,
+                amountIn: totalCost,
+                amountOutMinimum: minOrderSize,
+                sqrtPriceLimitX96: sqrtPriceLimitX96
+            });
 
             // Execute the swap
             trueOrderSize = ISwapRouter(swapRouter).exactInputSingle(params);
@@ -252,13 +232,7 @@ contract Cult is
             bool shouldGraduateMarket;
 
             // Validate the order data
-            (
-                totalCost,
-                trueOrderSize,
-                fee,
-                refund,
-                shouldGraduateMarket
-            ) = _validateBondingCurveBuy(minOrderSize);
+            (totalCost, trueOrderSize, fee, refund, shouldGraduateMarket) = _validateBondingCurveBuy(minOrderSize);
 
             // Mint the tokens to the recipient
             _mint(recipient, trueOrderSize);
@@ -268,7 +242,7 @@ contract Cult is
 
             // Refund any excess ETH
             if (refund > 0) {
-                (bool success, ) = refundRecipient.call{value: refund}("");
+                (bool success, ) = refundRecipient.call{ value: refund }("");
                 if (!success) revert EthTransferFailed();
             }
 
@@ -299,9 +273,7 @@ contract Cult is
     ///         This will revert if the market has graduated to the Uniswap V3 pool.
     /// @param ethOrderSize The amount of ETH to use for the purchase.
     /// @return The number of tokens that can be bought.
-    function getEthBuyQuote(
-        uint256 ethOrderSize
-    ) public view returns (uint256) {
+    function getEthBuyQuote(uint256 ethOrderSize) public view returns (uint256) {
         if (marketType == MarketType.UNISWAP_POOL) {
             revert MarketAlreadyGraduated();
         }
@@ -313,9 +285,7 @@ contract Cult is
     ///         This will revert if the market has graduated to the Uniswap V3 pool.
     /// @param ethOrderSize The amount of ETH to sell.
     /// @return The number of tokens that can be sold.
-    function getEthSellQuote(
-        uint256 ethOrderSize
-    ) public view returns (uint256) {
+    function getEthSellQuote(uint256 ethOrderSize) public view returns (uint256) {
         if (marketType == MarketType.UNISWAP_POOL) {
             revert MarketAlreadyGraduated();
         }
@@ -327,9 +297,7 @@ contract Cult is
     ///         This will revert if the market has graduated to the Uniswap V3 pool.
     /// @param tokenOrderSize The number of tokens to buy.
     /// @return The amount of ETH needed.
-    function getTokenBuyQuote(
-        uint256 tokenOrderSize
-    ) public view returns (uint256) {
+    function getTokenBuyQuote(uint256 tokenOrderSize) public view returns (uint256) {
         if (marketType == MarketType.UNISWAP_POOL) {
             revert MarketAlreadyGraduated();
         }
@@ -341,9 +309,7 @@ contract Cult is
     ///         This will revert if the market has graduated to the Uniswap V3 pool.
     /// @param tokenOrderSize The number of tokens to sell.
     /// @return The amount of ETH that can be received.
-    function getTokenSellQuote(
-        uint256 tokenOrderSize
-    ) public view returns (uint256) {
+    function getTokenSellQuote(uint256 tokenOrderSize) public view returns (uint256) {
         if (marketType == MarketType.UNISWAP_POOL) {
             revert MarketAlreadyGraduated();
         }
@@ -355,10 +321,7 @@ contract Cult is
     /// @param to The address to transfer to.
     /// @param value The amount to be transferred.
     /// @return A boolean indicating success.
-    function transfer(
-        address to,
-        uint256 value
-    ) public override(ERC20Upgradeable) returns (bool) {
+    function transfer(address to, uint256 value) public override(ERC20Upgradeable) returns (bool) {
         return super.transfer(to, value); // Calls the ERC20 transfer
     }
 
@@ -414,18 +377,11 @@ contract Cult is
         uint256 truePayoutSize;
 
         if (marketType == MarketType.UNISWAP_POOL) {
-            truePayoutSize = _handleUniswapSell(
-                tokensToSell,
-                minPayoutSize,
-                sqrtPriceLimitX96
-            );
+            truePayoutSize = _handleUniswapSell(tokensToSell, minPayoutSize, sqrtPriceLimitX96);
         }
 
         if (marketType == MarketType.BONDING_CURVE) {
-            truePayoutSize = _handleBondingCurveSell(
-                tokensToSell,
-                minPayoutSize
-            );
+            truePayoutSize = _handleBondingCurveSell(tokensToSell, minPayoutSize);
         }
 
         // Calculate the fee
@@ -438,7 +394,7 @@ contract Cult is
         _disperseFees(fee, orderReferrer);
 
         // Send the payout to the recipient
-        (bool success, ) = recipient.call{value: payoutAfterFee}("");
+        (bool success, ) = recipient.call{ value: payoutAfterFee }("");
         if (!success) revert EthTransferFailed();
 
         // Handle any secondary rewards
@@ -477,14 +433,8 @@ contract Cult is
         SecondaryRewards memory rewards = _handleSecondaryRewards();
 
         if (rewards.totalAmountEth > 0 && pushEthRewards) {
-            ICultRewards(cultRewards).withdrawFor(
-                tokenCreator,
-                rewards.creatorAmountEth
-            );
-            ICultRewards(cultRewards).withdrawFor(
-                protocolFeeRecipient,
-                rewards.protocolAmountEth
-            );
+            ICultRewards(cultRewards).withdrawFor(tokenCreator, rewards.creatorAmountEth);
+            ICultRewards(cultRewards).withdrawFor(protocolFeeRecipient, rewards.protocolAmountEth);
         }
     }
 
@@ -494,9 +444,7 @@ contract Cult is
         return
             MarketState({
                 marketType: marketType,
-                marketAddress: marketType == MarketType.BONDING_CURVE
-                    ? address(this)
-                    : poolAddress
+                marketAddress: marketType == MarketType.BONDING_CURVE ? address(this) : poolAddress
             });
     }
 
@@ -511,12 +459,7 @@ contract Cult is
 
     /// @dev For receiving the Uniswap V3 LP NFT on market graduation.
     /// @return The selector to confirm the token transfer.
-    function onERC721Received(
-        address,
-        address,
-        uint256,
-        bytes calldata
-    ) external view returns (bytes4) {
+    function onERC721Received(address, address, uint256, bytes calldata) external view returns (bytes4) {
         if (msg.sender != poolAddress) revert OnlyPool();
 
         return this.onERC721Received.selector;
@@ -526,26 +469,16 @@ contract Cult is
     /// @param amount0Delta The change in token0 balance of the pool.
     /// @param amount1Delta The change in token1 balance of the pool.
     /// @param data Additional data with no specified format.
-    function uniswapV3SwapCallback(
-        int256 amount0Delta,
-        int256 amount1Delta,
-        bytes calldata data
-    ) external {}
+    function uniswapV3SwapCallback(int256 amount0Delta, int256 amount1Delta, bytes calldata data) external {}
 
     /// ==================== Private Functions ==================== ///
     /// @dev Handles a bonding curve sell order.
     /// @param tokensToSell The number of tokens to sell.
     /// @param minPayoutSize The minimum ETH payout to prevent slippage.
     /// @return The amount of ETH received.
-    function _handleBondingCurveSell(
-        uint256 tokensToSell,
-        uint256 minPayoutSize
-    ) private returns (uint256) {
+    function _handleBondingCurveSell(uint256 tokensToSell, uint256 minPayoutSize) private returns (uint256) {
         // Get quote for the number of ETH that can be received for the number of tokens to sell
-        uint256 payout = bondingCurve.getTokenSellQuote(
-            totalSupply(),
-            tokensToSell
-        );
+        uint256 payout = bondingCurve.getTokenSellQuote(totalSupply(), tokensToSell);
 
         // Ensure the payout is greater than the minimum payout size
         if (payout < minPayoutSize) revert SlippageBoundsExceeded();
@@ -576,16 +509,15 @@ contract Cult is
         this.approve(swapRouter, tokensToSell);
 
         // Set up the swap parameters
-        ISwapRouter.ExactInputSingleParams memory params = ISwapRouter
-            .ExactInputSingleParams({
-                tokenIn: address(this),
-                tokenOut: WETH,
-                fee: LP_FEE,
-                recipient: address(this),
-                amountIn: tokensToSell,
-                amountOutMinimum: minPayoutSize,
-                sqrtPriceLimitX96: sqrtPriceLimitX96
-            });
+        ISwapRouter.ExactInputSingleParams memory params = ISwapRouter.ExactInputSingleParams({
+            tokenIn: address(this),
+            tokenOut: WETH,
+            fee: LP_FEE,
+            recipient: address(this),
+            amountIn: tokensToSell,
+            amountOutMinimum: minPayoutSize,
+            sqrtPriceLimitX96: sqrtPriceLimitX96
+        });
 
         // Execute the swap
         uint256 payout = ISwapRouter(swapRouter).exactInputSingle(params);
@@ -603,25 +535,14 @@ contract Cult is
     /// @param from The address from which tokens are transferred.
     /// @param to The address to which tokens are transferred.
     /// @param value The amount of tokens transferred.
-    function _update(
-        address from,
-        address to,
-        uint256 value
-    ) internal virtual override {
+    function _update(address from, address to, uint256 value) internal virtual override {
         if (marketType == MarketType.BONDING_CURVE && to == poolAddress) {
             revert MarketNotGraduated();
         }
 
         super._update(from, to, value);
 
-        emit CultTokenTransfer(
-            from,
-            to,
-            value,
-            balanceOf(from),
-            balanceOf(to),
-            totalSupply()
-        );
+        emit CultTokenTransfer(from, to, value, balanceOf(from), balanceOf(to), totalSupply());
     }
 
     /// @dev Validates a bonding curve buy order and if necessary, recalculates the order data if the size is greater than the remaining supply.
@@ -633,16 +554,7 @@ contract Cult is
     /// @return startMarket Whether the market should start.
     function _validateBondingCurveBuy(
         uint256 minOrderSize
-    )
-        internal
-        returns (
-            uint256 totalCost,
-            uint256 trueOrderSize,
-            uint256 fee,
-            uint256 refund,
-            bool startMarket
-        )
-    {
+    ) internal returns (uint256 totalCost, uint256 trueOrderSize, uint256 fee, uint256 refund, bool startMarket) {
         // Set the total cost to the amount of ETH sent
         totalCost = msg.value;
 
@@ -653,10 +565,7 @@ contract Cult is
         uint256 remainingEth = totalCost - fee;
 
         // Get quote for the number of tokens that can be bought with the amount of ETH remaining
-        trueOrderSize = bondingCurve.getEthBuyQuote(
-            totalSupply(),
-            remainingEth
-        );
+        trueOrderSize = bondingCurve.getEthBuyQuote(totalSupply(), remainingEth);
 
         // Ensure the order size is greater than the minimum order size
         if (trueOrderSize < minOrderSize) revert SlippageBoundsExceeded();
@@ -675,10 +584,7 @@ contract Cult is
             trueOrderSize = maxRemainingTokens;
 
             // Calculate the amount of ETH needed to buy the remaining tokens
-            uint256 ethNeeded = bondingCurve.getTokenBuyQuote(
-                totalSupply(),
-                trueOrderSize
-            );
+            uint256 ethNeeded = bondingCurve.getTokenBuyQuote(totalSupply(), trueOrderSize);
 
             // Recalculate the fee with the updated order size
             fee = _calculateFee(ethNeeded, TOTAL_FEE_BPS);
@@ -702,22 +608,14 @@ contract Cult is
 
         // Convert the bonding curve's accumulated ETH to WETH
         uint256 ethLiquidity = address(this).balance;
-        IWETH(WETH).deposit{value: ethLiquidity}();
+        IWETH(WETH).deposit{ value: ethLiquidity }();
 
         // Mint the secondary market supply to this contract
         _mint(address(this), SECONDARY_MARKET_SUPPLY);
 
         // Approve the nonfungible position manager to transfer the WETH and tokens
-        SafeERC20.safeIncreaseAllowance(
-            IERC20(WETH),
-            address(nonfungiblePositionManager),
-            ethLiquidity
-        );
-        SafeERC20.safeIncreaseAllowance(
-            this,
-            address(nonfungiblePositionManager),
-            SECONDARY_MARKET_SUPPLY
-        );
+        SafeERC20.safeIncreaseAllowance(IERC20(WETH), address(nonfungiblePositionManager), ethLiquidity);
+        SafeERC20.safeIncreaseAllowance(this, address(nonfungiblePositionManager), SECONDARY_MARKET_SUPPLY);
 
         // Determine the token order
         bool isWethToken0 = address(WETH) < address(this);
@@ -727,45 +625,32 @@ contract Cult is
         uint256 amount1 = isWethToken0 ? SECONDARY_MARKET_SUPPLY : ethLiquidity;
 
         // Get the current and desired price of the pool
-        uint160 currentSqrtPriceX96 = IUniswapV3Pool(poolAddress)
-            .slot0()
-            .sqrtPriceX96;
-        uint160 desiredSqrtPriceX96 = isWethToken0
-            ? POOL_SQRT_PRICE_X96_WETH_0
-            : POOL_SQRT_PRICE_X96_TOKEN_0;
+        uint160 currentSqrtPriceX96 = IUniswapV3Pool(poolAddress).slot0().sqrtPriceX96;
+        uint160 desiredSqrtPriceX96 = isWethToken0 ? POOL_SQRT_PRICE_X96_WETH_0 : POOL_SQRT_PRICE_X96_TOKEN_0;
 
         // If the current price is not the desired price, set the desired price
         if (currentSqrtPriceX96 != desiredSqrtPriceX96) {
             bool swap0To1 = currentSqrtPriceX96 > desiredSqrtPriceX96;
-            IUniswapV3Pool(poolAddress).swap(
-                address(this),
-                swap0To1,
-                100,
-                desiredSqrtPriceX96,
-                ""
-            );
+            IUniswapV3Pool(poolAddress).swap(address(this), swap0To1, 100, desiredSqrtPriceX96, "");
         }
 
         // Set up the liquidity position mint parameters
-        INonfungiblePositionManager.MintParams
-            memory params = INonfungiblePositionManager.MintParams({
-                token0: token0,
-                token1: token1,
-                fee: LP_FEE,
-                tickLower: LP_TICK_LOWER,
-                tickUpper: LP_TICK_UPPER,
-                amount0Desired: amount0,
-                amount1Desired: amount1,
-                amount0Min: 0,
-                amount1Min: 0,
-                recipient: address(this),
-                deadline: block.timestamp
-            });
+        INonfungiblePositionManager.MintParams memory params = INonfungiblePositionManager.MintParams({
+            token0: token0,
+            token1: token1,
+            fee: LP_FEE,
+            tickLower: LP_TICK_LOWER,
+            tickUpper: LP_TICK_UPPER,
+            amount0Desired: amount0,
+            amount1Desired: amount1,
+            amount0Min: 0,
+            amount1Min: 0,
+            recipient: address(this),
+            deadline: block.timestamp
+        });
 
         // Mint the liquidity position to this contract and store the token id.
-        (lpTokenId, , , ) = INonfungiblePositionManager(
-            nonfungiblePositionManager
-        ).mint(params);
+        (lpTokenId, , , ) = INonfungiblePositionManager(nonfungiblePositionManager).mint(params);
 
         emit CultMarketGraduated(
             address(this),
@@ -806,12 +691,7 @@ contract Cult is
         amounts[2] = protocolFee;
         reasons[2] = bytes4(keccak256("CULT_PROTOCOL_FEE"));
 
-        ICultRewards(cultRewards).depositBatch{value: totalFee}(
-            recipients,
-            amounts,
-            reasons,
-            ""
-        );
+        ICultRewards(cultRewards).depositBatch{ value: totalFee }(recipients, amounts, reasons, "");
 
         emit CultTokenFees(
             tokenCreator,
@@ -825,26 +705,18 @@ contract Cult is
 
     /// @dev Handles secondary rewards distribution.
     /// @return rewards The secondary rewards distributed.
-    function _handleSecondaryRewards()
-        internal
-        returns (SecondaryRewards memory)
-    {
+    function _handleSecondaryRewards() internal returns (SecondaryRewards memory) {
         if (marketType == MarketType.BONDING_CURVE) revert MarketNotGraduated();
 
-        INonfungiblePositionManager.CollectParams
-            memory params = INonfungiblePositionManager.CollectParams({
-                tokenId: lpTokenId,
-                recipient: address(this),
-                amount0Max: type(uint128).max,
-                amount1Max: type(uint128).max
-            });
+        INonfungiblePositionManager.CollectParams memory params = INonfungiblePositionManager.CollectParams({
+            tokenId: lpTokenId,
+            recipient: address(this),
+            amount0Max: type(uint128).max,
+            amount1Max: type(uint128).max
+        });
 
-        (
-            uint256 totalAmountToken0,
-            uint256 totalAmountToken1
-        ) = INonfungiblePositionManager(nonfungiblePositionManager).collect(
-                params
-            );
+        (uint256 totalAmountToken0, uint256 totalAmountToken1) = INonfungiblePositionManager(nonfungiblePositionManager)
+            .collect(params);
 
         address token0 = WETH < address(this) ? WETH : address(this);
         address token1 = WETH < address(this) ? address(this) : WETH;
@@ -874,13 +746,8 @@ contract Cult is
                 IWETH(WETH).withdraw(totalAmount);
 
                 rewards.totalAmountEth = totalAmount;
-                rewards.creatorAmountEth = _calculateFee(
-                    totalAmount,
-                    TOKEN_CREATOR_SECONDARY_REWARDS_BPS
-                );
-                rewards.protocolAmountEth =
-                    rewards.totalAmountEth -
-                    rewards.creatorAmountEth;
+                rewards.creatorAmountEth = _calculateFee(totalAmount, TOKEN_CREATOR_SECONDARY_REWARDS_BPS);
+                rewards.protocolAmountEth = rewards.totalAmountEth - rewards.creatorAmountEth;
 
                 address[] memory recipients = new address[](2);
                 recipients[0] = tokenCreator;
@@ -892,36 +759,16 @@ contract Cult is
 
                 bytes4[] memory reasons = new bytes4[](3);
                 reasons[0] = bytes4(keccak256("CULT_CREATOR_SECONDARY_REWARD"));
-                reasons[1] = bytes4(
-                    keccak256("COOP_PROTOCOL_SECONDARY_REWARD")
-                );
+                reasons[1] = bytes4(keccak256("COOP_PROTOCOL_SECONDARY_REWARD"));
 
-                ICultRewards(cultRewards).depositBatch{value: totalAmount}(
-                    recipients,
-                    amounts,
-                    reasons,
-                    ""
-                );
+                ICultRewards(cultRewards).depositBatch{ value: totalAmount }(recipients, amounts, reasons, "");
             } else {
                 rewards.totalAmountToken = totalAmount;
-                rewards.creatorAmountToken = _calculateFee(
-                    totalAmount,
-                    TOKEN_CREATOR_SECONDARY_REWARDS_BPS
-                );
-                rewards.protocolAmountToken =
-                    rewards.totalAmountToken -
-                    rewards.creatorAmountToken;
+                rewards.creatorAmountToken = _calculateFee(totalAmount, TOKEN_CREATOR_SECONDARY_REWARDS_BPS);
+                rewards.protocolAmountToken = rewards.totalAmountToken - rewards.creatorAmountToken;
 
-                _transfer(
-                    address(this),
-                    tokenCreator,
-                    rewards.creatorAmountToken
-                );
-                _transfer(
-                    address(this),
-                    protocolFeeRecipient,
-                    rewards.protocolAmountToken
-                );
+                _transfer(address(this), tokenCreator, rewards.creatorAmountToken);
+                _transfer(address(this), protocolFeeRecipient, rewards.protocolAmountToken);
             }
         }
 
@@ -932,10 +779,7 @@ contract Cult is
     /// @param amount The amount to calculate the fee from.
     /// @param bps The basis points for the fee calculation.
     /// @return The calculated fee.
-    function _calculateFee(
-        uint256 amount,
-        uint256 bps
-    ) internal pure returns (uint256) {
+    function _calculateFee(uint256 amount, uint256 bps) internal pure returns (uint256) {
         return (amount * bps) / 10_000;
     }
 }

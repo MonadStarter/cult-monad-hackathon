@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import TradeButton from "./PlaceTradeButton";
 import TradeInfoCard from "./TradeInfoCard";

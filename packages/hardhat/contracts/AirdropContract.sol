@@ -5,7 +5,6 @@ import { ReentrancyGuardUpgradeable } from "@openzeppelin/contracts-upgradeable/
 import { IERC20 } from "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-
 /// @title Airdrop Contract
 /// @notice This contract facilitates the distribution of tokens via an airdrop mechanism.
 /// @dev The contract uses a Merkle tree to verify claims and ensures that each address can claim only once.
@@ -30,12 +29,12 @@ contract AirdropContract is Initializable, ReentrancyGuardUpgradeable {
     mapping(address => bool) public hasClaimed;
 
     /// ==================== Events ==================== ///
-    event MerkleRootSet(address indexed token, bytes32[4] merkleRoots);
+    event MerkleRootSet(address indexed token, bytes32[] merkleRoots);
     event TokensClaimed(address indexed token, address indexed recipient, uint256 percentage, uint256 amount);
     event AirdropContractInitialized(
         address indexed token,
         address indexed createdBy,
-        bytes32[4] merkleRoots,
+        bytes32[] merkleRoots,
         uint256 amount
     );
 
@@ -57,14 +56,12 @@ contract AirdropContract is Initializable, ReentrancyGuardUpgradeable {
     function initialize(
         address _token,
         address _tokenCreator,
-        bytes32[4] calldata _merkleRoots,
+        bytes32[] calldata _merkleRoots,
         uint256 _totalAmount
     ) external initializer {
         __ReentrancyGuard_init();
         if (_token == address(0) || _tokenCreator == address(0)) revert InvalidParameters();
-        for (uint256 i = 0; i < _merkleRoots.length; i++) {
-            if (_merkleRoots[i] == bytes32(0)) revert InvalidMerkleRoot();
-        }
+
         if (_totalAmount == 0) revert InvalidTotalAmount();
 
         merkleRoots = _merkleRoots;

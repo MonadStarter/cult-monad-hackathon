@@ -66,9 +66,9 @@
             },
             {
                 "indexed": false,
-                "internalType": "bytes32[4]",
+                "internalType": "bytes32[]",
                 "name": "merkleRoots",
-                "type": "bytes32[4]"
+                "type": "bytes32[]"
             },
             {
                 "indexed": false,
@@ -104,9 +104,9 @@
             },
             {
                 "indexed": false,
-                "internalType": "bytes32[4]",
+                "internalType": "bytes32[]",
                 "name": "merkleRoots",
-                "type": "bytes32[4]"
+                "type": "bytes32[]"
             }
         ],
         "name": "MerkleRootSet",
@@ -235,9 +235,9 @@
                 "type": "address"
             },
             {
-                "internalType": "bytes32[4]",
+                "internalType": "bytes32[]",
                 "name": "_merkleRoots",
-                "type": "bytes32[4]"
+                "type": "bytes32[]"
             },
             {
                 "internalType": "uint256",

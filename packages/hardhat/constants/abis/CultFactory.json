@@ -16,11 +16,6 @@
         "type": "error"
     },
     {
-        "inputs": [],
-        "name": "ERC1167FailedCreateClone",
-        "type": "error"
-    },
-    {
         "inputs": [
             {
                 "internalType": "address",
@@ -38,7 +33,28 @@
     },
     {
         "inputs": [],
-        "name": "FailedInnerCall",
+        "name": "FailedCall",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "FailedDeployment",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "balance",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "needed",
+                "type": "uint256"
+            }
+        ],
+        "name": "InsufficientBalance",
         "type": "error"
     },
     {
@@ -296,9 +312,9 @@
                 "type": "string"
             },
             {
-                "internalType": "bytes32[4]",
+                "internalType": "bytes32[]",
                 "name": "_merkleRoots",
-                "type": "bytes32[4]"
+                "type": "bytes32[]"
             },
             {
                 "internalType": "uint16",

@@ -36,6 +36,7 @@ type Account @entity {
   balances: [TokenBalance!]! @derivedFrom(field: "account")
   created: [CultToken!]! @derivedFrom(field: "tokenCreator")
   slug: String
+  diamondHandProbability: Int!
 }
 
 type TokenBalance @entity {
@@ -43,6 +44,9 @@ type TokenBalance @entity {
   token: CultToken!
   account: Account!
   value: BigInt!
+  lastBought: BigInt!
+  lastSold: BigInt!
+  heldFor: BigInt!
 }
 
 type TokenTrade @entity(immutable: true) {

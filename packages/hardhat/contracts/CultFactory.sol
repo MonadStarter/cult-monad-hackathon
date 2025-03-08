@@ -1,23 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.23;
 
-import {Clones} from "@openzeppelin/contracts/proxy/Clones.sol";
-import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import {ReentrancyGuardUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
-import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-import {ERC1967Utils} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Utils.sol";
-import {ICultFactory} from "./interfaces/ICultFactory.sol";
-import {Cult} from "./Cult.sol";
-import {AirdropContract} from "./AirdropContract.sol";
-
+import { Clones } from "@openzeppelin/contracts/proxy/Clones.sol";
+import { OwnableUpgradeable } from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import { ReentrancyGuardUpgradeable } from "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
+import { UUPSUpgradeable } from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import { ERC1967Utils } from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Utils.sol";
+import { ICultFactory } from "./interfaces/ICultFactory.sol";
+import { Cult } from "./Cult.sol";
+import { AirdropContract } from "./AirdropContract.sol";
 /// @title CultFactory
 /// @notice This contract is responsible for deploying Cult tokens with bonding curve mechanics and associated contracts.
-contract CultFactory is
-    ICultFactory,
-    UUPSUpgradeable,
-    ReentrancyGuardUpgradeable,
-    OwnableUpgradeable
-{
+contract CultFactory is ICultFactory, UUPSUpgradeable, ReentrancyGuardUpgradeable, OwnableUpgradeable {
     /// ==================== State Variables ==================== ///
     /// @notice Address of the airdrop implementation contract
     address public airdropImplementation;
@@ -59,34 +53,19 @@ contract CultFactory is
         string memory _tokenURI,
         string memory _name,
         string memory _symbol,
-        bytes32[4] calldata _merkleRoots,
+        bytes32[] calldata _merkleRoots,
         uint16 _airdropPercent
     ) external payable nonReentrant returns (address) {
         bytes32 salt = _generateSalt(_tokenCreator, _tokenURI);
-        _validateCreateTokenParams(
-            _name,
-            _symbol,
-            _tokenURI,
-            _tokenCreator,
-            _merkleRoots,
-            _airdropPercent
-        );
+        _validateCreateTokenParams(_name, _symbol, _tokenURI, _tokenCreator, _merkleRoots, _airdropPercent);
 
-        uint256 airdropAmount = (10_000_000_000 ether / BASIS_POINTS) *
-            _airdropPercent;
-        Cult token = Cult(
-            payable(Clones.cloneDeterministic(tokenImplementation, salt))
-        );
+        uint256 airdropAmount = (10_000_000_000 ether / BASIS_POINTS) * _airdropPercent;
+        Cult token = Cult(payable(Clones.cloneDeterministic(tokenImplementation, salt)));
 
         address airdropContract = Clones.clone(airdropImplementation);
-        AirdropContract(airdropContract).initialize(
-            address(token),
-            _tokenCreator,
-            _merkleRoots,
-            airdropAmount
-        );
+        AirdropContract(airdropContract).initialize(address(token), _tokenCreator, _merkleRoots, airdropAmount);
 
-        token.initialize{value: msg.value}(
+        token.initialize{ value: msg.value }(
             _tokenCreator,
             bondingCurve,
             _tokenURI,
@@ -152,7 +131,7 @@ contract CultFactory is
         string memory _symbol,
         string memory _tokenURI,
         address _tokenCreator,
-        bytes32[4] calldata _merkleRoots,
+        bytes32[] calldata _merkleRoots,
         uint16 _airdropPercent
     ) private pure {
         if (
@@ -164,11 +143,11 @@ contract CultFactory is
         /// @dev The airdrop percentage is calculated in basis points, where 100% is equivalent to 1,000,000.
         /// Therefore, an airdrop percentage of 10,000 represents 1% of the total supply.
         if (_airdropPercent > 0) {
+            if (_merkleRoots.length > 4) revert InvalidMerkleRoot();
             for (uint256 i = 0; i < _merkleRoots.length; i++) {
                 if (_merkleRoots[i] == bytes32(0)) revert InvalidMerkleRoot();
             }
-            if (_airdropPercent > 10000 && _airdropPercent <= (BASIS_POINTS / 2))
-                revert InvalidAirdropPercentage();
+            if (_airdropPercent < 10000 || _airdropPercent > (BASIS_POINTS / 2)) revert InvalidAirdropPercentage();
         }
     }
 
@@ -177,10 +156,7 @@ contract CultFactory is
     /// @param _tokenCreator The address of the token creator
     /// @param _tokenURI The ERC20z token URI
     /// @return A unique salt for deployment
-    function _generateSalt(
-        address _tokenCreator,
-        string memory _tokenURI
-    ) internal view returns (bytes32) {
+    function _generateSalt(address _tokenCreator, string memory _tokenURI) internal view returns (bytes32) {
         return
             keccak256(
                 abi.encodePacked(

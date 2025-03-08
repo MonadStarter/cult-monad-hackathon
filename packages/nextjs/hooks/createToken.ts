@@ -20,6 +20,25 @@ interface UseTokenCreationProps {
   onError?: (error: Error) => void;
 }
 
+function getAirdropMerkleRoot(airdropList: string[]): string[] {
+  let airdropMerkleRoot: string[] = [];
+
+  if (airdropList.length > 0) {
+    airdropMerkleRoot = airdropList.map((airdropId: string) => {
+      if (COMMUNITY_MERKLE_PROOFS[airdropId]) {
+        return COMMUNITY_MERKLE_PROOFS[airdropId].MERKLE_ROOT;
+      } else {
+        console.error(`Airdrop ID '${airdropId}' not found in COMMUNITY_MERKLE_PROOFS.`);
+        return ""; // Or handle the error appropriately. Returning an empty string will prevent the code from crashing.
+      }
+    });
+  } else {
+    airdropMerkleRoot = [COMMUNITY_MERKLE_PROOFS["diamondHands"].MERKLE_ROOT];
+  }
+
+  return airdropMerkleRoot;
+}
+
 export const useTokenCreation = ({ onSuccess, onError }: UseTokenCreationProps = {}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -56,19 +75,12 @@ export const useTokenCreation = ({ onSuccess, onError }: UseTokenCreationProps =
       //   watch: true,
       // });
 
-      const airdropList = formData.airdrop || [];
-      let airdropMerkleRoot = "";
-      if (airdropList.length > 0) {
-        airdropMerkleRoot = COMMUNITY_MERKLE_PROOFS[airdropList[0]].MERKLE_ROOT;
-      } else {
-        airdropMerkleRoot = MERKLE_PROOFS[0].MERKLE_ROOT;
-      }
       //get merkle root for the categories
-
+      let airdropMerkleRoot: string[] = getAirdropMerkleRoot(formData.airdrop || []);
       // Create token transaction
       await cultFactory({
         functionName: "deploy",
-        args: [user.address, metadataUri, formData.name, formData.symbol, airdropMerkleRoot, 50000, 604800],
+        args: [user.address, metadataUri, formData.name, formData.symbol, airdropMerkleRoot, 50000],
         //value: 0,
       });
       return metadataUri;
