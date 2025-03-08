@@ -26,7 +26,7 @@ function AirdropSection() {
         address: subgraphData?.cultToken?.airdropContract.id,
         abi: AirdropContractABI,
         functionName: "canClaim",
-        args: [userAddress, BigInt(500000), [MERKLE_PROOFS[0].merkleProofs[0]]], //TODO: change to user address, amount should come from event
+        args: [userAddress, [MERKLE_PROOFS[0].merkleProofs[0]]], //TODO: change to user address, amount should come from event
       },
     ],
     query: {
