@@ -76,6 +76,7 @@ CultFactory.CultTokenCreated.handler(async ({ event, context }) => {
 });
 
 Cult.CultTokenBuy.handler(async ({ event, context }) => {
+  console.log("CultTokenBuy", event.params.buyer, event.params.recipient);
   const tokenAddress = event.srcAddress;
   if (tokenAddress) {
     const trader = await loadOrCreateAccount(event.params.buyer, context);

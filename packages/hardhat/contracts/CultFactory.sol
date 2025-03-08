@@ -25,6 +25,8 @@ contract CultFactory is ICultFactory, UUPSUpgradeable, ReentrancyGuardUpgradeabl
     /// @notice Counter for the number of tokens created
     uint256 public tokenCount;
 
+    mapping(bytes32 => uint32) public validMerkleRoots;
+
     /// @notice Constant representing the basis points used for percentage calculations
     uint256 public constant BASIS_POINTS = 1000000;
 
@@ -57,7 +59,9 @@ contract CultFactory is ICultFactory, UUPSUpgradeable, ReentrancyGuardUpgradeabl
         uint16 _airdropPercent
     ) external payable nonReentrant returns (address) {
         bytes32 salt = _generateSalt(_tokenCreator, _tokenURI);
-        _validateCreateTokenParams(_name, _symbol, _tokenURI, _tokenCreator, _merkleRoots, _airdropPercent);
+        _validateCreateTokenParams(_name, _symbol, _tokenURI, _tokenCreator, _merkleRoots);
+
+        uint32 airdropRecipientCount = _calculateAirdropRecipientCount(_merkleRoots, _airdropPercent);
 
         uint256 airdropAmount = (10_000_000_000 ether / BASIS_POINTS) * _airdropPercent;
         Cult token = Cult(payable(Clones.cloneDeterministic(tokenImplementation, salt)));
@@ -112,10 +116,35 @@ contract CultFactory is ICultFactory, UUPSUpgradeable, ReentrancyGuardUpgradeabl
         airdropImplementation = _airdropImplementation;
     }
 
+    function _calculateAirdropRecipientCount(bytes32[] memory _merkleRoots, uint16 _airdropPercent) internal view returns (uint32 recipentCount) {
+        /// @dev The airdrop percentage is calculated in basis points, where 100% is equivalent to 1,000,000.
+        /// Therefore, an airdrop percentage of 10,000 represents 1% of the total supply.
+    
+        if (_airdropPercent > 0) {
+            if (_merkleRoots.length > 4) revert InvalidMerkleRoot();
+            for (uint256 i = 0; i < _merkleRoots.length; i++) {
+                uint32 validMerkleRootHolderCount = validMerkleRoots[_merkleRoots[i]];
+                if ( validMerkleRootHolderCount == 0){
+revert InvalidMerkleRoot();
+                } else{
+recipentCount += validMerkleRootHolderCount
+                }
+                
+            }
+            if (_airdropPercent < 10000 || _airdropPercent > (BASIS_POINTS / 2)) revert InvalidAirdropPercentage();
+        }
+    }
+
     /// @notice The implementation address of the factory contract
     /// @return The address of the current implementation
     function implementation() external view returns (address) {
         return ERC1967Utils.getImplementation();
+    }
+
+    function updateMerkleRoot(bytes32 _merkleRoot, uint32 _holderCount) external onlyOwner {
+        if (validMerkleRoots[_merkleRoot] == 0) revert InvalidMerkleRoot();
+        if (_holderCount == 0) revert InvalidParameters();
+        validMerkleRoots[_merkleRoot] = _holderCount;
     }
 
     /// ==================== Private Functions ==================== ///
@@ -131,8 +160,7 @@ contract CultFactory is ICultFactory, UUPSUpgradeable, ReentrancyGuardUpgradeabl
         string memory _symbol,
         string memory _tokenURI,
         address _tokenCreator,
-        bytes32[] calldata _merkleRoots,
-        uint16 _airdropPercent
+        bytes32[] calldata _merkleRoots
     ) private pure {
         if (
             bytes(_name).length == 0 ||
@@ -140,15 +168,6 @@ contract CultFactory is ICultFactory, UUPSUpgradeable, ReentrancyGuardUpgradeabl
             bytes(_tokenURI).length == 0 ||
             _tokenCreator == address(0)
         ) revert InvalidParameters();
-        /// @dev The airdrop percentage is calculated in basis points, where 100% is equivalent to 1,000,000.
-        /// Therefore, an airdrop percentage of 10,000 represents 1% of the total supply.
-        if (_airdropPercent > 0) {
-            if (_merkleRoots.length > 4) revert InvalidMerkleRoot();
-            for (uint256 i = 0; i < _merkleRoots.length; i++) {
-                if (_merkleRoots[i] == bytes32(0)) revert InvalidMerkleRoot();
-            }
-            if (_airdropPercent < 10000 || _airdropPercent > (BASIS_POINTS / 2)) revert InvalidAirdropPercentage();
-        }
     }
 
     /// ==================== Internal Functions ==================== ///

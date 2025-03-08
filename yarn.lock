@@ -17727,6 +17727,7 @@ __metadata:
     husky: ~8.0.3
     lint-staged: ~13.2.2
     react-hook-form: ^7.54.2
+    ts-node: ^10.9.2
     typescript-graphql-request: ^4.4.6
   languageName: unknown
   linkType: soft
@@ -19076,7 +19077,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-node@npm:~10.9.1":
+"ts-node@npm:^10.9.2, ts-node@npm:~10.9.1":
   version: 10.9.2
   resolution: "ts-node@npm:10.9.2"
   dependencies:
