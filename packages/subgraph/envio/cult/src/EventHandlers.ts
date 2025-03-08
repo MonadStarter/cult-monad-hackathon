@@ -13,9 +13,8 @@ import {
 
 CultFactory.CultTokenCreated.contractRegister(
   ({ event, context }) => {
-    console.log("CultTokenCreated", event.params.tokenAddress);
     context.addCult(event.params.tokenAddress);
-    console.log("CultTokenCreated2", event.params.tokenAddress);
+    console.log("CultTokenCreated", event.params.tokenAddress);
   },
   {
     preRegisterDynamicContracts: true,
@@ -115,7 +114,7 @@ Cult.CultTokenBuy.handler(async ({ event, context }) => {
       console.error("CultToken entity not found");
       return;
     }
-    updateTokenBalance(
+    await updateTokenBalance(
       cultToken,
       trader.id,
       event.params.buyerTokenBalance,
@@ -162,7 +161,7 @@ Cult.CultTokenSell.handler(async ({ event, context }) => {
       console.error("CultToken entity not found");
       return;
     }
-    updateTokenBalance(
+    await updateTokenBalance(
       cultToken,
       trader.id,
       event.params.sellerTokenBalance,
@@ -185,14 +184,14 @@ Cult.CultTokenTransfer.handler(async ({ event, context }) => {
   let toAccount = await loadOrCreateAccount(to, context);
 
   if (fromAccount.id !== "0x0000000000000000000000000000000000000000") {
-    updateTokenBalance(
+    await updateTokenBalance(
       token,
       fromAccount.id,
       event.params.fromTokenBalance,
       context
     );
   }
-  updateTokenBalance(token, toAccount.id, event.params.toTokenBalance, context);
+  await updateTokenBalance(token, toAccount.id, event.params.toTokenBalance, context);
 });
 
 // Function to load or create an account
@@ -209,16 +208,15 @@ async function loadOrCreateAccount(
   return account;
 }
 
-function updateTokenBalance(
+async function updateTokenBalance(
   token: CultToken,
   accountId: string,
   newValue: BigInt,
   context: any
-): void {
+) {
   // Load the existing balance (if any)
   console.log("UPDATING TOKEN BALANCE");
-  let tokenBalance = context.TokenBalance.get(token.id + "-" + accountId);
-
+  let tokenBalance = await context.TokenBalance.get(token.id + "-" + accountId);
   // Track the old balance so we know if it was zero or > 0
   let oldValue = BigInt(0);
   if (!tokenBalance) {
