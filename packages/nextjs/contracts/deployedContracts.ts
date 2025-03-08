@@ -13,7 +13,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   10143: {
     CultRewards: {
-      address: "0x0764f92E3816EBA9A7a1Ca193cD0Ab65b5C80De9",
+      address: "0x8A7368B073602B4a7C944F903cA6963C51A09f16",
       abi: CultRewardsAbi as Abi,
       inheritedFunctions: {},
       deploymentFile: "",
@@ -22,7 +22,7 @@ const deployedContracts = {
       verified: false,
     },
     BondingCurve: {
-      address: "0xC629046A8FEc8325D8cA0824352Bc10cBA722cB7",
+      address: "0xb45f6688F2ed5458C11393699C325E7c5e50f9D5",
       abi: BondingCurveAbi as Abi,
       inheritedFunctions: {},
       deploymentFile: "",
@@ -31,7 +31,7 @@ const deployedContracts = {
       verified: false,
     },
     AirdropContract: {
-      address: "0xdbF73F480D5E430e7F1A302e83B4ed9E90849661",
+      address: "0xC0Ac5874e0a09B40c96e13833bdA34B7ad46D7c1",
       abi: AirdropContractAbi as Abi,
       inheritedFunctions: {},
       deploymentFile: "",
@@ -40,14 +40,14 @@ const deployedContracts = {
       verified: false,
     },
     Cult: {
-      address: "0x3D68EdC56db6BB5c32c31c913F597EE2bbf93A92",
+      address: "0xc0D52DB90019dc3F73b301C60A6586cfe35D87F8",
       abi: CultAbi as Abi,
       inheritedFunctions: {},
       deploymentFile: "",
       deploymentScript: "deploy.js",
       constructorArgs: [
         "0x60187Bc4949eE2F01b507a9F77ad615093f44260",
-        "0x0764f92E3816EBA9A7a1Ca193cD0Ab65b5C80De9",
+        "0x8A7368B073602B4a7C944F903cA6963C51A09f16",
         "0x261D8c5e9742e6f7f1076Fa1F560894524e19cad",
         "0x50ff23E9A8D5DAc05744C367c9DDd588D027982B",
         "0x201B36B26b816D061fC552B679f8279Db0Fbbc6A",
@@ -55,7 +55,7 @@ const deployedContracts = {
       verified: false,
     },
     CultFactory: {
-      address: "0xaCec85Ec7C8C3077Ce177B060FAF790190107dC3",
+      address: "0x817e5E8409130C2bFd1C23c00a0F36d13fFe9093",
       abi: CultFactoryAbi as Abi,
       inheritedFunctions: {},
       deploymentFile: "",

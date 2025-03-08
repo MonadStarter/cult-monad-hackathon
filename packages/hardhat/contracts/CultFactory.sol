@@ -9,6 +9,7 @@ import { ERC1967Utils } from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Utils
 import { ICultFactory } from "./interfaces/ICultFactory.sol";
 import { Cult } from "./Cult.sol";
 import { AirdropContract } from "./AirdropContract.sol";
+//import "hardhat/console.sol";
 /// @title CultFactory
 /// @notice This contract is responsible for deploying Cult tokens with bonding curve mechanics and associated contracts.
 contract CultFactory is ICultFactory, UUPSUpgradeable, ReentrancyGuardUpgradeable, OwnableUpgradeable {
@@ -67,7 +68,13 @@ contract CultFactory is ICultFactory, UUPSUpgradeable, ReentrancyGuardUpgradeabl
         Cult token = Cult(payable(Clones.cloneDeterministic(tokenImplementation, salt)));
 
         address airdropContract = Clones.clone(airdropImplementation);
-        AirdropContract(airdropContract).initialize(address(token), _tokenCreator, _merkleRoots, airdropAmount, airdropRecipientCount);
+        AirdropContract(airdropContract).initialize(
+            address(token),
+            _tokenCreator,
+            _merkleRoots,
+            airdropAmount,
+            airdropRecipientCount
+        );
 
         token.initialize{ value: msg.value }(
             _tokenCreator,
@@ -144,7 +151,7 @@ contract CultFactory is ICultFactory, UUPSUpgradeable, ReentrancyGuardUpgradeabl
     }
 
     function updateMerkleRoot(bytes32 _merkleRoot, uint32 _holderCount) external onlyOwner {
-        if (validMerkleRoots[_merkleRoot] == 0) revert InvalidMerkleRoot();
+        if (_merkleRoot == 0) revert InvalidMerkleRoot();
         if (_holderCount == 0) revert InvalidParameters();
         validMerkleRoots[_merkleRoot] = _holderCount;
     }

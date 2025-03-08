@@ -3,25 +3,22 @@ const { ethers } = require("ethers");
 
 const addresses = ["0x60187Bc4949eE2F01b507a9F77ad615093f44260", "0x4b6fff85ec612a536eb34e97a233ad0b82881dab"];
 
-async function generateMerkleTreeAndProofs(addresses: string[]) {
+async function generateMerkleTreeAndProofs(addresses) {
   // const totalAmountInBasisPoints = 1000000; // 100% = 1,000,000 basis points
   // const percentagePerUser = totalAmountInBasisPoints / addresses.length;
   // @note: not needed as we are calculating amount per recipient inside the contract
 
   const leaves = addresses.map(address => ethers.keccak256(ethers.solidityPacked(["address"], [address])));
 
-  const tree = new MerkleTree(leaves, ethers.keccak256, {
-    sortPairs: true,
-  });
+  const tree = new MerkleTree(leaves, ethers.keccak256, { sortPairs: true });
   const root = tree.getHexRoot();
 
   const proofs = addresses.map((_, index) => tree.getHexProof(leaves[index]));
   console.log("Merkle Root:", root);
   console.log("Proof for first address:", proofs[0]);
+  console.log("Proof for first address:", proofs[1]);
 
   return { root, proofs };
 }
 
-generateMerkleTreeAndProofs(addresses);
-
-// export default generateMerkleTreeAndProofs;
+console.log(generateMerkleTreeAndProofs(addresses));

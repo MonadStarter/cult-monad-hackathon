@@ -312,9 +312,9 @@
                 "type": "string"
             },
             {
-                "internalType": "bytes32[4]",
+                "internalType": "bytes32[]",
                 "name": "_merkleRoots",
-                "type": "bytes32[4]"
+                "type": "bytes32[]"
             },
             {
                 "internalType": "uint16",
@@ -449,6 +449,24 @@
     {
         "inputs": [
             {
+                "internalType": "bytes32",
+                "name": "_merkleRoot",
+                "type": "bytes32"
+            },
+            {
+                "internalType": "uint32",
+                "name": "_holderCount",
+                "type": "uint32"
+            }
+        ],
+        "name": "updateMerkleRoot",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "address",
                 "name": "newImplementation",
                 "type": "address"
@@ -462,6 +480,25 @@
         "name": "upgradeToAndCall",
         "outputs": [],
         "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "",
+                "type": "bytes32"
+            }
+        ],
+        "name": "validMerkleRoots",
+        "outputs": [
+            {
+                "internalType": "uint32",
+                "name": "",
+                "type": "uint32"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     }
 ]

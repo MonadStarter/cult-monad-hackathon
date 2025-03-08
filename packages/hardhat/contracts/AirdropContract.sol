@@ -33,7 +33,7 @@ contract AirdropContract is Initializable, ReentrancyGuardUpgradeable {
 
     /// ==================== Events ==================== ///
     event MerkleRootSet(address indexed token, bytes32[] merkleRoots);
-    event TokensClaimed(address indexed token, address indexed recipient, uint256 percentage, uint256 amount);
+    event TokensClaimed(address indexed token, address indexed recipient, uint256 amount);
     event AirdropContractInitialized(
         address indexed token,
         address indexed createdBy,
@@ -106,7 +106,6 @@ contract AirdropContract is Initializable, ReentrancyGuardUpgradeable {
         // Calculate actual token amount
         // uint256 amount = (totalAirdropAmount * percentage) / BASIS_POINTS;
         uint256 amount = totalAirdropAmount / totalAirdropRecipientCount;
-        uint256 percentage = (amount * BASIS_POINTS) / totalAirdropAmount;
 
         // Mark as claimed
         hasClaimed[msg.sender] = true;
@@ -115,23 +114,18 @@ contract AirdropContract is Initializable, ReentrancyGuardUpgradeable {
         bool success = IERC20(token).transfer(msg.sender, amount);
         require(success, "Token transfer failed");
 
-        emit TokensClaimed(token, msg.sender, percentage, amount);
+        emit TokensClaimed(token, msg.sender, amount);
     }
 
     /// @notice Checks if an address has a valid claim
     /// @param recipient The recipient address
-    /// @param percentage The percentage in basis points
     /// @param merkleProof The proof of inclusion in merkle tree
     /// @return bool True if the claim is valid, false otherwise
-    function canClaim(
-        address recipient,
-        uint256 percentage,
-        bytes32[] calldata merkleProof
-    ) external view returns (bool) {
+    function canClaim(address recipient, bytes32[] calldata merkleProof) external view returns (bool) {
         if (hasClaimed[recipient]) return false;
-        if (percentage > BASIS_POINTS) return false;
 
-        bytes32 node = keccak256(abi.encodePacked(recipient, percentage));
+        bytes32 node = keccak256(abi.encodePacked(recipient));
+
         for (uint256 i = 0; i < merkleRoots.length; i++) {
             if (MerkleProof.verify(merkleProof, merkleRoots[i], node)) {
                 return true;

@@ -135,12 +135,6 @@
             {
                 "indexed": false,
                 "internalType": "uint256",
-                "name": "percentage",
-                "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
                 "name": "amount",
                 "type": "uint256"
             }
@@ -167,11 +161,6 @@
                 "internalType": "address",
                 "name": "recipient",
                 "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "percentage",
-                "type": "uint256"
             },
             {
                 "internalType": "bytes32[]",
