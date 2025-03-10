@@ -44,7 +44,7 @@ function AirdropSection() {
           address: subgraphData?.cultToken?.airdropContract.id!,
           abi: AirdropContractABI,
           functionName: "claim",
-          args: [BigInt(500000), [MERKLE_PROOFS[0].merkleProofs[0]]],
+          args: [[MERKLE_PROOFS[0].merkleProofs[0]]],
         }),
       );
     } catch (e: any) {

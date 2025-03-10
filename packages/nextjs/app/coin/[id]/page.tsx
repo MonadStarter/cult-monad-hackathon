@@ -135,7 +135,7 @@ export default function CoinPage() {
 
   return (
     <div className={"page pt-4"}>
-      <TradingViewChart tokenAddress={tokenaddy} interval="H" theme="light" autosize={true} />
+      {/* <TradingViewChart tokenAddress={tokenaddy} interval="H" theme="light" autosize={true} /> */}
 
       <BackButton />
       <CoinDetailCard />
