@@ -3,7 +3,7 @@
 import TableSection from "./TableSection";
 import { GlobeIcon } from "lucide-react";
 import { useAccount } from "wagmi";
-import BackButton from "~~/components/coin/BackButton/BackButton";
+//import BackButton from "~~/components/coin/BackButton/BackButton";
 import { Address } from "~~/components/scaffold-eth";
 import { Panda } from "~~/icons/symbols";
 
@@ -11,9 +11,8 @@ export default function Profile() {
   const { address: accountAddress } = useAccount();
 
   return (
-    <div className="p-12">
-      <BackButton />
-      <div className="flex gap-4 mt-5 items-start">
+    <div className="p-12 py-32 w-full h-screen flex flex-col items-center">
+      <div className="flex gap-4 mt-5 items-start w-[80%] w-auto">
         <div className="content-wrapper-card w-2/6 p-5">
           <div className="flex flex-col gap-y-5">
             <div className="flex justify-between items-start">
@@ -43,10 +42,10 @@ export default function Profile() {
             </div>
           </div>
         </div>
-        <div className="w-4/6">
-          {/* <NoAccountAdded /> */}
-          <TableSection />
-        </div>
+        {/* <div className="w-"> */}
+        {/* <NoAccountAdded /> */}
+        <TableSection />
+        {/* </div> */}
       </div>
     </div>
   );

@@ -11,7 +11,8 @@ interface TokenCreationData {
   description: string;
   socials: SocialLink;
   tokenLogo: string | File | null;
-  airdrop?: string[];
+  airdrop: string[];
+  airdropPercentage: number;
   initialBuyAmount?: string | number;
 }
 
@@ -77,10 +78,11 @@ export const useTokenCreation = ({ onSuccess, onError }: UseTokenCreationProps =
 
       //get merkle root for the categories
       let airdropMerkleRoot: string[] = getAirdropMerkleRoot(formData.airdrop || []);
+      const airdropPercentage = formData.airdropPercentage * 10000;
       // Create token transaction
       await cultFactory({
         functionName: "deploy",
-        args: [user.address, metadataUri, formData.name, formData.symbol, airdropMerkleRoot, 50000],
+        args: [user.address, metadataUri, formData.name, formData.symbol, airdropMerkleRoot, airdropPercentage],
         //value: 0,
       });
       return metadataUri;

@@ -10,6 +10,8 @@ import { NFTList } from "~~/constants/merkleRoots";
 import { useTokenCreation } from "~~/hooks/createToken";
 import { DiscordIcon, GlobeIcon, TelegramIcon, XIcon } from "~~/icons/socials";
 import { MultiSelect } from "~~/src/components/ui/multiselect";
+import { Slider } from "~~/src/components/ui/slider";
+import { Switch } from "~~/src/components/ui/switch";
 import { IPFSMetadata } from "~~/types/types";
 import { resizeImage } from "~~/utils/imageHandler";
 
@@ -19,7 +21,8 @@ const CreateTokenSchema = z.object({
   name: z.string().nonempty({ message: "Token name is required" }),
   symbol: z.string().nonempty({ message: "Token symbol is required" }),
   description: z.string().default(""),
-  airdrop: z.array(z.string()).default([]),
+  airdrop: z.array(z.string()).default(["diamondHands"]),
+  airdropPercentage: z.number().min(1).max(50).default(1),
   socials: z
     .object({
       twitter: z.string().optional(),
@@ -37,6 +40,7 @@ const CreateTokenForm: FC = () => {
   //   const { toast } = useToast();
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const form = useForm<z.infer<typeof CreateTokenSchema>>({
     resolver: zodResolver(CreateTokenSchema),
@@ -44,7 +48,8 @@ const CreateTokenForm: FC = () => {
       name: "",
       symbol: "",
       description: "",
-      airdrop: [],
+      airdrop: ["diamondHands"],
+      airdropPercentage: 1,
       socials: {},
       imageUrl: null,
     },
@@ -61,7 +66,7 @@ const CreateTokenForm: FC = () => {
     },
   });
 
-  const onSubmit = async (data: IPFSMetadata & { airdrop: string[] }) => {
+  const onSubmit = async (data: IPFSMetadata & { airdrop: string[]; airdropPercentage: number }) => {
     setIsUploading(true);
 
     try {
@@ -71,6 +76,7 @@ const CreateTokenForm: FC = () => {
         description: data.description,
         socials: data.socials,
         airdrop: data.airdrop,
+        airdropPercentage: data.airdropPercentage,
         tokenLogo: data.imageUrl, // Assuming imageUrl is the File object
         initialBuyAmount: 0, // Add this to your form schema if not already present
       });
@@ -85,8 +91,8 @@ const CreateTokenForm: FC = () => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="py-4 flex flex-col gap-4 w-[75%]">
         {error && <p className="text-red-500 text-sm">{error}</p>}
-        <div className="flex gap-4">
-          <div className="w-4/6 flex flex-col gap-4">
+        <div className="flex gap-32 mb-12">
+          <div className="w-3/6 flex flex-col gap-4">
             <FormField
               name="name"
               render={({ field }) => (
@@ -116,7 +122,7 @@ const CreateTokenForm: FC = () => {
               )}
             />
           </div>
-          <div className="w-2/6 flex flex-col gap-1">
+          <div className="w-3/6 flex flex-col gap-1">
             <p className="text-sm">Token Logo*</p>
             <FormField
               name="imageUrl"
@@ -163,94 +169,127 @@ const CreateTokenForm: FC = () => {
             />
           </div>
         </div>
-        <FormField
-          name="description"
-          render={({ field }) => (
-            <FormItem className="flex flex-col gap-1">
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <textarea
-                  rows={4}
-                  className="input-field resize-none text-sm"
-                  placeholder="Add a description for a token"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage className="text-red-500" />
-            </FormItem>
-          )}
-        />
-
-        <div className="mb-12">
-          <FormLabel>Social Links</FormLabel>
-          <div className="grid grid-cols-2 gap-2">
-            <FormField
-              name="socials.twitter"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Twitter</FormLabel>
-                  <InputField placeholder="X (Twitter)" {...field} />
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              name="socials.telegram"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Telegram</FormLabel>
-                  <InputField placeholder="Telegram" {...field} />
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              name="socials.discord"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Discord</FormLabel>
-                  <InputField placeholder="Discord" {...field} />
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              name="socials.website"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Website</FormLabel>
-                  <InputField placeholder="Website" {...field} />
-                  <FormMessage className="text-red-500" />
-                </FormItem>
-              )}
-            />
-          </div>
+        {/* Advanced Options Toggle */}
+        <div className="flex items-center space-x-2 mb-4">
+          <Switch id="advanced-options" checked={showAdvanced} onCheckedChange={setShowAdvanced} />
+          <label htmlFor="advanced-options" className="cursor-pointer">
+            Advanced Options
+          </label>
         </div>
 
-        <FormField
-          name="airdrop"
-          render={({ field }) => (
-            <FormItem className="flex flex-col gap-1 mb-12">
-              <FormLabel>Airdrop Community</FormLabel>
-              <FormControl>
-                <MultiSelect
-                  options={NFTList}
-                  onValueChange={field.onChange}
-                  defaultValue={[]}
-                  placeholder="Select Communities"
-                  variant="default"
-                  className=""
-                  animation={2}
-                  maxCount={10}
+        {showAdvanced && (
+          <>
+            <FormField
+              name="description"
+              render={({ field }) => (
+                <FormItem className="flex flex-col gap-1">
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <textarea
+                      rows={4}
+                      className="input-field resize-none text-sm"
+                      placeholder="Add a description for a token"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-red-500" />
+                </FormItem>
+              )}
+            />
+
+            <div className="mb-12">
+              <FormLabel>Social Links</FormLabel>
+              <div className="grid grid-cols-2 gap-2">
+                <FormField
+                  name="socials.twitter"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Twitter</FormLabel>
+                      <InputField placeholder="X (Twitter)" {...field} />
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
                 />
-              </FormControl>
-              <FormMessage className="text-red-500" />
-            </FormItem>
-          )}
-        />
+
+                <FormField
+                  name="socials.telegram"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Telegram</FormLabel>
+                      <InputField placeholder="Telegram" {...field} />
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  name="socials.discord"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Discord</FormLabel>
+                      <InputField placeholder="Discord" {...field} />
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  name="socials.website"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Website</FormLabel>
+                      <InputField placeholder="Website" {...field} />
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            {/* Airdrop Percentage Slider */}
+            <FormField
+              name="airdropPercentage"
+              render={({ field }) => (
+                <FormItem className="flex flex-col gap-4 mb-12">
+                  <FormLabel>Airdrop Percentage ({field.value}%)</FormLabel>
+                  <FormControl>
+                    <Slider
+                      min={1}
+                      max={50}
+                      step={1}
+                      value={[field.value]}
+                      onValueChange={values => field.onChange(values[0])}
+                      className="w-full "
+                    />
+                  </FormControl>
+                  <FormMessage className="text-red-500" />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              name="airdrop"
+              render={({ field }) => (
+                <FormItem className="flex flex-col gap-1 mb-12">
+                  <FormLabel>Airdrop Community</FormLabel>
+                  <FormControl>
+                    <MultiSelect
+                      options={NFTList}
+                      onValueChange={field.onChange}
+                      defaultValue={[]}
+                      placeholder="Select Communities"
+                      variant="default"
+                      className=""
+                      animation={2}
+                      maxCount={10}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-red-500" />
+                </FormItem>
+              )}
+            />
+          </>
+        )}
 
         <label htmlFor="" className="flex flex-col items-start mb-12">
           <span>

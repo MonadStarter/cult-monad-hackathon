@@ -28,8 +28,8 @@ const TradingViewChart = ({ tokenAddress, interval = "D", theme = "dark", autosi
 
       widgetRef.current = new window.TradingView.widget({
         autosize: autosize,
-        //symbol: "TST", // Use tokenAddress directly as symbol
-        //interval: interval,
+        symbol: "TST", // Use tokenAddress directly as symbol
+        interval: interval,
         timezone: "Etc/UTC",
         theme: theme,
         style: "1", // Candlestick chart

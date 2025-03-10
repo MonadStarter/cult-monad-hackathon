@@ -7,7 +7,7 @@ networks:
       - name: CultFactory
         abi_file_path: abis/CultFactory.json
         address:
-          - 0x817e5E8409130C2bFd1C23c00a0F36d13fFe9093
+          - 0x49f7D95422982945ae3D990FC06d02bCD1E892bb
         handler: src/EventHandlers.ts
         events:
           - event: CultTokenCreated(address indexed factoryAddress, address indexed tokenCreator, address protocolFeeRecipient, address bondingCurve, string tokenURI, string name, string symbol, address tokenAddress, address poolAddress, address airdropContract)

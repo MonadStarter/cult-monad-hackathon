@@ -57,7 +57,7 @@ contract CultFactory is ICultFactory, UUPSUpgradeable, ReentrancyGuardUpgradeabl
         string memory _name,
         string memory _symbol,
         bytes32[] calldata _merkleRoots,
-        uint16 _airdropPercent
+        uint32 _airdropPercent
     ) external payable nonReentrant returns (address) {
         bytes32 salt = _generateSalt(_tokenCreator, _tokenURI);
         _validateCreateTokenParams(_name, _symbol, _tokenURI, _tokenCreator);
@@ -125,7 +125,7 @@ contract CultFactory is ICultFactory, UUPSUpgradeable, ReentrancyGuardUpgradeabl
 
     function _calculateAirdropRecipientCount(
         bytes32[] memory _merkleRoots,
-        uint16 _airdropPercent
+        uint32 _airdropPercent
     ) internal view returns (uint32 recipentCount) {
         /// @dev The airdrop percentage is calculated in basis points, where 100% is equivalent to 1,000,000.
         /// Therefore, an airdrop percentage of 10,000 represents 1% of the total supply.

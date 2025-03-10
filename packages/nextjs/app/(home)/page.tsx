@@ -39,9 +39,9 @@ export default async function Home() {
         <section className="hero-section">
           <div className="page py-20 px-24 flex items-center justify-between flex-col sm:flex-row gap-10 sm:gap-0">
             <div className="hero-text-section">
-              <h1>The First Meme fair launch platform on Monad.</h1>
+              <h1>Create Cults on Monad.</h1>
               <p className="text-gray-500 font-medium">
-                Your ultimate destination for meme coins. Join the fun and explore the latest trends in the crypto
+                Your ultimate destination for cultural tokens. Join the fun and explore the latest trends in the crypto
                 world!
               </p>
               <LaunchToken />
@@ -50,7 +50,7 @@ export default async function Home() {
           </div>
         </section>
         <DiscoverCoins />
-        <PlatformMetrics />
+        {/* <PlatformMetrics /> */}
       </div>
     </HydrationBoundary>
   );
