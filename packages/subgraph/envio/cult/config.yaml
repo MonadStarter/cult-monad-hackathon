@@ -18,3 +18,4 @@ networks:
           - event: CultTokenBuy(address indexed buyer, address indexed recipient, address indexed orderReferrer, uint256 totalEth, uint256 ethFee, uint256 ethSold, uint256 tokensBought, uint256 buyerTokenBalance, string comment, uint256 totalSupply, uint8 marketType)
           - event: CultTokenSell(address indexed seller, address indexed recipient, address indexed orderReferrer, uint256 totalEth, uint256 ethFee, uint256 ethBought, uint256 tokensSold, uint256 sellerTokenBalance, string comment, uint256 totalSupply, uint8 marketType)
           - event: CultTokenTransfer(address indexed from, address indexed to, uint256 amount, uint256 fromTokenBalance, uint256 toTokenBalance, uint256 totalSupply)
+          - event: CultTokenFees(address indexed tokenCreator, address indexed orderReferrer, address protocolFeeRecipient, uint256 tokenCreatorFee, uint256 orderReferrerFee, uint256 protocolFee)
