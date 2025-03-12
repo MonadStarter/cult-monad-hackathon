@@ -15,11 +15,11 @@ export async function generateMerkleTreeAndProofs(addresses: string[]) {
   return { root, proofs };
 }
 
-async function main() {
-  const addresses = ["0x60187Bc4949eE2F01b507a9F77ad615093f44260", "0x7909bC836c98bE432c43CF58CE9442a6564026aE"];
-  const { root, proofs } = await generateMerkleTreeAndProofs(addresses);
-  console.log("Returned Merkle Root:", root);
-  console.log("Returned Proofs:", proofs);
-}
+// async function main() {
+//   const addresses = ["0x60187Bc4949eE2F01b507a9F77ad615093f44260", "0x7909bC836c98bE432c43CF58CE9442a6564026aE"];
+//   const { root, proofs } = await generateMerkleTreeAndProofs(addresses);
+//   console.log("Returned Merkle Root:", root);
+//   console.log("Returned Proofs:", proofs);
+// }
 
-main().catch(console.error);
+//main().catch(console.error);

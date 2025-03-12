@@ -28,6 +28,7 @@ const main = async () => {
 
   const { root, proofs } = await generateMerkleTreeAndProofs(addresses);
   console.log("Merkle Root", root);
+  console.log("Merkle proofs", proofs);
 
   tx = await cultFactory.updateMerkleRoot(root, 2);
   txr = await tx.wait();
