@@ -23,6 +23,11 @@ export const routerItemsList: NavigationItem[] = [
     label: "Rankings",
     href: "/rankings",
   },
+  {
+    id: "profile",
+    label: "Profile",
+    href: "/profile",
+  },
 ];
 
 export const contentPagesList: NavigationItem[] = [];
