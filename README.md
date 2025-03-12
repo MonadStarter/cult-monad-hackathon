@@ -97,6 +97,7 @@ Follow these steps to run the project locally:
 
    ```bash
    cd packages/subgraph/envio/cult
+   pnpm codegen
    pnpm run dev
    ```
 
