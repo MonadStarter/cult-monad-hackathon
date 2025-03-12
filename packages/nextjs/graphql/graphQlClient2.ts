@@ -9,8 +9,8 @@ import {
   TokenTrade,
   TokenTradesData,
   TokensCreatedResponse,
-  TopHolders,
   TopHoldersResponse,
+  TopHolders as TopHoldersType,
 } from "~~/types/types";
 import { parseIPFSMetadata } from "~~/utils/externalAPIs/ipfs";
 
@@ -170,7 +170,7 @@ export const fetchTopHolders = async (tokenAddress: string, first = 10, skip = 0
   };
 
   // Make the request
-  const response: any = await request<{ TokenBalance: TopHolders[] }>(envioEndpoint, TopHolders, variables);
+  const response: any = await request<{ TokenBalance: TopHoldersType[] }>(envioEndpoint, TopHolders, variables);
 
   return {
     tokenBalances: response.TokenBalance,
@@ -305,7 +305,7 @@ export const fetchTokensCreated = async (accountId: string): Promise<TokensCreat
         slug: response.Account[0].slug || "",
         diamondHandProbability: response.Account[0].diamondHandProbability || 0,
         feeCollected: response.Account[0].feeCollected?.toString() || "0",
-        totalReferrals: response.Account[0].totalReferrals || 0
+        totalReferrals: response.Account[0].totalReferrals || 0,
       }
     : null;
 
@@ -313,7 +313,6 @@ export const fetchTokensCreated = async (accountId: string): Promise<TokensCreat
     accountData,
   };
 };
-
 
 const AccountDetails = gql`
   query AccountDetails($accountId: String!) {
@@ -328,31 +327,31 @@ const AccountDetails = gql`
 `;
 
 // Updated function that matches the pattern of fetchTokenTrades
-export const fetchAccountDetails = async (
-  accountId: string,
-): Promise<{ accountData: AccountProfileData | null }> => {
+export const fetchAccountDetails = async (accountId: string): Promise<{ accountData: AccountProfileData | null }> => {
   // Prepare the query variables
   const variables = { accountId };
 
   // Execute the GraphQL query
   const response = await request<AccountDetailsResponse>(
-    envioEndpoint,   // Replace with your actual endpoint
+    envioEndpoint, // Replace with your actual endpoint
     AccountDetails,
-    variables
+    variables,
   );
 
   // Check if Account data exists and transform it
-  const accountData = response.Account.length > 0 ? 
-    {
-      id: response.Account[0].id,
-      slug: response.Account[0].slug,
-      diamondHandProbability: response.Account[0].diamondHandProbability,
-      feeCollected: response.Account[0].feeCollected ? response.Account[0].feeCollected.toString() : "0",
-      totalReferrals: response.Account[0].totalReferrals || 0,
-    } : null;
+  const accountData =
+    response.Account.length > 0
+      ? {
+          id: response.Account[0].id,
+          slug: response.Account[0].slug,
+          diamondHandProbability: response.Account[0].diamondHandProbability,
+          feeCollected: response.Account[0].feeCollected ? response.Account[0].feeCollected.toString() : "0",
+          totalReferrals: response.Account[0].totalReferrals || 0,
+        }
+      : null;
 
   // Return in a format that matches your other fetch functions
   return {
-    accountData
+    accountData,
   };
 };

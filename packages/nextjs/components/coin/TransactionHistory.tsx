@@ -50,7 +50,7 @@ function TransactionHistory() {
       return allPages.length > 1 ? allPages.length - 1 : undefined;
     },
     initialPageParam: 1,
-    //refetchInterval: 2000,
+    refetchInterval: 3000,
   });
 
   if (isLoading) return <p>Loading...</p>;

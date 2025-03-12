@@ -56,6 +56,7 @@ function HolderDistribution() {
       return allPages.length > 1 ? allPages.length - 1 : undefined;
     },
     initialPageParam: 1,
+    refetchInterval: 3000,
   });
 
   console.log("RENDERED HOLDER", data);
