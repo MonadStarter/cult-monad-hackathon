@@ -230,6 +230,10 @@ export const fetchTokenTrades = async (
 const TokensCreated = gql`
   query TokensCreated($accountId: String!) {
     Account(where: { id: { _eq: $accountId } }) {
+      slug
+      diamondHandProbability
+      feeCollected
+      totalReferrals
       created {
         id
         name
@@ -298,6 +302,10 @@ export const fetchTokensCreated = async (accountId: string): Promise<TokensCreat
             image,
           };
         }),
+        slug: response.Account[0].slug || "",
+        diamondHandProbability: response.Account[0].diamondHandProbability || 0,
+        feeCollected: response.Account[0].feeCollected?.toString() || "0",
+        totalReferrals: response.Account[0].totalReferrals || 0
       }
     : null;
 

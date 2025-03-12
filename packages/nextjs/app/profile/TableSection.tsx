@@ -6,41 +6,47 @@ import SegmentedPanel, { SegmentedPanelOptionType } from "~~/components/common/S
 import TokenCreatedTable from "~~/components/profile/TokensCreatedTable/TokensCreatedTable";
 import TokensOwnedTable from "~~/components/profile/TokensOwnedTable/TokensOwnedTable";
 import { fetchTokensCreated } from "~~/graphql/graphQlClient2";
-import { TokensCreatedResponse } from "~~/types/types";
+import { Balance, TokenCreated, TokensCreatedResponse } from "~~/types/types";
 
-export default function TableSection() {
-  const { address: accountAddress } = useAccount();
+export default function TableSection({
+  tokensOwned,
+  tokensCreated,
+}: {
+  tokensOwned: Balance[] | [];
+  tokensCreated: TokenCreated[] | [];
+}) {
+  //const { address: accountAddress } = useAccount();
 
-  const {
-    data: profileData,
-    isLoading: queryLoading,
-    error: queryError,
-    refetch,
-  } = useQuery<TokensCreatedResponse>({
-    queryKey: ["userProfileData", accountAddress],
-    queryFn: () => fetchTokensCreated(accountAddress!),
-    enabled: !!accountAddress,
-  });
+  // const {
+  //   data: profileData,
+  //   isLoading: queryLoading,
+  //   error: queryError,
+  //   refetch,
+  // } = useQuery<TokensCreatedResponse>({
+  //   queryKey: ["userProfileData", accountAddress],
+  //   queryFn: () => fetchTokensCreated(accountAddress!),
+  //   enabled: !!accountAddress,
+  // });
 
-  if (queryError) {
-    console.log("queryError", queryError);
-  }
+  // if (queryError) {
+  //   console.log("queryError", queryError);
+  // }
 
-  if (queryLoading) {
-    console.log("queryLoading", queryLoading);
-  }
+  // if (queryLoading) {
+  //   console.log("queryLoading", queryLoading);
+  // }
 
-  console.log("PROFILE DATA", profileData);
+  // console.log("PROFILE DATA", profileData);
 
-  let tokensOwned = profileData?.accountData?.balances;
-  if (!tokensOwned || tokensOwned.length === 0) {
-    tokensOwned = [];
-  }
+  // let tokensOwned = profileData?.accountData?.balances;
+  // if (!tokensOwned || tokensOwned.length === 0) {
+  //   tokensOwned = [];
+  // }
 
-  let tokensCreated = profileData?.accountData?.created;
-  if (!tokensCreated || tokensCreated.length === 0) {
-    tokensCreated = [];
-  }
+  // let tokensCreated = profileData?.accountData?.created;
+  // if (!tokensCreated || tokensCreated.length === 0) {
+  //   tokensCreated = [];
+  // }
 
   const USER_TOKEN_OPTIONS: SegmentedPanelOptionType[] = [
     {

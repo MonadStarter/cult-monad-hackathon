@@ -70,6 +70,10 @@ export interface Balance {
 }
 
 export interface AccountData {
+  slug: string;
+  diamondHandProbability: number;
+  feeCollected?: string | bigint; // BigInt often mapped as string in GraphQL
+  totalReferrals: number;
   created: TokenCreated[];
   balances: Balance[];
 }
