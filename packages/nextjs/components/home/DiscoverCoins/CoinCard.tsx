@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import ProgressBar from "../../common/ProgressBar";
@@ -9,9 +9,7 @@ import { rankingColors } from "~~/constants/content";
 import useGetMktCap from "~~/hooks/fetchPrice";
 import { TokenMetadata } from "~~/types/types";
 
-const ETH_PRICE_USD = 3000;
 const MINIMUM_MARKETCAP_USD = 100000;
-const POLLING_INTERVAL = 5000;
 
 interface CoinCardProps {
   //tokenMetadata: CultTokenMetadata; // Basic token info from DiscoverCoins query

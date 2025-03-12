@@ -25,25 +25,4 @@ export const routerItemsList: NavigationItem[] = [
   },
 ];
 
-export const contentPagesList: NavigationItem[] = [
-  {
-    id: "about",
-    label: "About Us",
-    href: "/about",
-  },
-  {
-    id: "contact",
-    label: "Contact Us",
-    href: "/contact",
-  },
-  {
-    id: "terms",
-    label: "Terms of Usage",
-    href: "/terms",
-  },
-  {
-    id: "privacy",
-    label: "Privacy Policy",
-    href: "/privacy-policy",
-  },
-];
+export const contentPagesList: NavigationItem[] = [];

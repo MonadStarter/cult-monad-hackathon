@@ -1,7 +1,25 @@
 import { TokenCardInterface } from "~~/components/profile/TokenCard";
-import { Comment, MemeCoin } from "~~/types/types";
+import { Comment, MemeCoin, TokenMetadata } from "~~/types/types";
 
 export const ETH_PRICE_USD = 3000;
+
+const MON_TOKEN: TokenMetadata = {
+  name: "Mon",
+  description: "Mon token is a utility token that is used to pay for the services provided by the Cult token holders.",
+  image: "https://i.pinimg.com/236x/7d/d5/c4/7dd5c4d9d2d6e3d1e8e1d4e2e0e4f0f.jpg",
+  tokenAddress: "0x60187Bc4949eE2F01b507a9F77ad615093f44260",
+  socials: {
+    twitter: "https://twitter.com/MonToken",
+    telegram: "https://t.me/mon_token",
+    discord: "https://discord.gg/mon",
+    website: "https://mon.xyz",
+  },
+  symbol: "MON",
+  marketCap: "4000000000",
+  price: "4",
+  circulatingSupply: "1000000000",
+};
+
 const COINS_DUMMY_DATA: MemeCoin[] = [
   {
     name: "SunPixel",
@@ -775,4 +793,5 @@ export {
   RANKING_DUMMY_DATA,
   TOKEN_OWNED_DUMMY_DATA,
   CREATED_TOKEN_DUMMY_DATA,
+  MON_TOKEN,
 };
