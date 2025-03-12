@@ -38,7 +38,7 @@ const main = async () => {
   console.log("Merkle Root", merkleRoot);
 
   tx = await cultFactory.updateMerkleRoot(
-    "0x4baf9b443159aead6555661e406ef9f0e21dea084fee185a5b226015d77ffadc",
+    merkleRoot.root,
     50000
   );
   txr = await tx.wait();
@@ -51,7 +51,7 @@ const main = async () => {
     "ipfs://Qmchtxo6xqjASjfLa1SSxfs8HM1NW2ceshjNir1KXSy5Br",
     "Cult Token",
     "CT",
-    ["0x4baf9b443159aead6555661e406ef9f0e21dea084fee185a5b226015d77ffadc"],
+    [merkleRoot.root],
     50000,
     // {
     //   value: ethers.parseEther("0.001"),
