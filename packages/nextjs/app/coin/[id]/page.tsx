@@ -134,6 +134,8 @@ export default function CoinPage() {
     console.log("queryLoading", queryLoading);
   }
 
+  console.log("PAGE RENDERING");
+
   return (
     <div className={"page pt-4"}>
       {/* <TradingViewChart tokenAddress={tokenaddy} interval="H" theme="light" autosize={true} /> */}

@@ -2,7 +2,6 @@ import { useParams } from "next/navigation";
 import Pagination from "../common/Pagination";
 import Table from "../common/Table";
 import { Address } from "../scaffold-eth";
-import TradingViewChart from "./TradingView";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import { Address as AddressType, formatEther } from "viem";
@@ -61,13 +60,24 @@ function TransactionHistory() {
   const trades = data?.pages.flatMap(page => page.tokenTrades) || [];
   const transformedTrades = transformTrades(trades);
   return (
-    <div className="content-card-merger">
-      <div className="content-wrapper-card w-200 h-200"></div>
-      <div className="flex flex-col gap-5">
-        <Table values={transformedTrades} columns={columns} />
-        <Pagination totalPages={10} sibling={2} className="w-1/2" />
+    <>
+      {/* <TradingViewChart
+            baseAsset={metadata}
+            isPair={true}
+            //setFadeIn={setFadeIn}
+            //isUsd={isAssetPage ? undefined : !switchedToNative}
+            //setPairTrades={setGlobalPairs}
+            //shouldLoadMoreTrade={orderBy === "desc"}
+            extraCss="min-h-[500px] lg:min-h-[370px] md:min-h-[320px] w-full md:w-full mx-auto h-[520px] lg:h-[420px] md:h-[370px] mt-2.5 md:mt-0"
+          /> */}
+      <div className="content-card-merger">
+        <div className="content-wrapper-card w-200 h-200"></div>
+        <div className="flex flex-col gap-5">
+          <Table values={transformedTrades} columns={columns} />
+          <Pagination totalPages={10} sibling={2} className="w-1/2" />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

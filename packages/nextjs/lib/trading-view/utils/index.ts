@@ -22,12 +22,12 @@ async function fetchHistoricalData(tokenAddress: string, from: number, to: numbe
   allTrades.push(...response.tokenTrades);
   hasMore = response.tokenTrades.length === ITEMS_PER_PAGE;
 
-  // Filter trades by time range
-  // return allTrades.filter(trade => {
-  //   const timestamp = parseInt(trade.timestamp);
-  //   return timestamp >= from && timestamp <= to;
-  // });
-  return allTrades;
+  //Filter trades by time range
+  return allTrades.filter(trade => {
+    const timestamp = parseInt(trade.timestamp);
+    return timestamp >= from && timestamp <= to;
+  });
+  //return allTrades;
 }
 
 function resolutionToMilliseconds(resolution: any) {
@@ -59,9 +59,14 @@ function processTradesToOHLC(trades: TokenTrade[], resolution: string): any[] {
 
     const ethAmount = new BigNumber(trade.ethAmount);
     const tokenAmount = new BigNumber(trade.tokenAmount);
+
     if (tokenAmount.isZero()) continue;
-    const price = ethAmount.dividedBy(tokenAmount).toNumber();
-    const volume = tokenAmount.toNumber();
+
+    // Scale the price to be more manageable (multiply by 10^12 to bring to a normal range)
+    const price = ethAmount.dividedBy(tokenAmount).multipliedBy(1e12).toNumber();
+
+    // Scale down the volume to a reasonable range (divide by 10^18)
+    const volume = tokenAmount.dividedBy(1e18).toNumber();
 
     if (!currentBar || currentBar.time !== barTime) {
       if (currentBar) bars.push(currentBar);
@@ -107,30 +112,69 @@ export const Datafeed = (
       session: "24x7",
       ticker: symbolName,
       minmov: 1,
-      pricescale: Math.min(10 ** String(Math.round(10000 / price)).length, 10000000000000000),
+      // pricescale: Math.min(10 ** String(Math.round(10000 / price)).length, 10000000000000000),
+      pricescale: 1000000,
       has_intraday: true,
       intraday_multipliers: ["1", "15", "30", "60"],
       supported_resolution: supportedResolutions,
-      volume_precision: 8,
+      volume_precision: 2,
       data_status: "streaming",
     };
     onResolve(params);
   },
   getBars: async (symbolInfo, resolution: string, periodParams, onResult: Function) => {
-    console.log("[getBars]: Method call", symbolInfo);
-
-    const rawTrades = await fetchHistoricalData(baseAsset.tokenAddress, periodParams.from, periodParams.to);
-    console.log("RAW TRADES", rawTrades);
-    const bars = processTradesToOHLC(rawTrades, resolution);
-
-    onResult(bars, {
-      noData: bars.length !== periodParams.countBack,
+    console.log("GetBars params:", {
+      symbol: symbolInfo.name,
+      resolution,
+      from: new Date(periodParams.from * 1000).toISOString(),
+      to: new Date(periodParams.to * 1000).toISOString(),
+      firstRequest: periodParams.firstDataRequest,
     });
+    try {
+      const rawTrades = await fetchHistoricalData(baseAsset.tokenAddress, periodParams.from, periodParams.to);
+      console.log(`Fetched ${rawTrades.length} trades`);
 
-    if (periodParams.firstDataRequest) {
-      lastBarsCache.set(baseAsset.name, bars[bars.length - 1]);
+      const bars = processTradesToOHLC(rawTrades, resolution);
+      console.log(`Generated ${bars.length} bars`);
+
+      // Important: ensure you're returning the right noData value
+      // If we found any bars, set noData to false
+      const noData = bars.length === 0;
+
+      onResult(bars, { noData });
+
+      if (periodParams.firstDataRequest && bars.length > 0) {
+        lastBarsCache.set(baseAsset.name, bars[bars.length - 1]);
+      }
+    } catch (error) {
+      console.error("Error fetching bars:", error);
+      onResult([], { noData: true });
     }
   },
+
+  // getBars: async (symbolInfo, resolution: string, periodParams, onResult: Function) => {
+  //   // For testing, generate some fake data to see if the chart works at all
+  //   console.log("GetBars called with", { resolution, from: periodParams.from, to: periodParams.to });
+  //   const testBars = [];
+  //   const now = Math.floor(Date.now() / 1000);
+
+  //   // Generate 10 test bars
+  //   for (let i = 0; i < 10; i++) {
+  //     const time = (now - (10 - i) * 3600) * 1000; // hourly bars
+  //     testBars.push({
+  //       time: time,
+  //       open: 10000 + i * 100,
+  //       high: 10000 + i * 100 + 50,
+  //       low: 10000 + i * 100 - 50,
+  //       close: 10000 + i * 100 + (Math.random() * 100 - 50),
+  //       volume: 1000 + Math.random() * 1000,
+  //     });
+  //   }
+
+  //   console.log("Test bars:", testBars);
+  //   onResult(testBars, { noData: true });
+  // },
+
   searchSymbols: () => {},
   subscribeBars: (symbolInfo, resolution, onRealtimeCallback, subscriberUID, onResetCacheNeededCallback) => {
     console.log("Subscribinnnng");
