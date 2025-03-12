@@ -116,13 +116,13 @@ Follow these steps to run the project locally:
 
 ## Project Structure
 
-- **packages/foundry**: Smart contracts and blockchain interaction
+- **packages/hardhat**: Smart contracts and blockchain interaction
 - **packages/nextjs**: Frontend application
 - **packages/subgraph**: Data indexing and query services
 
 ## Additional Information
 
-- **Smart Contract Development**: Edit contracts in `packages/foundry/contracts`
+- **Smart Contract Development**: Edit contracts in `packages/hardhat/contracts`
 - **Frontend Development**: Edit the frontend in `packages/nextjs/app`
 - **Deployment Scripts**: Customize deployment scripts in `packages/foundry/script`
 
