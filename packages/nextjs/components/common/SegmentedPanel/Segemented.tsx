@@ -18,10 +18,10 @@ const Segmented = ({ options, className, value, onChange }: SegmentedButtonProps
     return (
       <div
         key={options.id}
-        className={`py-2 rounded-xl cursor-pointer flex-1 ${
+        className={`py-3 px-2 rounded-xl cursor-pointer flex-1 transition-all duration-200 ${
           value === options.id
-            ? "bg-gray-900 text-white-500"
-            : "text-white-64"
+            ? "bg-[#1c1a29] text-white shadow-sm"
+            : "text-gray-400 hover:text-gray-300"
         }`}
         onClick={(): void => onChange(options.id)}
       >
@@ -31,7 +31,7 @@ const Segmented = ({ options, className, value, onChange }: SegmentedButtonProps
   };
 
   return (
-    <div className={`flex p-0.5 bg-gray-950 rounded-xl ${className}`}>
+    <div className={`flex p-1.5 rounded-xl ${className}`}>
       {options.map(buildOptions)}
     </div>
   );

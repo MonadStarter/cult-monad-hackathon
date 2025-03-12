@@ -17,8 +17,8 @@ const TokenCreatedTable = ({ tokensCreated }: { tokensCreated: TokenCreated[] | 
         icon={<TokenIcon />}
         note="No coins in the list"
         button={
-          <button className="button bg-primary-500">
-            <h6 className="text-xs text-gray-25">Launch token</h6>
+          <button className="bg-[#7c5cff] text-white font-semibold py-3 px-5 rounded-xl flex items-center gap-2 hover:bg-[#6c4cef] transition-colors">
+            <span>Launch token</span>
             <RightChevronArrow />
           </button>
         }
@@ -38,7 +38,7 @@ const TokenCreatedTable = ({ tokensCreated }: { tokensCreated: TokenCreated[] | 
   }));
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-4">
       <div className="flex justify-end gap-4">
         {/* {buildAddIcon()} */}
         {/* <button className="button border border-gray-800 bg-white-7">
@@ -47,7 +47,7 @@ const TokenCreatedTable = ({ tokensCreated }: { tokensCreated: TokenCreated[] | 
         </button> */}
       </div>
       <Table values={tableValues} columns={COLUMNS} />
-      <div className="mt-3 w-3/5">
+      <div className="mt-3 w-full sm:w-3/5 mx-auto">
         <Pagination totalPages={10} />
       </div>
     </div>

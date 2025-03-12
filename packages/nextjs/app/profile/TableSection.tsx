@@ -67,9 +67,12 @@ export default function TableSection({
   ];
 
   return (
-    <div className="w-4/6">
-      {/* <NoAccountAdded /> */}
-      <SegmentedPanel panels={USER_TOKEN_OPTIONS} className="bg-white-7" />
+    <div className="w-full lg:w-2/3">
+      <SegmentedPanel 
+        panels={USER_TOKEN_OPTIONS} 
+        className="bg-[#1c1a29] shadow-lg rounded-2xl border-0" 
+        segmentedClassName="bg-[#272536]"
+      />
     </div>
   );
 }

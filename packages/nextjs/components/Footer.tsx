@@ -11,7 +11,12 @@ function Footer() {
       <div className="w-full border-b-1 border-b border-white "></div>
       <div className="flex justify-between w-full">
         <p className="text-xs text-gray-500">© cult trade. All rights reserved</p>
-        <Socials discord="#" x="#" telegram="#" className="!gap-2" />
+        <Socials 
+          discord="https://discord.com/invite/wf29GFzE5Z" 
+          x="https://x.com/cultdottrade" 
+          telegram="https://x.com/cultdottrade" 
+          className="!gap-2" 
+        />
       </div>
     </section>
   );

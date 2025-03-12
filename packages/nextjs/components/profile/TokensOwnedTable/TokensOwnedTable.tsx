@@ -22,7 +22,11 @@ const TokensOwnedTable = ({ tokensOwned }: { tokensOwned: Balance[] | [] }) => {
   // }
 
   if (isEmpty(tokensOwned)) {
-    return <div>You do not have any coins, buy some</div>;
+    return (
+      <div className="py-20 px-4 flex items-center justify-center">
+        <p className="text-lg text-white font-medium">You do not have any coins, buy some</p>
+      </div>
+    );
   }
 
   // const tableValues: TableValueInterface[] = tokensOwned.map(token => ({
@@ -50,16 +54,16 @@ const TokensOwnedTable = ({ tokensOwned }: { tokensOwned: Balance[] | [] }) => {
   console.log("tokensOwned", tokensOwned, tableValues);
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-4">
       <div className="flex justify-end gap-4">
         {/* {buildAddIcon()} */}
-        <button className="button border border-gray-800 bg-white-7">
+        <button className="bg-[#272536] border border-[#3c3a49] rounded-lg py-2 px-4 text-sm text-white flex items-center gap-2 hover:bg-[#32304a] transition-colors">
           <CheckIcon />
-          <h6 className="text-xs text-gray-25">Listed on DEXx</h6>
+          <span className="text-white">Listed on DEXx</span>
         </button>
       </div>
       <Table values={tableValues} columns={COLUMNS} />
-      <div className="mt-3 w-3/5">
+      <div className="mt-3 w-full sm:w-3/5 mx-auto">
         <Pagination totalPages={10} />
       </div>
     </div>
