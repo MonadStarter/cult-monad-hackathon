@@ -1,7 +1,7 @@
 // src/components/multi-select.tsx
 import * as React from "react";
 import { type VariantProps, cva } from "class-variance-authority";
-import { CheckIcon, ChevronDown, WandSparkles, XCircle, XIcon } from "lucide-react";
+import { CheckIcon, ChevronDown, XCircle, XIcon } from "lucide-react";
 import { cn } from "~~/lib/utils";
 import { Badge } from "~~/src/components/ui/badge";
 import { Button } from "~~/src/components/ui/button";
@@ -183,7 +183,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
           >
             {selectedValues.length > 0 ? (
               <div className="flex justify-between items-center w-full">
-                <div className="flex flex-wrap items-center space-x-2">
+                <div className="flex flex-wrap items-center gap-1">
                   {selectedValues.slice(0, maxCount).map(value => {
                     const option = options.find(o => o.value === value);
                     const IconComponent = option?.icon;
