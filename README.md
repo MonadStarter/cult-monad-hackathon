@@ -4,6 +4,8 @@
 
 Cult is a revolutionary platform transforming how people perceive and trade cultural tokens. We believe cultural tokenization represents the future where attention is the real currency. Our platform introduces a groundbreaking reputation system that aligns incentives for token holders, tokens, and creators, ensuring all parties benefit from long-term holding and loyalty.
 
+<img width="1419" alt="Screenshot 2025-03-13 at 02 26 57" src="https://github.com/user-attachments/assets/aebbffc1-9009-4de9-b1a7-1c1533b03273" />
+
 ## Features
 
 - **Reputation System**: Users earn reputation points based on holding and trading activity on the platform. Each user will have a reputation score and probability to get in the diamond hands list.
@@ -13,6 +15,8 @@ Cult is a revolutionary platform transforming how people perceive and trade cult
 - **Airdrops**: Every coin on Cult must airdrop a portion of supply (1-50%). Creators can airdrop to charities, NFT communities, and top holders.
 
 - **Creator Earnings**: Creators earn from LP fees and bonding curves using Uniswap v4, incentivizing them to increase token popularity rather than dumping tokens.
+  
+<img width="1407" alt="Screenshot 2025-03-13 at 02 11 19" src="https://github.com/user-attachments/assets/fbac5942-b0ce-4789-882b-42757536ae45" />
 
 ### Key Mechanics
 
@@ -39,6 +43,8 @@ Cult's reputation system operates through several core mechanics:
     - Creators can choose specific communities for airdrops, such as NFT or token communities that are already established, to target user bases and create fast community token ownership (CTO).
     - This is designed to prevent gaming, as creators cannot add their own list of addresses; instead, they select from predefined communities based on diamond hand scores, ensuring fairness and transparency.
     - The system tags different communities based on their diamond hand scores, allowing new creators to prefer airdropping to the best communities, enhancing engagement and adoption.
+      
+<img width="1425" alt="Screenshot 2025-03-13 at 02 22 38" src="https://github.com/user-attachments/assets/f862fd75-3f39-4ccc-81fd-da529bd3306f" />
 
 ## Tech Stack
 
