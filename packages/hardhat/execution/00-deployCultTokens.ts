@@ -39,7 +39,7 @@ const main = async () => {
 
   tx = await cultFactory.updateMerkleRoot(
     merkleRoot.root,
-    50000
+    addresses.length
   );
   txr = await tx.wait();
   console.log("Merkle Root updated", tx.hash);
