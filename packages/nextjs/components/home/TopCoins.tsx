@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { fetchTopCoins } from "~~/graphql/graphQlClient2";
 import { ellipsisToken } from "~~/lib/utils";
@@ -40,21 +41,23 @@ function TopCoins() {
         const metadata = parseIPFSMetadata(coin.ipfsData.content);
 
         return (
-          <div key={coin.tokenAddress} className="bg-background flex rounded-xl p-1 items-center z-2 gap-2 relative">
-            <Image src={metadata?.imageUrl || `https://picsum.photos/200`} height={90} width={90} alt={coin.name} />
-            <div className="flex flex-col gap-2 h-min">
-              <div>
-                <h5>{coin.name}</h5>
-                <p className="text-gray-500 text-xs">${coin.symbol}</p>
+          <Link href={`/coin/${coin.tokenAddress}`} key={coin.tokenAddress}>
+            <div className="bg-background flex rounded-xl p-1 items-center z-2 gap-2 relative">
+              <Image src={metadata?.imageUrl || `https://picsum.photos/200`} height={90} width={90} alt={coin.name} />
+              <div className="flex flex-col gap-2 h-min">
+                <div>
+                  <h5>{coin.name}</h5>
+                  <p className="text-gray-500 text-xs">${coin.symbol}</p>
+                </div>
+                <p className="text-gray-500 text-xs">
+                  Designed by:{" "}
+                  <span className="text-primary-400 underline underline-offset-1">
+                    {ellipsisToken(coin.tokenCreator.id)}
+                  </span>
+                </p>
               </div>
-              <p className="text-gray-500 text-xs">
-                Designed by:{" "}
-                <span className="text-primary-400 underline underline-offset-1">
-                  {ellipsisToken(coin.tokenCreator.id)}
-                </span>
-              </p>
             </div>
-          </div>
+          </Link>
         );
       })}
     </div>
