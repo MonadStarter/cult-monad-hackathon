@@ -12,8 +12,13 @@ export default function Topbar() {
         <Navbar navItems={routerItemsList} className="max-sm:hidden" />
       </div>
       <div className="flex gap-5 items-center">
-        <Socials discord="#" telegram="#" x="#" className="max-sm:hidden" />
-     <PrivyLoginButton />
+        <Socials 
+          discord="https://discord.com/invite/wf29GFzE5Z" 
+          x="https://x.com/cultdottrade" 
+          telegram="https://x.com/cultdottrade" 
+          className="max-sm:hidden !gap-2" 
+        />
+        <PrivyLoginButton />
       </div>
     </nav>
   );

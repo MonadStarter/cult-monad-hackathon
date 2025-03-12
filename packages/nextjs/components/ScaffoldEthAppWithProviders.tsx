@@ -1,7 +1,7 @@
 "use client";
 
 import Topbar from "./Topbar";
-import { QueryClient, QueryClientProvider, isServer } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
 import { Toaster } from "react-hot-toast";
 import { WagmiProvider } from '@privy-io/wagmi';
@@ -9,6 +9,9 @@ import Footer from "~~/components/Footer";
 import { wagmiConfig } from "~~/services/web3/wagmiConfig";
 import { PrivyProvider } from '@privy-io/react-auth';
 import scaffoldConfig from "~~/scaffold.config";
+
+// Create a client
+const queryClient = new QueryClient();
 
 const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -23,8 +26,6 @@ const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export const queryClient = new QueryClient();
-
 
 export const ScaffoldEthAppWithProviders = ({ children }: { children: React.ReactNode }) => {
 
@@ -34,9 +35,9 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
       config={{
         // Customize Privy's appearance in your app
         appearance: {
-          theme: 'light',
-          accentColor: '#676FFF',
-          logo: 'https://your-logo-url',
+          theme: 'dark',
+          accentColor: '#7c5cff',
+          logo: '/cultLogo.jpg',
         },
         // Create embedded wallets for users who don't have a wallet
         embeddedWallets: {
@@ -48,7 +49,7 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
     >
       <QueryClientProvider client={queryClient}>
         <WagmiProvider config={wagmiConfig}>
-          <ProgressBar height="3px" color="#2299dd" />
+          <ProgressBar height="3px" color="#7c5cff" />
             <ScaffoldEthApp>{children}</ScaffoldEthApp>
         </WagmiProvider>
       </QueryClientProvider>
