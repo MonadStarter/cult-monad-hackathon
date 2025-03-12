@@ -27,13 +27,12 @@ CultFactory.CultTokenCreated.handler(async ({ event, context }) => {
     event.params.tokenCreator,
     context
   );
-  const slug = "Aidrop Contract";
+  const slug = "Airdrop Contract";
   const airdropContract = await loadOrCreateAccount(
     event.params.airdropContract,
     context,
     slug
   );
-
   const cultToken: CultToken = {
     id: tokenAddress,
     factoryAddress: event.params.factoryAddress,
@@ -52,7 +51,6 @@ CultFactory.CultTokenCreated.handler(async ({ event, context }) => {
     holderCount: BigInt(0),
   };
   context.CultToken.set(cultToken);
-
   // Handle IPFS data
   const ipfsPrefix = "ipfs://";
   const ipfsIndex = cultToken.tokenURI.indexOf(ipfsPrefix);
@@ -176,10 +174,8 @@ Cult.CultTokenTransfer.handler(async ({ event, context }) => {
   if (!token) {
     return;
   }
-
   let from = event.params.from;
   let to = event.params.to;
-
   let fromAccount = await loadOrCreateAccount(from, context);
   let toAccount = await loadOrCreateAccount(to, context);
 
@@ -191,7 +187,13 @@ Cult.CultTokenTransfer.handler(async ({ event, context }) => {
       context
     );
   }
-  await updateTokenBalance(token, toAccount.id, event.params.toTokenBalance, context);
+
+  await updateTokenBalance(
+    token,
+    toAccount.id,
+    event.params.toTokenBalance,
+    context
+  );
 });
 
 // Function to load or create an account
@@ -202,11 +204,47 @@ async function loadOrCreateAccount(
 ): Promise<Account> {
   let account = await context.Account.get(address);
   if (!account) {
-    account = { id: address, slug: slug || "", diamondHandProbability: 0 };
+    account = {
+      id: address,
+      slug: slug || "",
+      diamondHandProbability: 0,
+      referrer: account?.referrer,
+      referrals: account?.referrals,
+      totalReferrals: account?.totalReferrals,
+      feeCollected: account?.feeCollected,
+    };
     context.Account.set(account);
   }
   return account;
 }
+
+Cult.CultTokenFees.handler(async ({ event, context }) => {
+  console.log("CultTokenFees", event.params.orderReferrer);
+
+  const orderReferrer = await loadOrCreateAccount(
+    event.params.orderReferrer,
+    context
+  );
+  let orderReferrerAccount = await context.Account.get(orderReferrer.id);
+  const entity: Account = {
+    id: orderReferrer.id,
+    referrer_id: orderReferrerAccount?.referrer_id,
+    totalReferrals: orderReferrerAccount
+      ? orderReferrerAccount.totalReferrals + 1
+      : 1,
+    feeCollected: orderReferrerAccount
+      ? BigInt(orderReferrerAccount.feeCollected) +
+        BigInt(event.params.orderReferrerFee)
+      : BigInt(event.params.orderReferrerFee),
+    slug: orderReferrerAccount
+      ? orderReferrerAccount.slug
+      : "Order Referrer Fees",
+    diamondHandProbability: orderReferrerAccount
+      ? orderReferrerAccount.diamondHandProbability
+      : 0,
+  };
+  context.Account.set(entity);
+});
 
 async function updateTokenBalance(
   token: CultToken,

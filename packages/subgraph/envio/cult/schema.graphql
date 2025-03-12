@@ -37,6 +37,10 @@ type Account @entity {
   created: [CultToken!]! @derivedFrom(field: "tokenCreator")
   slug: String
   diamondHandProbability: Int!
+  referrer: Account
+  referrals: [Account!]! @derivedFrom(field: "referrer")
+  totalReferrals: Int!
+  feeCollected: BigInt!
 }
 
 type TokenBalance @entity {
