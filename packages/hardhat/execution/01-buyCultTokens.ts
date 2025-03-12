@@ -7,7 +7,7 @@ import { forkedChain, networkConfig } from "../helper-hardhat-config";
 import { Cult, CultFactory } from "../typechain-types";
 import CultFactoryABI from "../constants/abis/CultFactory.json";
 import CultABI from "../constants/abis/Cult.json";
-import generateMerkleTreeAndProofs from "../scripts/createMerkleProofs";
+import { generateMerkleTreeAndProofs } from "../scripts/createMerkleProofs";
 
 const main = async () => {
   let tx, txr, deployer;
