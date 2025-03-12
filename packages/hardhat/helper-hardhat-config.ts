@@ -19,7 +19,8 @@ export const networkConfig: networkConfigInfo = {
   },
   monadTestnet: {
     chainId: 10143,
-    deployer: "0x60187Bc4949eE2F01b507a9F77ad615093f44260",
+    // deployer: "0x60187Bc4949eE2F01b507a9F77ad615093f44260",
+    deployer: "0x7909bC836c98bE432c43CF58CE9442a6564026aE",
   },
 };
 
