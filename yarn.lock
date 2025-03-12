@@ -11531,9 +11531,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.5.73":
-  version: 1.5.114
-  resolution: "electron-to-chromium@npm:1.5.114"
-  checksum: af696acf7c57007e3362a0a7e5fb4613210d55d6bc7c7cfee32f4000aaa604a75fce41d12b081cab7d9757eefb44cafa69c17b6f8ea450d5da938c0bf84b5697
+  version: 1.5.115
+  resolution: "electron-to-chromium@npm:1.5.115"
+  checksum: 2f9f0519758d90b9bee29bf2c3dc5ac78990794ba2ad7e0680433b6298320e6bd50e673ef481819f3ef00bb24a6ec53fd3ab603d6f3511e59de627405016e84f
   languageName: node
   linkType: hard
 
@@ -12156,8 +12156,8 @@ __metadata:
   linkType: hard
 
 "eslint-import-resolver-typescript@npm:^3.5.2":
-  version: 3.8.5
-  resolution: "eslint-import-resolver-typescript@npm:3.8.5"
+  version: 3.8.6
+  resolution: "eslint-import-resolver-typescript@npm:3.8.6"
   dependencies:
     "@nolyfill/is-core-module": 1.0.39
     debug: ^4.3.7
@@ -12175,7 +12175,7 @@ __metadata:
       optional: true
     eslint-plugin-import-x:
       optional: true
-  checksum: 00dfc039948ae8dbf00b37ea766fc6370f2e38ee18a810c9f62937acd06e6d0257d563521c24a82a8522ca7023ca8c5fb896e84d83832ac38fe289a24f02c4e5
+  checksum: 98d2812c9c636d6f0210fa255761ebdd8d62ba10b8e2cdbf85c633ecc131303688bd1ba9f036fa00237410c3548414c1bd19239568a976c1e075d130c4892610
   languageName: node
   linkType: hard
 
@@ -16334,7 +16334,7 @@ __metadata:
 "nan@github:JCMais/nan#fix/electron-failures":
   version: 2.22.0
   resolution: "nan@https://github.com/JCMais/nan.git#commit=0ec2eca8b2fd7518affb3945d087e393ad839b7e"
-  checksum: bf6780cf42fcc408b945c1c588c1e06d7e00005663cdd48ab9423532953b30f90ccad16849bc3b927ba577a5313f71c80ba78fb9d5a6e839daf652facbfd9550
+  checksum: c501215301d0590ab363644a1e372873c493aeb41a6d8f5b0314c3e6a2a0819900795ef73e88bccf141a256cc7dcc1b8993c2ebc6346b177b779a01aeb9e854b
   languageName: node
   linkType: hard
 
@@ -20552,7 +20552,7 @@ __metadata:
 "uWebSockets.js@uNetworking/uWebSockets.js#semver:^20":
   version: 20.51.0
   resolution: "uWebSockets.js@https://github.com/uNetworking/uWebSockets.js.git#commit=6609a88ffa9a16ac5158046761356ce03250a0df"
-  checksum: ae30d172c24b1df4c73427629d8d3c84fc1c3e2b7172bc0271826e5d8120bd9e9dfd42b4b12ad75720bf47a1684b05d4893aa42acedadf1c790ad6c407a586eb
+  checksum: ad5f5a1b7ad60c57eab0f75886822e1d6e40919613a9f479229691da615960aa70a520a93ecf86b2e837e16e3fcfeebf2eff9599fd57ec8ce57be5f12170ce1b
   languageName: node
   linkType: hard
 
