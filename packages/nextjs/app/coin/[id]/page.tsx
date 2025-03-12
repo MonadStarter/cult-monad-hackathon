@@ -4,39 +4,39 @@ import React, { useEffect } from "react";
 import { useParams } from "next/navigation";
 import "./page.css";
 import { useQuery } from "@tanstack/react-query";
-import { zeroAddress } from "viem";
 import { useAccount } from "wagmi";
+import { metadata } from "~~/app/layout";
 import AirdropSection from "~~/components/coin/AirdropSection";
 import BackButton from "~~/components/coin/BackButton";
-import BondingCurveProgress from "~~/components/coin/BondingCurveProgress";
 import TradeInfo from "~~/components/coin/BuyNSell";
 import CoinDetailCard from "~~/components/coin/CoinDetailCard";
 import CommentsSection from "~~/components/coin/Comments";
-import TradingViewChart from "~~/components/coin/TradingView";
+import HolderDistribution from "~~/components/coin/HolderDistribution";
 import TransactionHistory from "~~/components/coin/TransactionHistory";
 import SegmentedPanel from "~~/components/common/SegmentedPanel";
 import { dummyMetadata } from "~~/constants/content";
 import { fetchTokenPageData } from "~~/graphql/graphQlClient2";
 import useGetMktCap from "~~/hooks/fetchPrice";
+import TradingViewChart from "~~/lib/trading-view/index";
 import { useTokenStore } from "~~/stores/tokenStore";
 import { TradeOptions } from "~~/types/types";
 import { CultTokenPageData, TokenMetadata } from "~~/types/types";
-import { fetchMetadataFromIPFS, parseIPFSMetadata } from "~~/utils/externalAPIs/ipfs";
+import { parseIPFSMetadata } from "~~/utils/externalAPIs/ipfs";
 
-// const Transactions = React.memo(TransactionHistory);
-
-// const LEFT_PANEL = [
-//   {
-//     id: "TRANSACTION_HISTORY",
-//     label: "Transaction history",
-//     content: <Transactions />,
-//   },
-//   {
-//     id: "COMMENTS",
-//     label: "Comments",
-//     content: <CommentsSection />,
-//   },
-// ];
+const Transactions = React.memo(TransactionHistory);
+const CoinDetail = React.memo(CoinDetailCard);
+const LEFT_PANEL = [
+  {
+    id: "TRANSACTION_HISTORY",
+    label: "Transaction history",
+    content: <Transactions />,
+  },
+  {
+    id: "COMMENTS",
+    label: "Comments",
+    content: <CommentsSection />,
+  },
+];
 
 const TRADE_OPTIONS = [
   {
@@ -51,14 +51,14 @@ const TRADE_OPTIONS = [
   },
 ];
 
-function InfoSection() {
-  return (
-    <div className="content-card-merger">
-      <AirdropSection />
-      <BondingCurveProgress />
-    </div>
-  );
-}
+// function InfoSection() {
+//   return (
+//     <div className="content-card-merger">
+//       <AirdropSection />
+//       <BondingCurveProgress />
+//     </div>
+//   );
+// }
 
 // const MOBILE_SEGMENTED_LAYOUT = [
 //   {
@@ -82,11 +82,13 @@ export default function CoinPage() {
   const params = useParams();
   const tokenaddy = params?.id as `0x${string}`;
   const { address: accountAddress } = useAccount();
-  //const { price, marketCap, circulatingSupply } = useGetMktCap({ tokenAddress: tokenaddy });
-  const price = "0";
-  const marketCap = "0";
-  const circulatingSupply = "0";
-  const { setStateFromSubgraph } = useTokenStore();
+  const {
+    price = "0",
+    marketCap = "0",
+    circulatingSupply = "0",
+    //priceRefetch,
+  } = useGetMktCap({ tokenAddress: tokenaddy }) ?? {};
+  const { metadata, setStateFromSubgraph } = useTokenStore();
 
   // Fetch subgraph data via React Query using the store's tokenAddress.
   const {
@@ -100,7 +102,7 @@ export default function CoinPage() {
     enabled: !!tokenaddy,
   });
 
-  console.log("subgraphDataFromQuery", subgraphDataFromQuery);
+  //console.log("subgraphDataFromQuery", subgraphDataFromQuery);
 
   // Update store based on query results.
   useEffect(() => {
@@ -132,19 +134,7 @@ export default function CoinPage() {
     console.log("queryLoading", queryLoading);
   }
 
-  // useEffect(() => {
-  //   if (queryError) {
-  //     setError(queryError);
-  //     setLoading(false);
-  //   }
-  // }, [queryError]);
-
-  // // Reflect query loading state in the store.
-  // useEffect(() => {
-  //   if (queryLoading) {
-  //     setLoading(queryLoading);
-  //   }
-  // }, [queryLoading]);
+  console.log("PAGE RENDERING");
 
   return (
     <div className={"page pt-4"}>
@@ -155,12 +145,21 @@ export default function CoinPage() {
       {/* <SegmentedPanel panels={MOBILE_SEGMENTED_LAYOUT} className="sm:hidden" /> */}
       <div className="flex gap-4 max-sm:hidden">
         <div className="w-2/3 flex flex-col gap-4">
-          {/* <SegmentedPanel panels={LEFT_PANEL} segmentedClassName="w-1/2" /> */}
+          <TradingViewChart
+            baseAsset={metadata}
+            isPair={true}
+            //setFadeIn={setFadeIn}
+            //isUsd={isAssetPage ? undefined : !switchedToNative}
+            //setPairTrades={setGlobalPairs}
+            //shouldLoadMoreTrade={orderBy === "desc"}
+            extraCss="min-h-[500px] lg:min-h-[370px] md:min-h-[320px] w-full md:w-full mx-auto h-[520px] lg:h-[420px] md:h-[370px] mt-2.5 md:mt-0"
+          />
+          <SegmentedPanel panels={LEFT_PANEL} segmentedClassName="w-1/2" />
         </div>
         <div className="w-1/3 flex flex-col gap-4">
           <SegmentedPanel panels={TRADE_OPTIONS} />
-          {/* <AirdropSection />
-          <BondingCurveProgress /> */}
+          <AirdropSection />
+          <HolderDistribution />
         </div>
       </div>
     </div>

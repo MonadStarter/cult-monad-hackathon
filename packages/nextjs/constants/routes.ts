@@ -16,39 +16,13 @@ export const routerItemsList: NavigationItem[] = [
   {
     id: "launch",
     label: "Launch",
-    href: "/launch",
+    href: "/create",
   },
   {
     id: "rankings",
     label: "Rankings",
     href: "/rankings",
   },
-  {
-    id: "support",
-    label: "Support",
-    href: "/support",
-  },
 ];
 
-export const contentPagesList: NavigationItem[] = [
-  {
-    id: "about",
-    label: "About Us",
-    href: "/about",
-  },
-  {
-    id: "contact",
-    label: "Contact Us",
-    href: "/contact",
-  },
-  {
-    id: "terms",
-    label: "Terms of Usage",
-    href: "/terms",
-  },
-  {
-    id: "privacy",
-    label: "Privacy Policy",
-    href: "/privacy-policy",
-  },
-];
+export const contentPagesList: NavigationItem[] = [];

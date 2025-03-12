@@ -13,6 +13,7 @@ type CultToken @entity {
   blockTimestamp: BigInt!
   transactionHash: Bytes!
   holderCount: BigInt!
+  airdropContract: Account!
   trades: [TokenTrade!]! @derivedFrom(field: "token")
   balances: [TokenBalance!]! @derivedFrom(field: "token")
   ipfsData: [TokenIPFSData!]! @derivedFrom(field: "token")
@@ -34,6 +35,8 @@ type Account @entity {
   id: ID! #address of the user
   balances: [TokenBalance!]! @derivedFrom(field: "account")
   created: [CultToken!]! @derivedFrom(field: "tokenCreator")
+  slug: String
+  diamondHandProbability: Int!
 }
 
 type TokenBalance @entity {
@@ -41,6 +44,9 @@ type TokenBalance @entity {
   token: CultToken!
   account: Account!
   value: BigInt!
+  lastBought: BigInt!
+  lastSold: BigInt!
+  heldFor: BigInt!
 }
 
 type TokenTrade @entity(immutable: true) {

@@ -1,10 +1,9 @@
 "use client";
 
-import ProgressBar from "../common/ProgressBar";
-import { formatEther, parseEther } from "viem";
+import { formatEther } from "viem";
 import { useContractReads, useWriteContract } from "wagmi";
 import { AirdropContractABI } from "~~/constants/abis";
-import { MERKLE_PROOFS, TEST_MERKE_ROOT } from "~~/constants/merkleRoots";
+import { MERKLE_PROOFS } from "~~/constants/merkleRoots";
 import { useTransactor } from "~~/hooks/scaffold-eth/useTransactor";
 //import { UserIcon } from "~~/icons/symbols";
 import { useTokenStore } from "~~/stores/tokenStore";
@@ -12,32 +11,40 @@ import { useTokenStore } from "~~/stores/tokenStore";
 //TODO: this should be from contract or store in event
 function AirdropSection() {
   const { userAddress, subgraphData } = useTokenStore();
-  const airdropContractaddress = "0x44143C32EE5921c37ddE78F68648685EbC834Fd1";
-  const { writeContractAsync, isPending } = useWriteContract();
+
+  const { writeContractAsync } = useWriteContract();
   const writeTx = useTransactor();
+
   const { data, isError, isLoading } = useContractReads({
     contracts: [
       {
-        address: airdropContractaddress,
+        address: subgraphData?.cultToken?.airdropContract.id,
         abi: AirdropContractABI,
         functionName: "totalAirdropAmount",
       },
       {
-        address: airdropContractaddress,
+        address: subgraphData?.cultToken?.airdropContract.id,
         abi: AirdropContractABI,
         functionName: "canClaim",
-        args: [userAddress, BigInt(500000), [MERKLE_PROOFS[0].merkleProofs[0]]], //TODO: change to user address, amount should come from event
+        args: [userAddress, [MERKLE_PROOFS[0].merkleProofs[0]]], //TODO: change to user address, amount should come from event
       },
     ],
+    query: {
+      enabled: !!subgraphData?.cultToken?.airdropContract.id,
+    },
   });
+  if (subgraphData?.cultToken?.airdropContract.id === undefined) {
+    return <div>Loading...</div>;
+  }
+
   const writeBuyAsyncWithParams = async () => {
     try {
       await writeTx(() =>
         writeContractAsync({
-          address: airdropContractaddress,
+          address: subgraphData?.cultToken?.airdropContract.id!,
           abi: AirdropContractABI,
           functionName: "claim",
-          args: [500000, [MERKLE_PROOFS[0].merkleProofs[0]]],
+          args: [[MERKLE_PROOFS[0].merkleProofs[0]]],
         }),
       );
     } catch (e: any) {
@@ -52,7 +59,7 @@ function AirdropSection() {
     console.log("loading", isLoading);
   }
 
-  const claimAmount = data?.[0].result ? formatEther(data?.[0].result.toString()) : 0;
+  const claimAmount = data?.[0].result ? formatEther(data?.[0].result.toString()) / 2 : 0;
   const canClaim = data?.[1].result ? data?.[1].result : false;
 
   console.log("claimAmount", subgraphData);
@@ -81,19 +88,12 @@ function AirdropSection() {
         </p>
       )}
 
-      {canClaim ? (
+      {canClaim && (
         <button
           onClick={() => writeBuyAsyncWithParams()}
           className="bg-primary-500 w-full mt-2 justify-center px-4 py-2 rounded-lg text-white hover:bg-primary-600 disabled:bg-gray-600 disabled:cursor-not-allowed"
         >
           Claim
-        </button>
-      ) : (
-        <button
-          onClick={() => console.log("show popup to diamond hand user owned tokens to increase probability")}
-          className="bg-primary-500 w-full mt-2 justify-center px-4 py-2 rounded-lg text-white hover:bg-primary-600 disabled:bg-gray-600 disabled:cursor-not-allowed"
-        >
-          Diamond Hand
         </button>
       )}
     </div>

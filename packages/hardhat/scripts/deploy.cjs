@@ -1,181 +1,176 @@
-const { ethers, utils } = require("ethers");
-const fs = require("fs");
-const path = require("path");
-require("dotenv").config();
-const { getArtifactOfContract, getInheritedFunctions } = require("../scripts-js/generateTsAbis.js");
+// const { ethers, utils } = require("ethers");
+// const fs = require("fs");
+// const path = require("path");
+// require("dotenv").config();
+// const { getArtifactOfContract, getInheritedFunctions } = require("./generateTsAbis.js");
 
-// Load ABI and Bytecode for all contracts
-const loadContractData = contractName => {
-  const contractPath = path.join(__dirname, `../out/${contractName}.sol/${contractName}.json`);
-  const contractData = JSON.parse(fs.readFileSync(contractPath, "utf8"));
-  return { abi: contractData.abi, bytecode: contractData.bytecode };
-};
+// // Load ABI and Bytecode for all contracts
+// const loadContractData = contractName => {
+//   const contractPath = path.join(__dirname, `../out/${contractName}.sol/${contractName}.json`);
+//   const contractData = JSON.parse(fs.readFileSync(contractPath, "utf8"));
+//   return { abi: contractData.abi, bytecode: contractData.bytecode };
+// };
 
-const chains = {
-  baseSepolia: {
-    rpc: "https://base-sepolia.g.alchemy.com/v2/9yTzNxO9s6uztcDotkogK5_OC_6PlCEO",
-    chainID: 84532,
-  },
-  monadTestnet: {
-    rpc: "https://testnet-rpc.monad.xyz/",
-    chainID: 10143,
-  },
-};
+// const chains = {
+//   baseSepolia: {
+//     rpc: "https://base-sepolia.g.alchemy.com/v2/9yTzNxO9s6uztcDotkogK5_OC_6PlCEO",
+//     chainID: 84532,
+//   },
+//   monadTestnet: {
+//     rpc: "https://testnet-rpc.monad.xyz/",
+//     chainID: 10143,
+//   },
+// };
 
-//monad testnet addresses
-//weth - 0x261D8c5e9742e6f7f1076Fa1F560894524e19cad
-//pancake nonfungible position manager - 0x50ff23E9A8D5DAc05744C367c9DDd588D027982B
-//pancake swap router - 0x201B36B26b816D061fC552B679f8279Db0Fbbc6A
+// //monad testnet addresses
+// //weth - 0x261D8c5e9742e6f7f1076Fa1F560894524e19cad
+// //pancake nonfungible position manager - 0x50ff23E9A8D5DAc05744C367c9DDd588D027982B
+// //pancake swap router - 0x201B36B26b816D061fC552B679f8279Db0Fbbc6A
 
-const provider = new ethers.providers.JsonRpcProvider(chains.monadTestnet.rpc);
+// const provider = new ethers.providers.JsonRpcProvider(chains.monadTestnet.rpc);
 
-const privateKey = process.env.DEPLOYER_PRIVATE_KEY;
-if (!privateKey) {
-  throw new Error("Private key not found in environment variables");
-}
+// const privateKey = process.env.DEPLOYER_PRIVATE_KEY;
+// if (!privateKey) {
+//   throw new Error("Private key not found in environment variables");
+// }
 
-const wallet = new ethers.Wallet(privateKey, provider);
+// const wallet = new ethers.Wallet(privateKey, provider);
 
-// Predefined contract addresses (if already deployed)
-const predefinedContracts = {
-  //BASE
-  // CultRewards: "0x861cFE36400580A699e09e9B95a19F1C9fdd255e",
-  // BondingCurve: "0x8581C2a0F251d1f26b19167343A6782C6110aD44",
-  // Cult: "0x361094bd23BfB214E1e6DF1a9599e93eBDAe270f",
-  // CultFactoryImpl: "0x766d92355BAe0Ed568A02B3a3B1BC2dC9C4369D4",
-  // CultFactory: "0xBAED447dCd49B4de7A2090ffB895DC19E616D579",
-  //AirdropContract:""
+// // Predefined contract addresses (if already deployed)
+// const predefinedContracts = {
+//   //BASE
+//   // CultRewards: "0x861cFE36400580A699e09e9B95a19F1C9fdd255e",
+//   // BondingCurve: "0x8581C2a0F251d1f26b19167343A6782C6110aD44",
+//   // Cult: "0x361094bd23BfB214E1e6DF1a9599e93eBDAe270f",
+//   // CultFactoryImpl: "0x766d92355BAe0Ed568A02B3a3B1BC2dC9C4369D4",
+//   // CultFactory: "0xBAED447dCd49B4de7A2090ffB895DC19E616D579",
+//   //AirdropContract:""
 
-  //MONAD TESTNET
-  CultRewards: "0x528325C8701cE261b27622376966B3DC87c70BdA",
-  BondingCurve: "0x560Ac99a96381Df163c94Cf4B6fFb351e972257c",
-  AirdropContract: "0x0a4Aa612D4BDbB8841A37F2c42e0cF59C04883b9",
-  DiamondHandContract: "0xb5CAe94454c99F82f658A8df106D1F3840d70238",
-  Cult: "0x9b861d08D829E0D8EDEcb2804ed3761e115fE800",
-  CultFactory: "0xCE0da95A45bFa6a5A3f7e777D20D218f7ae5624D",
-  DiamondHandContract: "0xb34d9Dfc5E42F8AE5Ff06Fa88dad206c7630FC32",
-};
+//   //MONAD TESTNET
+//   CultRewards: "0x397685024E7D31AE1C1B619fF19103b02bA3d0df",
+//   BondingCurve: "0x83Ff5537119D0236333915cDF140Db4b42E46Ed4",
+//   AirdropContract: "0x4Fa7A395637B7a47499FEd1ceF739aa258887D2f",
+//   Cult: "0x9575d997Bb5C511D2c829dAB0f847aAbe90f979A",
+//   CultFactory: "0xC4E98eBE6837B8Db78Bf14cF65F82Ad7c5418929",
+// };
 
-const deployedContracts = {};
+// const deployedContracts = {};
 
-async function deployContract(contractName, constructorArgs = []) {
-  if (predefinedContracts[contractName]) {
-    console.log(`${contractName} already deployed at:`, predefinedContracts[contractName]);
-    const { abi } = loadContractData(contractName);
-    deployedContracts[contractName] = {
-      address: predefinedContracts[contractName],
-      abi: abi,
-      constructorArgs: constructorArgs,
-    };
-    return predefinedContracts[contractName];
-  }
+// async function deployContract(contractName, constructorArgs = []) {
+//   if (predefinedContracts[contractName]) {
+//     console.log(`${contractName} already deployed at:`, predefinedContracts[contractName]);
+//     const { abi } = loadContractData(contractName);
+//     deployedContracts[contractName] = {
+//       address: predefinedContracts[contractName],
+//       abi: abi,
+//       constructorArgs: constructorArgs,
+//     };
+//     return predefinedContracts[contractName];
+//   }
 
-  const { abi, bytecode } = loadContractData(contractName);
-  const factory = new ethers.ContractFactory(abi, bytecode, wallet);
-  const contract = await factory.deploy(...constructorArgs);
-  await contract.deployed();
-  console.log(`${contractName} deployed to:`, contract.address);
+//   const { abi, bytecode } = loadContractData(contractName);
+//   const factory = new ethers.ContractFactory(abi, bytecode, wallet);
+//   const contract = await factory.deploy(...constructorArgs);
+//   await contract.deployed();
+//   console.log(`${contractName} deployed to:`, contract.address);
 
-  // Save deployment info
-  deployedContracts[contractName] = {
-    address: contract.address,
-    abi: abi,
-    constructorArgs: constructorArgs,
-  };
+//   // Save deployment info
+//   deployedContracts[contractName] = {
+//     address: contract.address,
+//     abi: abi,
+//     constructorArgs: constructorArgs,
+//   };
 
-  return contract.address;
-}
+//   return contract.address;
+// }
 
-function saveDeployedContracts() {
-  const deployedContractsPath = path.join(__dirname, "../../nextjs/contracts/deployedContracts.ts");
+// function saveDeployedContracts() {
+//   const deployedContractsPath = path.join(__dirname, "../../nextjs/contracts/deployedContracts.ts");
 
-  const deployedContractsTemplate = `
-    /**
-     * This file is autogenerated by Scaffold-ETH.
-     * You should not edit it manually or your changes might be overwritten.
-     */
-    import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
+//   const deployedContractsTemplate = `
+//     /**
+//      * This file is autogenerated by Scaffold-ETH.
+//      * You should not edit it manually or your changes might be overwritten.
+//      */
+//     import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
-    const deployedContracts = {
-      ${chains.monadTestnet.chainID}: {
-        ${Object.keys(deployedContracts)
-          .map(contractName => {
-            const contract = deployedContracts[contractName];
-            return `${contractName}: {
-            address: "${contract.address}",
-            abi: ${JSON.stringify(contract.abi, null, 2)},
-            inheritedFunctions: ${JSON.stringify(getInheritedFunctions(getArtifactOfContract(contractName)))},
-            deploymentFile: "",
-            deploymentScript: "deploy.js",
-            constructorArgs: ${JSON.stringify(contract.constructorArgs || [])},
-            verified: false
-          }`;
-          })
-          .join(",\n")}
-      }
-    } as const;
+//     const deployedContracts = {
+//       ${chains.monadTestnet.chainID}: {
+//         ${Object.keys(deployedContracts)
+//           .map(contractName => {
+//             const contract = deployedContracts[contractName];
+//             return `${contractName}: {
+//             address: "${contract.address}",
+//             abi: ${JSON.stringify(contract.abi, null, 2)},
+//             inheritedFunctions: ${JSON.stringify(getInheritedFunctions(getArtifactOfContract(contractName)))},
+//             deploymentFile: "",
+//             deploymentScript: "deploy.js",
+//             constructorArgs: ${JSON.stringify(contract.constructorArgs || [])},
+//             verified: false
+//           }`;
+//           })
+//           .join(",\n")}
+//       }
+//     } as const;
 
-    export default deployedContracts satisfies GenericContractsDeclaration;
-  `;
+//     export default deployedContracts satisfies GenericContractsDeclaration;
+//   `;
 
-  fs.writeFileSync(deployedContractsPath, deployedContractsTemplate);
-  console.log("Updated deployedContracts.ts");
-}
+//   fs.writeFileSync(deployedContractsPath, deployedContractsTemplate);
+//   console.log("Updated deployedContracts.ts");
+// }
 
-async function main() {
-  console.log("Deploying contracts with account:", wallet.address);
+// async function main() {
+//   console.log("Deploying contracts with account:", wallet.address);
 
-  const cultRewardsAddress = await deployContract("CultRewards");
-  const bondingCurveAddress = await deployContract("BondingCurve");
+//   const cultRewardsAddress = await deployContract("CultRewards");
+//   const bondingCurveAddress = await deployContract("BondingCurve");
 
-  const airdropContract = await deployContract("AirdropContract");
-  const diamondHandContract = await deployContract("DiamondHandContract");
+//   const airdropContract = await deployContract("AirdropContract");
 
-  const cultImpl = await deployContract("Cult", [
-    wallet.address,
-    cultRewardsAddress,
-    "0x261D8c5e9742e6f7f1076Fa1F560894524e19cad", // WETH_ADDRESS
-    "0x50ff23E9A8D5DAc05744C367c9DDd588D027982B", // UNISWAP_V3_POSITION_MANAGER
-    "0x201B36B26b816D061fC552B679f8279Db0Fbbc6A", // UNISWAP_V3_SWAP_ROUTER
-  ]);
+//   const cultImpl = await deployContract("Cult", [
+//     wallet.address,
+//     cultRewardsAddress,
+//     "0x261D8c5e9742e6f7f1076Fa1F560894524e19cad", // WETH_ADDRESS
+//     "0x50ff23E9A8D5DAc05744C367c9DDd588D027982B", // UNISWAP_V3_POSITION_MANAGER
+//     "0x201B36B26b816D061fC552B679f8279Db0Fbbc6A", // UNISWAP_V3_SWAP_ROUTER
+//   ]);
 
-  const CultFactory = await deployContract("CultFactory");
+//   const CultFactory = await deployContract("CultFactory");
 
-  // Use CultFactoryImpl ABI to encode initialize function
-  // const CultFactory = await ethers.getContractFactory("CultFactory");
-  // const cultFactory = await upgrades.deployProxy(CultFactory, [
-  //   owner,
-  //   cultImpl,
-  //   bondingCurveAddress,
-  //   airdropContract,
-  //   diamondHandContract,
-  // ]);
-  // await cultFactory.waitForDeployment();
-  // const cultFactoryAddress = cultFactory.target;
+//   // Use CultFactoryImpl ABI to encode initialize function
+//   // const CultFactory = await ethers.getContractFactory("CultFactory");
+//   // const cultFactory = await upgrades.deployProxy(CultFactory, [
+//   //   owner,
+//   //   cultImpl,
+//   //   bondingCurveAddress,
+//   //   airdropContract,
+//   // ]);
+//   // await cultFactory.waitForDeployment();
+//   // const cultFactoryAddress = cultFactory.target;
 
-  let contracts = [
-    { name: "CultToken", address: cultImpl },
-    { name: "BondingCurve", address: bondingCurveAddress },
-    { name: "AirdropContract", address: airdropContract },
-    { name: "DiamondHandContract", address: diamondHandContract },
-    { name: "CultFactory", address: CultFactory },
-    // { name: "StartBlock", address: startBlock.number },
-    {
-      name: "Goldsky_Subgraph",
-      address: "",
-    },
-  ];
-  console.log("Contracts:", contracts);
+//   let contracts = [
+//     { name: "CultToken", address: cultImpl },
+//     { name: "BondingCurve", address: bondingCurveAddress },
+//     { name: "AirdropContract", address: airdropContract },
+//     { name: "CultFactory", address: CultFactory },
+//     // { name: "StartBlock", address: startBlock.number },
+//     {
+//       name: "Goldsky_Subgraph",
+//       address: "",
+//     },
+//   ];
+//   console.log("Contracts:", contracts);
 
-  // Save all deployed contracts info
-  saveDeployedContracts();
+//   // Save all deployed contracts info
+//   saveDeployedContracts();
 
-  console.log("\nDeployed Contract Addresses:", deployedContracts);
-}
+//   console.log("\nDeployed Contract Addresses:", deployedContracts);
+// }
 
-main()
-  .then(() => process.exit(0))
-  .catch(error => {
-    console.error(error);
-    process.exit(1);
-  });
+// main()
+//   .then(() => process.exit(0))
+//   .catch(error => {
+//     console.error(error);
+//     process.exit(1);
+//   });

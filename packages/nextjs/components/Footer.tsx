@@ -6,7 +6,7 @@ import { contentPagesList, routerItemsList } from "~~/constants/routes";
 function Footer() {
   return (
     <section className="py-5 sm:py-20 px-5 sm:px-40 mt-5 border-white-12 border-t flex flex-col items-center justify-center gap-10">
-      <Image src="/logo.svg" width={148} height={100} alt="Mopo.fun" className="footer-logo" />
+      <Image src="/cultLogo.jpg" width={30} height={30} alt="Cult Trade" className="footer-logo" />
       <Navbar navItems={[...routerItemsList, ...contentPagesList]} />
       <div className="w-full border-b-1 border-b border-white "></div>
       <div className="flex justify-between w-full">

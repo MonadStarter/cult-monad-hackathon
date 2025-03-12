@@ -1,6 +1,6 @@
 import React from "react";
+import Image from "next/image";
 import { formatEther, formatUnits } from "viem";
-import { formatLargeNumber } from "~~/lib/utils";
 import { useTokenStore } from "~~/stores/tokenStore";
 import { TokenMetadata, TradeOptions } from "~~/types/types";
 
@@ -77,7 +77,7 @@ function TradeInfoCard({
         : "0.00"; // Consistent formatting with buy side
 
   // Display symbol based on mode
-  const displaySymbol = mode === "buy" ? "ETH" : metadata.symbol;
+  const displaySymbol = mode === "buy" ? "TMON" : metadata.symbol;
 
   return (
     <div className="border border-1 border-gray-800 bg-white-4 rounded-2xl py-3 px-4">
@@ -91,7 +91,7 @@ function TradeInfoCard({
         />
         <div className="pill-badge !bg-white-7 flex items-center gap-2">
           {mode === "sell" && metadata?.image && (
-            <img
+            <Image
               src={metadata.image}
               width="16"
               height="16"

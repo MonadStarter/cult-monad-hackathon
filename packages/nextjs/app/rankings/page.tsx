@@ -33,7 +33,7 @@ export default function CoinDetails() {
     <div>
       <Banner />
       <div className={"page pt-8 pb-4"}>
-        <p className="text-base text-center text-gray-500 mb-4">Progress reaches 100%, token deploys on SunSwapV2</p>
+        <p className="text-base text-center text-gray-500 mb-4">Listing the top cult tokens, holders, and creators</p>
         <SegmentedPanel panels={RANKING_OPTIONS} />
       </div>
     </div>

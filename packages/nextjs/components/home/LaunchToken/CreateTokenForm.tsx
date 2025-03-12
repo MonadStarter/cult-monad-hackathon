@@ -6,8 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import InputField from "~~/components/common/InputField";
+import { NFTList } from "~~/constants/merkleRoots";
 import { useTokenCreation } from "~~/hooks/createToken";
 import { DiscordIcon, GlobeIcon, TelegramIcon, XIcon } from "~~/icons/socials";
+import { MultiSelect } from "~~/src/components/ui/multiselect";
+import { Slider } from "~~/src/components/ui/slider";
+import { Switch } from "~~/src/components/ui/switch";
 import { IPFSMetadata } from "~~/types/types";
 import { resizeImage } from "~~/utils/imageHandler";
 
@@ -17,6 +21,8 @@ const CreateTokenSchema = z.object({
   name: z.string().nonempty({ message: "Token name is required" }),
   symbol: z.string().nonempty({ message: "Token symbol is required" }),
   description: z.string().default(""),
+  airdrop: z.array(z.string()).default(["diamondHands"]),
+  airdropPercentage: z.number().min(1).max(50).default(1),
   socials: z
     .object({
       twitter: z.string().optional(),
@@ -28,19 +34,20 @@ const CreateTokenSchema = z.object({
   imageUrl: z.any().nullable(), // Zod doesn't have a direct File type, so we use z.any() and handle it in the form logic.
 });
 
-const SocialIcon = ({ icon }: { icon: React.ReactNode }) => <div className="p-2 bg-primary-500 rounded-lg">{icon}</div>;
-
 const CreateTokenForm: FC = () => {
   //   const { toast } = useToast();
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
-  const form = useForm<IPFSMetadata>({
+  const form = useForm<z.infer<typeof CreateTokenSchema>>({
     resolver: zodResolver(CreateTokenSchema),
     defaultValues: {
       name: "",
       symbol: "",
       description: "",
+      airdrop: ["diamondHands"],
+      airdropPercentage: 1,
       socials: {},
       imageUrl: null,
     },
@@ -57,7 +64,7 @@ const CreateTokenForm: FC = () => {
     },
   });
 
-  const onSubmit = async (data: IPFSMetadata) => {
+  const onSubmit = async (data: IPFSMetadata & { airdrop: string[]; airdropPercentage: number }) => {
     setIsUploading(true);
 
     try {
@@ -66,6 +73,8 @@ const CreateTokenForm: FC = () => {
         symbol: data.symbol,
         description: data.description,
         socials: data.socials,
+        airdrop: data.airdrop,
+        airdropPercentage: data.airdropPercentage,
         tokenLogo: data.imageUrl, // Assuming imageUrl is the File object
         initialBuyAmount: 0, // Add this to your form schema if not already present
       });
@@ -77,167 +86,247 @@ const CreateTokenForm: FC = () => {
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="py-4 flex flex-col gap-4">
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-        <div className="flex gap-4">
-          <div className="w-4/6 flex flex-col gap-4">
-            <FormField
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Token Name</FormLabel>
-                  <FormControl>
-                    <div className={`input-field-container`}>
-                      <input placeholder="Enter token name" className={`input-field`} {...field} />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              name="symbol"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Token Symbol</FormLabel>
-                  <FormControl>
-                    <div className={`input-field-container`}>
-                      <input placeholder="Enter token symbol" className={`input-field`} {...field} />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="w-2/6 flex flex-col gap-1">
-            <p className="text-sm">Token Logo*</p>
-            <FormField
-              name="imageUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <InputField
-                      type="file"
-                      label="Token Name"
-                      inputClassName="text-sm"
-                      onChange={async e => {
-                        const file = e.target.files?.[0];
-                        if (!file) {
-                          // User cleared the file input
-                          field.onChange(null);
-                          return;
-                        }
-                        // 1) Validate file type
-                        if (!file.type.startsWith("image/")) {
-                          setError("Please upload a valid image file");
-                          return;
-                        }
-                        try {
-                          // 2) Resize the image
-                          const resizedFile = await resizeImage(file);
-
-                          // 3) Check final size
-                          if (resizedFile.size > 1024 * 1024) {
-                            setError("Resized image is still larger than 1MB");
-                          } else {
-                            // 4) If OK, attach to form
-                            field.onChange(resizedFile);
+    <section className="max-w-lg m-auto">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="py-4 flex flex-col gap-4">
+          {error && <p className="text-red-500 !text-xs">{error}</p>}
+          <div className="flex gap-2 mb-12">
+            <div className="w-1/2 flex flex-col gap-4">
+              <FormField
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      <p className="text-gray-500 text-sm">Token Name</p>
+                    </FormLabel>
+                    <FormControl>
+                      <div className={`input-field-container`}>
+                        <input placeholder="Enter token name" className={`input-field`} {...field} />
+                      </div>
+                    </FormControl>
+                    <FormMessage className="text-red-500 !text-xs" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="symbol"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      <p className="text-gray-500 text-sm">Token Symbol</p>
+                    </FormLabel>
+                    <FormControl>
+                      <div className={`input-field-container`}>
+                        <input placeholder="Enter token symbol" className={`input-field`} {...field} />
+                      </div>
+                    </FormControl>
+                    <FormMessage className="text-red-500 !text-xs" />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="w-1/2 flex flex-col">
+              <p className="text-gray-500 text-sm">Token Logo*</p>
+              <FormField
+                name="imageUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <InputField
+                        type="file"
+                        inputClassName="text-sm"
+                        onChange={async e => {
+                          const file = e.target.files?.[0];
+                          if (!file) {
+                            // User cleared the file input
+                            field.onChange(null);
+                            return;
                           }
-                        } catch (err) {
-                          setError(`${err}: Error processing image`);
-                        }
-                      }}
-                      // onChange={e => field.onChange(e.target.files?.[0])}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                          // 1) Validate file type
+                          if (!file.type.startsWith("image/")) {
+                            setError("Please upload a valid image file");
+                            return;
+                          }
+                          try {
+                            // 2) Resize the image
+                            const resizedFile = await resizeImage(file);
+
+                            // 3) Check final size
+                            if (resizedFile.size > 1024 * 1024) {
+                              setError("Resized image is still larger than 1MB");
+                            } else {
+                              // 4) If OK, attach to form
+                              field.onChange(resizedFile);
+                            }
+                          } catch (err) {
+                            setError(`${err}: Error processing image`);
+                          }
+                        }}
+                        // onChange={e => field.onChange(e.target.files?.[0])}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-red-500 !text-xs" />
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
-        </div>
-        <FormField
-          name="description"
-          render={({ field }) => (
-            <FormItem className="flex flex-col gap-1">
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <textarea
-                  rows={4}
-                  className="input-field resize-none text-sm"
-                  placeholder="Add a description for a token"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          {/* Advanced Options Toggle */}
+          <div className="flex items-center space-x-2 mb-4">
+            <Switch id="advanced-options" checked={showAdvanced} onCheckedChange={setShowAdvanced} />
+            <label htmlFor="advanced-options" className="cursor-pointer">
+              Advanced Options
+            </label>
+          </div>
+
+          {showAdvanced && (
+            <>
+              <FormField
+                name="description"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col gap-1">
+                    <FormLabel>
+                      <p className="text-gray-500 text-sm">Description</p>
+                    </FormLabel>
+                    <FormControl>
+                      <textarea
+                        rows={4}
+                        className="input-field resize-none text-sm !bg-white-7 border-gray-800 border rounded-xl w-full p-2 !border-double"
+                        placeholder="Add a description for a token"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-red-500 !text-xs" />
+                  </FormItem>
+                )}
+              />
+
+              <div className="mb-12">
+                <FormLabel>
+                  <p className="text-gray-500 text-sm">Social Links</p>
+                </FormLabel>
+                <div className="grid grid-cols-2 gap-2">
+                  <FormField
+                    name="socials.twitter"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          <p className="text-gray-500 text-sm">Twitter</p>
+                        </FormLabel>
+                        <InputField placeholder="X (Twitter)" {...field} />
+                        <FormMessage className="text-red-500 !text-xs" />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    name="socials.telegram"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          <p className="text-gray-500 text-sm">Telegram</p>
+                        </FormLabel>
+                        <InputField placeholder="Telegram" {...field} />
+                        <FormMessage className="text-red-500 !text-xs" />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    name="socials.discord"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          <p className="text-gray-500 text-sm">Discord</p>
+                        </FormLabel>
+                        <InputField placeholder="Discord" {...field} />
+                        <FormMessage className="text-red-500 !text-xs" />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    name="socials.website"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          <p className="text-gray-500 text-sm">Website</p>
+                        </FormLabel>
+                        <InputField placeholder="Website" {...field} />
+                        <FormMessage className="text-red-500 !text-xs" />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              {/* Airdrop Percentage Slider */}
+              <FormField
+                name="airdropPercentage"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col gap-4 mb-12">
+                    <FormLabel>
+                      <p className="text-gray-500 text-sm">Airdrop Percentage ({field.value}%)</p>
+                    </FormLabel>
+                    <FormControl>
+                      <Slider
+                        min={1}
+                        max={50}
+                        step={1}
+                        value={[field.value]}
+                        onValueChange={values => field.onChange(values[0])}
+                        className="w-full "
+                      />
+                    </FormControl>
+                    <FormMessage className="text-red-500 !text-xs" />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                name="airdrop"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col gap-1 mb-12">
+                    <FormLabel>
+                      <p className="text-gray-500 text-sm">Airdrop Community</p>
+                    </FormLabel>
+                    <FormControl>
+                      <MultiSelect
+                        options={NFTList}
+                        onValueChange={field.onChange}
+                        defaultValue={[]}
+                        placeholder="Select Communities"
+                        variant="default"
+                        className=""
+                        animation={2}
+                        maxCount={10}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-red-500 !text-xs" />
+                  </FormItem>
+                )}
+              />
+            </>
           )}
-        />
 
-        <FormLabel>Social Links</FormLabel>
-        <div className="grid grid-cols-2 gap-2">
-          <FormField
-            name="socials.twitter"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Twitter</FormLabel>
-                <InputField placeholder="X (Twitter)" {...field} />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <label htmlFor="" className="flex flex-col items-start mb-12">
+            <span>
+              All tokens have mandatory 5% airdrop to probabilisitcally selected diamonad handers. Or creator can choose
+              existing communities
+            </span>
+          </label>
 
-          <FormField
-            name="socials.telegram"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Telegram</FormLabel>
-                <InputField placeholder="Telegram" {...field} />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            name="socials.discord"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Discord</FormLabel>
-                <InputField placeholder="Discord" {...field} />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            name="socials.website"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Website</FormLabel>
-                <InputField placeholder="Website" {...field} />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <label htmlFor="" className="flex flex-col items-start">
-          <span>All tokens have mandatory 10% airdrop to probabilisitcally selected diamonad handers</span>
-          <span>Users can choose to diamond hand for 1-24 days</span>
-        </label>
-
-        <button
-          type="submit"
-          className="bg-primary-500 text-white-500 w-full justify-center p-2 rounded disabled:opacity-50"
-          // onClick={handleInitialStep}
-          disabled={isUploading}
-        >
-          {isUploading ? "Uploading..." : "Next"}
-        </button>
-      </form>
-    </Form>
+          <button
+            type="submit"
+            className="bg-primary-500 text-white-500 w-full justify-center p-2 rounded disabled:opacity-50"
+            // onClick={handleInitialStep}
+            disabled={isUploading}
+          >
+            {isUploading ? "Uploading..." : "Next"}
+          </button>
+        </form>
+      </Form>
+    </section>
   );
 };
 

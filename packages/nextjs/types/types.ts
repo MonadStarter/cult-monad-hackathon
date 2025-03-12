@@ -51,6 +51,33 @@ export type CultTokenMetadata = {
   };
 };
 
+export interface TokenCreated {
+  id: string;
+  name: string;
+  symbol: string;
+  image?: string | File; // Add the image field
+}
+
+export interface Balance {
+  id: string;
+  lastBought: string;
+  lastSold: string;
+  token_id: string;
+  value: string;
+  image?: string | File;
+  name: string;
+  symbol: string;
+}
+
+export interface AccountData {
+  created: TokenCreated[];
+  balances: Balance[];
+}
+
+export interface TokensCreatedResponse {
+  accountData: AccountData | null;
+}
+
 export interface CultTokensResponse {
   cultTokens: CultTokenMetadata[];
 }
@@ -70,13 +97,17 @@ export interface IPFSMetadata {
   imageUrl: File | string | null; // For file input
 }
 
-export interface TopHoldersResponse {
+export interface TopHolders {
   tokenBalances: {
     account: {
       id: string;
     };
     value: string;
-  }[];
+  };
+}
+
+export interface TopHoldersResponse {
+  tokenBalances: TopHolders[];
 }
 
 export type TokenTrade = {
@@ -107,6 +138,9 @@ export type CultTokenPageData = {
   cultToken: {
     id: string;
     tokenCreator: {
+      id: string;
+    };
+    airdropContract: {
       id: string;
     };
     bondingCurve: string;

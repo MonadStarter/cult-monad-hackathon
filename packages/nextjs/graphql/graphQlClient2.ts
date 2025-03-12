@@ -1,16 +1,21 @@
 import { gql, request } from "graphql-request";
 import {
+  AccountData,
   CultTokenMetadata,
   CultTokenPageData,
   CultTokensResponse,
   TokenTrade,
   TokenTradesData,
+  TokensCreatedResponse,
+  TopHolders,
   TopHoldersResponse,
 } from "~~/types/types";
+import { parseIPFSMetadata } from "~~/utils/externalAPIs/ipfs";
 
 //const endpoint = "https://api.studio.thegraph.com/query/103833/culttokens/version/latest";
 // const endpoint = "https://api.goldsky.com/api/public/project_cm7aysf582k9p01sq9o2vfkrn/subgraphs/culttokens/v0.0.17/gn";
 const envioEndpoint = "http://localhost:8080/v1/graphql";
+//const envioEndpoint = "https://indexer.dev.hyperindex.xyz/730e4f1/v1/graphql";
 // This is to get latest coins for homepage
 export const cultTokensQuery = gql`
   query GetCultTokens($first: Int, $skip: Int) {
@@ -30,12 +35,18 @@ export const cultTokensQuery = gql`
 
 // Function to fetch data with pagination
 export const fetchDiscoverTokenData = async (first: number, skip: number): Promise<CultTokensResponse> => {
-  const response: {
-    CultToken: CultTokenMetadata[];
-  } = await request(envioEndpoint, cultTokensQuery, { first, skip });
+  const response: any = await request(envioEndpoint, cultTokensQuery, { first, skip });
+  // Transform each token so ipfsData is a single object rather than an array.
+  const normalizedCultTokens = response.CultToken.map((token: any) => {
+    return {
+      ...token,
+      ipfsData: token.ipfsData?.[0] ?? { content: "" },
+      // Fallback to an empty content if the array is empty
+    };
+  });
 
   return {
-    cultTokens: response.CultToken,
+    cultTokens: normalizedCultTokens,
   };
 };
 
@@ -56,13 +67,22 @@ const TopCoins = gql`
   }
 `;
 
+//updated the function to work with existing schema
 export async function fetchTopCoins(): Promise<CultTokensResponse> {
-  const response: {
-    CultToken: CultTokenMetadata[];
-  } = await request(envioEndpoint, TopCoins);
+  // We're using 'any' for the response so we can transform it freely.
+  const response: any = await request(envioEndpoint, TopCoins);
+
+  // Transform each token so ipfsData is a single object rather than an array.
+  const normalizedCultTokens = response.CultToken.map((token: any) => {
+    return {
+      ...token,
+      ipfsData: token.ipfsData?.[0] ?? { content: "" },
+      // Fallback to an empty content if the array is empty
+    };
+  });
 
   return {
-    cultTokens: response.CultToken,
+    cultTokens: normalizedCultTokens,
   };
 }
 
@@ -71,6 +91,9 @@ const TokenPageData = gql`
     CultToken(where: { tokenAddress: $tokenAddress }) {
       id
       tokenCreator {
+        id
+      }
+      airdropContract {
         id
       }
       bondingCurve
@@ -99,13 +122,15 @@ export const fetchTokenPageData = async (tokenAddress: `0x${string}`): Promise<C
 
   // If there’s an ipfsData array, use the first element
   const ipfsDataItem = token.ipfsData?.[0] ?? { content: "" };
-
   // Shape the data to match CultTokenPageData
   return {
     cultToken: {
       id: token.id,
       tokenCreator: {
         id: token.tokenCreator?.id ?? "",
+      },
+      airdropContract: {
+        id: token.airdropContract?.id ?? "",
       },
       bondingCurve: token.bondingCurve,
       name: token.name,
@@ -121,28 +146,33 @@ export const fetchTokenPageData = async (tokenAddress: `0x${string}`): Promise<C
 };
 
 const TopHolders = gql`
-  query TopHolders($tokenAddress: CultToken_bool_exp = {}, $first: Int, $skip: Int) {
+  query TopHolders($tokenAddress: CultToken_bool_exp, $first: Int, $skip: Int) {
     TokenBalance(where: { token: $tokenAddress }, order_by: { value: desc }, limit: $first, offset: $skip) {
+      value
       account {
         id
       }
-      value
     }
   }
 `;
-
-export const fetchTopHolders = async (
-  tokenAddress: string,
-  first: number = 10,
-  skip: number = 0,
-): Promise<TopHoldersResponse> => {
-  const response: TopHoldersResponse = await request(envioEndpoint, TopHolders, {
-    tokenAddress,
+export const fetchTopHolders = async (tokenAddress: string, first = 10, skip = 0): Promise<TopHoldersResponse> => {
+  // Build the filter object that matches CultToken_bool_exp for a token's id
+  const variables = {
+    tokenAddress: {
+      id: {
+        _eq: tokenAddress,
+      },
+    },
     first,
     skip,
-  });
+  };
 
-  return response;
+  // Make the request
+  const response: any = await request<{ TokenBalance: TopHolders[] }>(envioEndpoint, TopHolders, variables);
+
+  return {
+    tokenBalances: response.TokenBalance,
+  };
 };
 
 const TokenTrades = gql`
@@ -191,5 +221,85 @@ export const fetchTokenTrades = async (
   // Return the data under "tokenTrades" instead of "TokenTrade"
   return {
     tokenTrades: response.TokenTrade,
+  };
+};
+
+// GraphQL query
+const TokensCreated = gql`
+  query TokensCreated($accountId: String!) {
+    Account(where: { id: { _eq: $accountId } }) {
+      created {
+        id
+        name
+        symbol
+        ipfsData {
+          content
+        }
+      }
+      balances {
+        id
+        lastBought
+        lastSold
+        token_id
+        value
+        token {
+          name
+          symbol
+          ipfsData {
+            content
+          }
+        }
+      }
+    }
+  }
+`;
+export const fetchTokensCreated = async (accountId: string): Promise<TokensCreatedResponse> => {
+  const response: any = await request(envioEndpoint, TokensCreated, { accountId });
+  console.log("RESPONSE", response);
+  const accountData: AccountData | null = response?.Account?.[0]
+    ? {
+        created: response.Account[0].created.map((token: any) => {
+          let image: string | undefined;
+          if (token.ipfsData?.[0]?.content) {
+            try {
+              const metadata = parseIPFSMetadata(token.ipfsData[0].content);
+              image = metadata?.imageUrl || undefined;
+            } catch (error) {
+              console.error("Error parsing IPFS metadata:", error);
+            }
+          }
+          return {
+            id: token.id,
+            name: token.name,
+            symbol: token.symbol,
+            image,
+          };
+        }),
+        balances: response.Account[0].balances.map((balance: any) => {
+          let image: string | undefined;
+          if (balance.token?.ipfsData?.[0]?.content) {
+            try {
+              const metadata = parseIPFSMetadata(balance.token.ipfsData[0].content);
+              image = metadata?.imageUrl || undefined;
+            } catch (error) {
+              console.error("Error parsing IPFS metadata for balance:", error);
+            }
+          }
+          return {
+            id: balance.id,
+            lastBought: balance.lastBought,
+            lastSold: balance.lastSold,
+            token_id: balance.token_id,
+            name: balance.token.name,
+            symbol: balance.token.symbol,
+            value: balance.value,
+            image,
+          };
+        }),
+      }
+    : null;
+
+  return {
+    accountData,
   };
 };

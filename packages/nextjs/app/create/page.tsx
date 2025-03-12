@@ -6,7 +6,8 @@ import CreateTokenForm from "~~/components/home/LaunchToken/CreateTokenForm";
 
 export default function Create() {
   return (
-    <div>
+    <div className="flex flex-col space-y-12 items-center justify-center">
+      <h1 className="mt-8">Launch Cult</h1>
       <CreateTokenForm />
     </div>
   );

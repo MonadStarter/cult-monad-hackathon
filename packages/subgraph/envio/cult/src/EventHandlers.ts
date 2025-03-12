@@ -11,22 +11,33 @@ import {
   TokenTrade,
 } from "generated";
 
-CultFactory.CultTokenCreated.contractRegister(({ event, context }) => {
-  console.log("CultTokenCreated", event.params.tokenAddress);
-  context.addCult(event.params.tokenAddress);
-  console.log("CultTokenCreated2", event.params.tokenAddress);
-},
+CultFactory.CultTokenCreated.contractRegister(
+  ({ event, context }) => {
+    context.addCult(event.params.tokenAddress);
+    console.log("CultTokenCreated", event.params.tokenAddress);
+  },
   {
-    preRegisterDynamicContracts: true
+    preRegisterDynamicContracts: true,
   }
 );
 
 CultFactory.CultTokenCreated.handler(async ({ event, context }) => {
   const tokenAddress = event.params.tokenAddress;
-  const tokenCreator = await loadOrCreateAccount(event.params.tokenCreator, context);
+  const tokenCreator = await loadOrCreateAccount(
+    event.params.tokenCreator,
+    context
+  );
+  const slug = "Aidrop Contract";
+  const airdropContract = await loadOrCreateAccount(
+    event.params.airdropContract,
+    context,
+    slug
+  );
+
   const cultToken: CultToken = {
     id: tokenAddress,
     factoryAddress: event.params.factoryAddress,
+    airdropContract_id: airdropContract.id,
     tokenCreator_id: tokenCreator.id,
     protocolFeeRecipient: event.params.protocolFeeRecipient,
     bondingCurve: event.params.bondingCurve,
@@ -57,18 +68,25 @@ CultFactory.CultTokenCreated.handler(async ({ event, context }) => {
       content: JSON.stringify(content),
       hash: hash,
       id: `${cultToken.id}_ipfs`,
-      token_id: cultToken.id
+      token_id: cultToken.id,
     };
     context.TokenIPFSData.set(ipfsData);
   }
 });
 
 Cult.CultTokenBuy.handler(async ({ event, context }) => {
+  console.log("CultTokenBuy", event.params.buyer, event.params.recipient);
   const tokenAddress = event.srcAddress;
   if (tokenAddress) {
     const trader = await loadOrCreateAccount(event.params.buyer, context);
-    const recipient = await loadOrCreateAccount(event.params.recipient, context);
-    const orderReferrer = await loadOrCreateAccount(event.params.orderReferrer, context);
+    const recipient = await loadOrCreateAccount(
+      event.params.recipient,
+      context
+    );
+    const orderReferrer = await loadOrCreateAccount(
+      event.params.orderReferrer,
+      context
+    );
     const entity: TokenTrade = {
       id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
       tradeType: "BUY",
@@ -89,13 +107,19 @@ Cult.CultTokenBuy.handler(async ({ event, context }) => {
 
     context.TokenTrade.set(entity);
 
+    console.log("BUYING TOKEN");
     // Update token balance
     const cultToken = await context.CultToken.get(tokenAddress);
     if (!cultToken) {
       console.error("CultToken entity not found");
       return;
     }
-    updateTokenBalance(cultToken, trader.id, event.params.buyerTokenBalance, context);
+    await updateTokenBalance(
+      cultToken,
+      trader.id,
+      event.params.buyerTokenBalance,
+      context
+    );
   }
 });
 
@@ -103,8 +127,14 @@ Cult.CultTokenSell.handler(async ({ event, context }) => {
   const tokenAddress = event.srcAddress;
   if (tokenAddress) {
     const trader = await loadOrCreateAccount(event.params.seller, context);
-    const recipient = await loadOrCreateAccount(event.params.recipient, context);
-    const orderReferrer = await loadOrCreateAccount(event.params.orderReferrer, context);
+    const recipient = await loadOrCreateAccount(
+      event.params.recipient,
+      context
+    );
+    const orderReferrer = await loadOrCreateAccount(
+      event.params.orderReferrer,
+      context
+    );
     const entity: TokenTrade = {
       id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
       tradeType: "SELL",
@@ -131,11 +161,17 @@ Cult.CultTokenSell.handler(async ({ event, context }) => {
       console.error("CultToken entity not found");
       return;
     }
-    updateTokenBalance(cultToken, trader.id, event.params.sellerTokenBalance, context);
+    await updateTokenBalance(
+      cultToken,
+      trader.id,
+      event.params.sellerTokenBalance,
+      context
+    );
   }
 });
 
 Cult.CultTokenTransfer.handler(async ({ event, context }) => {
+  console.log("TRANSFERING TOKEN");
   let token = await context.CultToken.get(event.srcAddress);
   if (!token) {
     return;
@@ -148,31 +184,39 @@ Cult.CultTokenTransfer.handler(async ({ event, context }) => {
   let toAccount = await loadOrCreateAccount(to, context);
 
   if (fromAccount.id !== "0x0000000000000000000000000000000000000000") {
-    updateTokenBalance(token, fromAccount.id, event.params.fromTokenBalance, context);
+    await updateTokenBalance(
+      token,
+      fromAccount.id,
+      event.params.fromTokenBalance,
+      context
+    );
   }
-  updateTokenBalance(token, toAccount.id, event.params.toTokenBalance, context);
+  await updateTokenBalance(token, toAccount.id, event.params.toTokenBalance, context);
 });
 
-
 // Function to load or create an account
-async function loadOrCreateAccount(address: string, context: any): Promise<Account> {
+async function loadOrCreateAccount(
+  address: string,
+  context: any,
+  slug?: string
+): Promise<Account> {
   let account = await context.Account.get(address);
   if (!account) {
-    account = { id: address };
+    account = { id: address, slug: slug || "", diamondHandProbability: 0 };
     context.Account.set(account);
   }
   return account;
 }
 
-function updateTokenBalance(
+async function updateTokenBalance(
   token: CultToken,
   accountId: string,
   newValue: BigInt,
   context: any
-): void {
+) {
   // Load the existing balance (if any)
-  let tokenBalance = context.TokenBalance.get(token.id + "-" + accountId);
-
+  console.log("UPDATING TOKEN BALANCE");
+  let tokenBalance = await context.TokenBalance.get(token.id + "-" + accountId);
   // Track the old balance so we know if it was zero or > 0
   let oldValue = BigInt(0);
   if (!tokenBalance) {
@@ -181,7 +225,10 @@ function updateTokenBalance(
       id: token.id + "-" + accountId,
       token_id: token.id,
       account_id: accountId,
-      value: BigInt(newValue.toString())
+      value: BigInt(newValue.toString()),
+      lastBought: BigInt(Date.now()),
+      lastSold: BigInt(0), // Default to 0 for no sale
+      heldFor: BigInt(0),
     };
     context.TokenBalance.set(entity);
     tokenBalance = entity;
@@ -198,28 +245,28 @@ function updateTokenBalance(
   if (!updatedToken.holderCount) {
     updatedToken = {
       ...updatedToken,
-      holderCount: BigInt(0)
-    }
+      holderCount: BigInt(0),
+    };
   }
 
   // oldValue = 0, newValue > 0 => new holder
   if (oldValue === BigInt(0) && BigInt(newValue.toString()) > BigInt(0)) {
     updatedToken = {
       ...updatedToken,
-      holderCount: updatedToken.holderCount + BigInt(1)
-    }
+      holderCount: updatedToken.holderCount + BigInt(1),
+    };
   }
   // oldValue > 0, newValue = 0 => holder lost all tokens
   else if (oldValue > BigInt(0) && BigInt(newValue.toString()) === BigInt(0)) {
     updatedToken = {
       ...updatedToken,
-      holderCount: updatedToken.holderCount - BigInt(1)
-    }
+      holderCount: updatedToken.holderCount - BigInt(1),
+    };
   }
 
   context.CultToken.set(updatedToken);
 }
 
-/// Note: Command to debug: 
+/// Note: Command to debug:
 /// `pnpm run dev` - To run envio indexer (Hosura DB)
 /// `TUI_OFF=true pnpm start` in `subgraph/envio/cult` directory

@@ -187,12 +187,6 @@
                 "internalType": "address",
                 "name": "airdropContract",
                 "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "address",
-                "name": "diamondHandContract",
-                "type": "address"
             }
         ],
         "name": "CultTokenCreated",
@@ -318,19 +312,14 @@
                 "type": "string"
             },
             {
-                "internalType": "bytes32",
-                "name": "merkleRoot",
-                "type": "bytes32"
+                "internalType": "bytes32[]",
+                "name": "_merkleRoots",
+                "type": "bytes32[]"
             },
             {
-                "internalType": "uint16",
-                "name": "airdropPercent",
-                "type": "uint16"
-            },
-            {
-                "internalType": "uint256",
-                "name": "diamondHandDuration",
-                "type": "uint256"
+                "internalType": "uint32",
+                "name": "_airdropPercent",
+                "type": "uint32"
             }
         ],
         "name": "deploy",
@@ -342,19 +331,6 @@
             }
         ],
         "stateMutability": "payable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "diamondHandImplementation",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -390,11 +366,6 @@
             {
                 "internalType": "address",
                 "name": "_airdropImplementation",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "_diamondHandImplementation",
                 "type": "address"
             }
         ],
@@ -478,6 +449,24 @@
     {
         "inputs": [
             {
+                "internalType": "bytes32",
+                "name": "_merkleRoot",
+                "type": "bytes32"
+            },
+            {
+                "internalType": "uint32",
+                "name": "_holderCount",
+                "type": "uint32"
+            }
+        ],
+        "name": "updateMerkleRoot",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "address",
                 "name": "newImplementation",
                 "type": "address"
@@ -491,6 +480,25 @@
         "name": "upgradeToAndCall",
         "outputs": [],
         "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "",
+                "type": "bytes32"
+            }
+        ],
+        "name": "validMerkleRoots",
+        "outputs": [
+            {
+                "internalType": "uint32",
+                "name": "",
+                "type": "uint32"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     }
 ]
