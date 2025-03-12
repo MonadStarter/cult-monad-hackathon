@@ -16,12 +16,7 @@ export async function generateMerkleTreeAndProofs(addresses: string[]) {
 }
 
 async function main() {
-  const addresses = [
-    "0x60187Bc4949eE2F01b507a9F77ad615093f44260",
-    "0x7909bC836c98bE432c43CF58CE9442a6564026aE",
-    "0x27fAa6497818EC151fb1828D68b60fB6966e4063",
-    "0x5F16E39c8cE311DF6849be16Fd4A3fd5D90d9767",
-  ];
+  const addresses = ["0x60187Bc4949eE2F01b507a9F77ad615093f44260", "0x7909bC836c98bE432c43CF58CE9442a6564026aE"];
   const { root, proofs } = await generateMerkleTreeAndProofs(addresses);
   console.log("Returned Merkle Root:", root);
   console.log("Returned Proofs:", proofs);

@@ -1,6 +1,8 @@
 import { gql, request } from "graphql-request";
 import {
   AccountData,
+  AccountDetailsResponse,
+  AccountProfileData,
   CultTokenMetadata,
   CultTokenPageData,
   CultTokensResponse,
@@ -120,7 +122,7 @@ export const fetchTokenPageData = async (tokenAddress: `0x${string}`): Promise<C
     return { cultToken: null };
   }
 
-  // If there’s an ipfsData array, use the first element
+  // If there's an ipfsData array, use the first element
   const ipfsDataItem = token.ipfsData?.[0] ?? { content: "" };
   // Shape the data to match CultTokenPageData
   return {
@@ -301,5 +303,48 @@ export const fetchTokensCreated = async (accountId: string): Promise<TokensCreat
 
   return {
     accountData,
+  };
+};
+
+
+const AccountDetails = gql`
+  query AccountDetails($accountId: String!) {
+    Account(where: { id: { _eq: $accountId } }) {
+      id
+      slug
+      diamondHandProbability
+      feeCollected
+      totalReferrals
+    }
+  }
+`;
+
+// Updated function that matches the pattern of fetchTokenTrades
+export const fetchAccountDetails = async (
+  accountId: string,
+): Promise<{ accountData: AccountProfileData | null }> => {
+  // Prepare the query variables
+  const variables = { accountId };
+
+  // Execute the GraphQL query
+  const response = await request<AccountDetailsResponse>(
+    envioEndpoint,   // Replace with your actual endpoint
+    AccountDetails,
+    variables
+  );
+
+  // Check if Account data exists and transform it
+  const accountData = response.Account.length > 0 ? 
+    {
+      id: response.Account[0].id,
+      slug: response.Account[0].slug,
+      diamondHandProbability: response.Account[0].diamondHandProbability,
+      feeCollected: response.Account[0].feeCollected ? response.Account[0].feeCollected.toString() : "0",
+      totalReferrals: response.Account[0].totalReferrals || 0,
+    } : null;
+
+  // Return in a format that matches your other fetch functions
+  return {
+    accountData
   };
 };

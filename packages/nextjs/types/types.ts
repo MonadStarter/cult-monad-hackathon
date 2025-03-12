@@ -161,3 +161,15 @@ export type CultTokenPageData = {
     };
   } | null;
 };
+
+export interface AccountProfileData {
+  id: string;
+  slug: string;
+  diamondHandProbability: number;
+  feeCollected?: string | bigint; // BigInt often mapped as string in GraphQL
+  totalReferrals: number;
+}
+
+export interface AccountDetailsResponse {
+  Account: AccountProfileData[];
+}

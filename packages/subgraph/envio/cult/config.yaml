@@ -2,12 +2,12 @@
 name: cult
 networks:
   - id: 10143
-    start_block: 7400750
+    start_block: 7481125
     contracts:
       - name: CultFactory
         abi_file_path: abis/CultFactory.json
         address:
-          - 0x49f7D95422982945ae3D990FC06d02bCD1E892bb
+          - 0x72c06FFD9015aCd5314C4f550DcA15a2055be9c4
         handler: src/EventHandlers.ts
         events:
           - event: CultTokenCreated(address indexed factoryAddress, address indexed tokenCreator, address protocolFeeRecipient, address bondingCurve, string tokenURI, string name, string symbol, address tokenAddress, address poolAddress, address airdropContract)
