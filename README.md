@@ -1,4 +1,4 @@
-# Cult
+# Cult Trade
 
 ## Overview
 
