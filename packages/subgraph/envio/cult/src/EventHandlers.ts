@@ -72,6 +72,16 @@ CultFactory.CultTokenCreated.handler(async ({ event, context }) => {
     };
     context.TokenIPFSData.set(ipfsData);
   }
+
+  const entity: Account = {
+    id: tokenCreator.id,
+    referrer_id: tokenCreator.referrer_id,
+    totalReferrals: 0,
+    feeCollected: BigInt(0),
+    slug: "Token Creator",
+    diamondHandProbability: 1, // 1 means 0.01
+  };
+  context.Account.set(entity);
 });
 
 Cult.CultTokenBuy.handler(async ({ event, context }) => {
@@ -216,7 +226,7 @@ Cult.CultTokenFees.handler(async ({ event, context }) => {
       ? orderReferrerAccount.slug
       : "Order Referrer Fees",
     diamondHandProbability: orderReferrerAccount
-      ? orderReferrerAccount.diamondHandProbability
+      ? orderReferrerAccount.diamondHandProbability + 1
       : 0,
   };
   context.Account.set(entity);
