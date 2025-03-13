@@ -24,7 +24,7 @@ export const monadTestnet = defineChain({
   },
   rpcUrls: {
     default: {
-      http: ["https://monad-testnet.g.alchemy.com/v2/Rkik2kU2CR1Dd0z-FkhGSUsAiIx6EuES"], //[process.env.MONAD_RPC_URL || "https://testnet-rpc.monad.xyz/"],
+      http: [process.env.NEXT_PUBLIC_QUICK_NODE_RPC_URL || "https://testnet-rpc.monad.xyz/"],
       //webSocket: ['wss://rpc.zora.energy'],
     },
   },
@@ -53,7 +53,7 @@ const scaffoldConfig = {
   // You can get your own at https://dashboard.alchemyapi.io
   // It's recommended to store it in an env variable:
   // .env.local for local testing, and in the Vercel/system env config for live apps.
-  alchemyApiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || DEFAULT_ALCHEMY_API_KEY,
+  alchemyApiKey: process.env.NEXT_PUBLIC_ALCHEMY_URL || DEFAULT_ALCHEMY_API_KEY,
 
   // This is ours WalletConnect's default project ID.
   // You can get your own at https://cloud.walletconnect.com
@@ -63,7 +63,7 @@ const scaffoldConfig = {
 
   // Only show the Burner Wallet when running on hardhat network
   onlyLocalBurnerWallet: true,
-  
+
   // Privy configuration
   privy: {
     appId: process.env.NEXT_PUBLIC_PRIVY_APP_ID || "",

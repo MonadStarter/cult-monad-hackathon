@@ -16,8 +16,8 @@ import { parseIPFSMetadata } from "~~/utils/externalAPIs/ipfs";
 
 //const endpoint = "https://api.studio.thegraph.com/query/103833/culttokens/version/latest";
 // const endpoint = "https://api.goldsky.com/api/public/project_cm7aysf582k9p01sq9o2vfkrn/subgraphs/culttokens/v0.0.17/gn";
-// const envioEndpoint = "http://localhost:8080/v1/graphql";
-const envioEndpoint = "https://indexer.dev.hyperindex.xyz/32e3b3e/v1/graphql";
+const envioEndpoint = "http://localhost:8080/v1/graphql";
+//const envioEndpoint = "https://indexer.dev.hyperindex.xyz/32e3b3e/v1/graphql";
 // This is to get latest coins for homepage
 export const cultTokensQuery = gql`
   query GetCultTokens($first: Int, $skip: Int) {

@@ -9,9 +9,8 @@ export const uploadToIPFS = async (file: File): Promise<string> => {
   const response = await fetch("https://api.pinata.cloud/pinning/pinFileToIPFS", {
     method: "POST",
     headers: {
-      pinata_api_key: process.env.NEXT_PUBLIC_PINATA_PROJECT_ID || "494fdffeaa7d7a658f72",
-      pinata_secret_api_key:
-        process.env.NEXT_PUBLIC_PINATA_SECRET_KEY || "076e95c9429a4d942f3507ac0add974b8eb8faf3b0ddfd41179ae21894bc4e9c",
+      pinata_api_key: process.env.NEXT_PUBLIC_PINATA_PROJECT_ID || "",
+      pinata_secret_api_key: process.env.NEXT_PUBLIC_PINATA_SECRET_KEY || "",
     },
     body: formData,
   });
@@ -44,9 +43,8 @@ export const uploadMetadata = async (
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      pinata_api_key: process.env.NEXT_PUBLIC_PINATA_PROJECT_ID || "494fdffeaa7d7a658f72",
-      pinata_secret_api_key:
-        process.env.NEXT_PUBLIC_PINATA_SECRET_KEY || "076e95c9429a4d942f3507ac0add974b8eb8faf3b0ddfd41179ae21894bc4e9c",
+      pinata_api_key: process.env.NEXT_PUBLIC_PINATA_PROJECT_ID || "",
+      pinata_secret_api_key: process.env.NEXT_PUBLIC_PINATA_SECRET_KEY || "",
     },
     body: JSON.stringify(metadata),
   });
