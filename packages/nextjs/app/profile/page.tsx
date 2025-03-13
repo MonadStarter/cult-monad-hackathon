@@ -80,9 +80,9 @@ export default function Profile() {
                   </div>
                 </div>
               </div>
-              <div className="bg-[#2c2a39] py-2 px-4 rounded-full text-sm">
-                <span className="text-white">
-                  {Number(formatEther(BigInt(profileData?.accountData?.feeCollected || "0"))).toFixed(5)} ETH
+              <div className="bg-[#2c2a39] py-2 px-4 rounded-full text-xs text-center">
+                <span className="text-white whitespace-nowrap">
+                  {Number(formatEther(BigInt(profileData?.accountData?.feeCollected || "0"))).toFixed(5)} MON
                 </span>
               </div>
             </div>
