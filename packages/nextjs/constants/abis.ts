@@ -2582,3 +2582,5 @@ export const CUSTOM_TOKEN_ABI = [
 
 export const CultContractABI = DeployedContracts[10143].Cult.abi;
 export const AirdropContractABI = DeployedContracts[10143].AirdropContract.abi;
+export const CultFactoryABI = DeployedContracts[10143].CultFactory.abi;
+export const CultFactoryAddress = DeployedContracts[10143].CultFactory.address;

@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { useAccount } from "wagmi";
+import { useWriteContract } from "wagmi";
+import { CultFactoryABI, CultFactoryAddress } from "~~/constants/abis";
 import { COMMUNITY_MERKLE_PROOFS, MERKLE_PROOFS } from "~~/constants/merkleRoots";
-import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { useTransactor } from "~~/hooks/scaffold-eth";
+//import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { SocialLink } from "~~/types/types";
 import { uploadMetadata, uploadToIPFS } from "~~/utils/externalAPIs/ipfs";
 
@@ -43,8 +46,28 @@ function getAirdropMerkleRoot(airdropList: string[]): string[] {
 export const useTokenCreation = ({ onSuccess, onError }: UseTokenCreationProps = {}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const { writeContractAsync: cultFactory, isMining: stakerPending } = useScaffoldWriteContract("CultFactory");
+  //const { writeContractAsync: cultFactory, isMining: stakerPending } = useScaffoldWriteContract("CultFactory");
   const user = useAccount();
+  const { writeContractAsync, isPending } = useWriteContract();
+  const writeTx = useTransactor();
+
+  const writeCreateAsyncWithParams = async (args: any) => {
+    //setIsPendingBuy(true);
+    try {
+      await writeTx(() =>
+        writeContractAsync({
+          address: CultFactoryAddress,
+          abi: CultFactoryABI,
+          functionName: "deploy",
+          //value: parseEther(amount),
+          args: args,
+        }),
+      );
+    } catch (e: any) {
+      console.log(e.message || "Purchase failed");
+      //setError(e.message || "Purchase failed");
+    }
+  };
 
   const createToken = async (formData: TokenCreationData) => {
     setIsLoading(true);
@@ -77,14 +100,18 @@ export const useTokenCreation = ({ onSuccess, onError }: UseTokenCreationProps =
       // });
 
       //get merkle root for the categories
-      let airdropMerkleRoot: string[] = getAirdropMerkleRoot(formData.airdrop || []);
+      let airdropMerkleRoot: string[] = getAirdropMerkleRoot(formData.airdrop || ["diamondHands"]);
       const airdropPercentage = formData.airdropPercentage * 10000;
+      const args = [user.address, metadataUri, formData.name, formData.symbol, airdropMerkleRoot, airdropPercentage];
+      console.log("args", args);
+      //      console.log("cultFactory", cultFactory);
+      await writeCreateAsyncWithParams(args);
       // Create token transaction
-      await cultFactory({
-        functionName: "deploy",
-        args: [user.address, metadataUri, formData.name, formData.symbol, airdropMerkleRoot, airdropPercentage],
-        //value: 0,
-      });
+      // await cultFactory({
+      //   functionName: "deploy",
+      //   args: args,
+      //   //value: 0,
+      // });
       return metadataUri;
     } catch (err) {
       const error = err instanceof Error ? err : new Error("Failed to create token");
