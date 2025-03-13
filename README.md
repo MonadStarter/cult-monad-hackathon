@@ -1,4 +1,4 @@
-# Cult Platform
+# Cult
 
 ## Overview
 
