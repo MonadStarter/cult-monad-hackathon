@@ -88,9 +88,9 @@ const CreateTokenForm: FC = () => {
   };
 
   return (
-    <section className="max-w-3xl mx-auto">
-      <div className="bg-[#1c1b29]/60 backdrop-blur-lg rounded-2xl border border-purple-500/20 p-8 shadow-xl shadow-purple-500/10">
-        <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-indigo-500 bg-clip-text text-transparent">Create Your Cult</h2>
+    <section className="max-w-3xl mx-auto force-dark-theme">
+      <div className="bg-[#4c4a5e]/30 backdrop-blur-lg rounded-2xl border border-purple-500/20 p-8 shadow-xl shadow-purple-500/5">
+        <h2 className="text-2xl font-bold mb-6 text-purple-300">Create Your Cult</h2>
         
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
@@ -105,12 +105,12 @@ const CreateTokenForm: FC = () => {
                 <FormField
                   name="name"
                   render={({ field }) => (
-                    <FormItem className="transition-all duration-200 hover:translate-y-[-2px]">
+                    <FormItem className="transition-all duration-200">
                       <FormLabel>
-                        <p className="text-purple-300 text-sm font-medium mb-1">Token Name</p>
+                        <p className="text-gray-300 text-sm font-medium mb-1">Token Name</p>
                       </FormLabel>
                       <FormControl>
-                        <div className="input-field-container focus-within:ring-2 focus-within:ring-purple-500/50 transition-all duration-200 border-purple-500/30 bg-[#272536]">
+                        <div className="input-field-container focus-within:ring-1 focus-within:ring-purple-500/50 transition-all duration-200 border-gray-700 bg-[#3a384c]/40">
                           <input 
                             placeholder="Enter token name" 
                             className="input-field text-white" 
@@ -126,12 +126,12 @@ const CreateTokenForm: FC = () => {
                 <FormField
                   name="symbol"
                   render={({ field }) => (
-                    <FormItem className="transition-all duration-200 hover:translate-y-[-2px]">
+                    <FormItem className="transition-all duration-200">
                       <FormLabel>
-                        <p className="text-purple-300 text-sm font-medium mb-1">Token Symbol</p>
+                        <p className="text-gray-300 text-sm font-medium mb-1">Token Symbol</p>
                       </FormLabel>
                       <FormControl>
-                        <div className="input-field-container focus-within:ring-2 focus-within:ring-purple-500/50 transition-all duration-200 border-purple-500/30 bg-[#272536]">
+                        <div className="input-field-container focus-within:ring-1 focus-within:ring-purple-500/50 transition-all duration-200 border-gray-700 bg-[#3a384c]/40">
                           <input 
                             placeholder="Enter token symbol" 
                             className="input-field text-white" 
@@ -146,7 +146,7 @@ const CreateTokenForm: FC = () => {
               </div>
               
               <div className="md:col-span-2 flex flex-col">
-                <p className="text-purple-300 text-sm font-medium mb-1">Token Logo*</p>
+                <p className="text-gray-300 text-sm font-medium mb-1">Token Logo*</p>
                 <FormField
                   name="imageUrl"
                   render={({ field }) => (
@@ -155,7 +155,7 @@ const CreateTokenForm: FC = () => {
                         <div className="flex flex-col h-full">
                           <div 
                             className={`relative border-2 border-dashed rounded-xl flex flex-col items-center justify-center h-36 transition-all duration-300
-                              ${previewImage ? 'border-purple-500/40 bg-purple-500/5' : 'border-gray-600 bg-[#272536]/60 hover:border-purple-500/30 hover:bg-[#272536]/80'}`}
+                              ${previewImage ? 'border-purple-400/40 bg-[#3a384c]/20' : 'border-gray-600 bg-[#3a384c]/40 hover:border-purple-400/30'}`}
                           >
                             {previewImage ? (
                               <div className="relative w-full h-full flex items-center justify-center">
@@ -234,7 +234,7 @@ const CreateTokenForm: FC = () => {
             </div>
             
             {/* Advanced Options Toggle */}
-            <div className="flex items-center space-x-2 mb-2 p-3 rounded-lg bg-[#272536]/60 hover:bg-[#272536] transition-colors cursor-pointer">
+            <div className="flex items-center space-x-2 mb-2 p-3 rounded-lg bg-[#3a384c]/40 hover:bg-[#3a384c]/60 transition-colors cursor-pointer">
               <Switch 
                 id="advanced-options" 
                 checked={showAdvanced} 
@@ -257,14 +257,14 @@ const CreateTokenForm: FC = () => {
                 <FormField
                   name="description"
                   render={({ field }) => (
-                    <FormItem className="flex flex-col gap-1 transition-all duration-200 hover:translate-y-[-2px]">
+                    <FormItem className="flex flex-col gap-1 transition-all duration-200">
                       <FormLabel>
-                        <p className="text-purple-300 text-sm font-medium mb-1">Description</p>
+                        <p className="text-gray-300 text-sm font-medium mb-1">Description</p>
                       </FormLabel>
                       <FormControl>
                         <textarea
                           rows={4}
-                          className="resize-none text-sm bg-[#272536] text-white border-purple-500/30 border rounded-xl w-full p-3 focus:ring-2 focus:ring-purple-500/50 focus:outline-none transition-all duration-200"
+                          className="resize-none text-sm bg-[#3a384c]/40 text-white border-gray-700 border rounded-xl w-full p-3 focus:ring-1 focus:ring-purple-500/50 focus:outline-none transition-all duration-200"
                           placeholder="Add a description for your token (markets, utility, community, etc.)"
                           {...field}
                         />
@@ -274,15 +274,15 @@ const CreateTokenForm: FC = () => {
                   )}
                 />
 
-                <div className="p-5 rounded-xl bg-[#272536]/40 border border-purple-500/10">
+                <div className="p-5 rounded-xl bg-[#3a384c]/20 border border-gray-700">
                   <FormLabel>
-                    <p className="text-purple-300 text-sm font-medium mb-3">Social Links</p>
+                    <p className="text-gray-300 text-sm font-medium mb-3">Social Links</p>
                   </FormLabel>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
                       name="socials.twitter"
                       render={({ field }) => (
-                        <FormItem className="transition-all duration-200 hover:translate-y-[-2px]">
+                        <FormItem className="transition-all duration-200">
                           <div className="flex items-center mb-1">
                             <span className="mr-2 text-[#1DA1F2]"><XIcon /></span>
                             <FormLabel>
@@ -291,7 +291,7 @@ const CreateTokenForm: FC = () => {
                           </div>
                           <InputField 
                             placeholder="@username or URL" 
-                            containerClassName="border-purple-500/20 bg-[#272536]/80 focus-within:ring-2 focus-within:ring-purple-500/50"
+                            containerClassName="border-gray-700 bg-[#3a384c]/40 focus-within:ring-1 focus-within:ring-purple-500/50"
                             inputClassName="text-white"
                             {...field} 
                           />
@@ -303,7 +303,7 @@ const CreateTokenForm: FC = () => {
                     <FormField
                       name="socials.telegram"
                       render={({ field }) => (
-                        <FormItem className="transition-all duration-200 hover:translate-y-[-2px]">
+                        <FormItem className="transition-all duration-200">
                           <div className="flex items-center mb-1">
                             <span className="mr-2 text-[#0088cc]"><TelegramIcon /></span>
                             <FormLabel>
@@ -312,7 +312,7 @@ const CreateTokenForm: FC = () => {
                           </div>
                           <InputField 
                             placeholder="t.me/username" 
-                            containerClassName="border-purple-500/20 bg-[#272536]/80 focus-within:ring-2 focus-within:ring-purple-500/50"
+                            containerClassName="border-gray-700 bg-[#3a384c]/40 focus-within:ring-1 focus-within:ring-purple-500/50"
                             inputClassName="text-white"
                             {...field} 
                           />
@@ -324,7 +324,7 @@ const CreateTokenForm: FC = () => {
                     <FormField
                       name="socials.discord"
                       render={({ field }) => (
-                        <FormItem className="transition-all duration-200 hover:translate-y-[-2px]">
+                        <FormItem className="transition-all duration-200">
                           <div className="flex items-center mb-1">
                             <span className="mr-2 text-[#7289DA]"><DiscordIcon /></span>
                             <FormLabel>
@@ -333,7 +333,7 @@ const CreateTokenForm: FC = () => {
                           </div>
                           <InputField 
                             placeholder="discord.gg/invite" 
-                            containerClassName="border-purple-500/20 bg-[#272536]/80 focus-within:ring-2 focus-within:ring-purple-500/50"
+                            containerClassName="border-gray-700 bg-[#3a384c]/40 focus-within:ring-1 focus-within:ring-purple-500/50"
                             inputClassName="text-white"
                             {...field} 
                           />
@@ -345,7 +345,7 @@ const CreateTokenForm: FC = () => {
                     <FormField
                       name="socials.website"
                       render={({ field }) => (
-                        <FormItem className="transition-all duration-200 hover:translate-y-[-2px]">
+                        <FormItem className="transition-all duration-200">
                           <div className="flex items-center mb-1">
                             <span className="mr-2 text-gray-300"><GlobeIcon /></span>
                             <FormLabel>
@@ -354,7 +354,7 @@ const CreateTokenForm: FC = () => {
                           </div>
                           <InputField 
                             placeholder="https://example.com" 
-                            containerClassName="border-purple-500/20 bg-[#272536]/80 focus-within:ring-2 focus-within:ring-purple-500/50"
+                            containerClassName="border-gray-700 bg-[#3a384c]/40 focus-within:ring-1 focus-within:ring-purple-500/50"
                             inputClassName="text-white"
                             {...field} 
                           />
@@ -369,12 +369,12 @@ const CreateTokenForm: FC = () => {
                 <FormField
                   name="airdropPercentage"
                   render={({ field }) => (
-                    <FormItem className="flex flex-col gap-4 p-5 rounded-xl bg-[#272536]/40 border border-purple-500/10">
+                    <FormItem className="flex flex-col gap-4 p-5 rounded-xl bg-[#3a384c]/20 border border-gray-700">
                       <div className="flex items-center justify-between">
                         <FormLabel>
-                          <p className="text-purple-300 text-sm font-medium">Airdrop Percentage</p>
+                          <p className="text-gray-300 text-sm font-medium">Airdrop Percentage</p>
                         </FormLabel>
-                        <span className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-3 py-1 rounded-full text-xs font-medium">
+                        <span className="bg-[#614f96] text-white px-3 py-1 rounded-full text-xs font-medium">
                           {field.value}%
                         </span>
                       </div>
@@ -396,9 +396,9 @@ const CreateTokenForm: FC = () => {
                 <FormField
                   name="airdrop"
                   render={({ field }) => (
-                    <FormItem className="flex flex-col gap-1 p-5 rounded-xl bg-[#272536]/40 border border-purple-500/10">
+                    <FormItem className="flex flex-col gap-1 p-5 rounded-xl bg-[#3a384c]/20 border border-gray-700">
                       <FormLabel>
-                        <p className="text-purple-300 text-sm font-medium mb-2">Airdrop Community</p>
+                        <p className="text-gray-300 text-sm font-medium mb-2">Airdrop Community</p>
                       </FormLabel>
                       <FormControl>
                         <MultiSelect
@@ -407,7 +407,7 @@ const CreateTokenForm: FC = () => {
                           defaultValue={["diamondHands"]}
                           placeholder="Select Communities"
                           variant="default"
-                          className="border-purple-500/20 bg-[#272536]/80"
+                          className="border-gray-700 bg-[#3a384c]/40"
                           animation={2}
                           maxCount={10}
                         />
@@ -419,7 +419,7 @@ const CreateTokenForm: FC = () => {
               </div>
             )}
 
-            <div className="bg-[#272536]/40 border border-purple-500/10 p-4 rounded-lg mt-4 mb-8">
+            <div className="bg-[#3a384c]/20 border border-gray-700 p-4 rounded-lg mt-4 mb-8">
               <p className="text-sm text-gray-400 italic">
                 All tokens have mandatory 5% airdrop to probabilistically selected diamond hands. Or creator can choose existing communities.
               </p>
@@ -427,7 +427,7 @@ const CreateTokenForm: FC = () => {
 
             <button
               type="submit"
-              className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium py-3 px-6 rounded-xl disabled:opacity-70 disabled:cursor-not-allowed transition-all duration-300 transform hover:translate-y-[-2px] hover:shadow-lg hover:shadow-purple-500/20"
+              className="bg-[#614f96] hover:bg-[#7a65b7] text-white font-medium py-3 px-6 rounded-xl disabled:opacity-70 disabled:cursor-not-allowed transition-all duration-300"
               disabled={isUploading}
             >
               {isUploading ? (
@@ -453,6 +453,30 @@ const CreateTokenForm: FC = () => {
         }
         .animate-fadeIn {
           animation: fadeIn 0.3s ease-out forwards;
+        }
+        
+        /* Force dark theme for this form regardless of user system settings */
+        .force-dark-theme {
+          color-scheme: dark;
+          forced-color-adjust: none;
+        }
+        
+        /* Ensure no color scheme shifting for this component */
+        .force-dark-theme * {
+          color-scheme: dark;
+        }
+        
+        /* Fix for some browsers that might still try to apply system colors */
+        @media (prefers-color-scheme: light) {
+          .force-dark-theme {
+            color-scheme: dark !important;
+          }
+          
+          .force-dark-theme input,
+          .force-dark-theme textarea {
+            background-color: #3a384c !important;
+            color: white !important;
+          }
         }
       `}</style>
     </section>
