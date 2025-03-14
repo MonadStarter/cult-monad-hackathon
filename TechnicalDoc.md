@@ -94,21 +94,35 @@ The CULT platform uses a plug-and-play contract architecture for flexibility and
    - Controls transition from bonding curve to liquidity pools
 
 3. **Bonding Curve Contract**
-   - Implements a constant product curve formula similar to but distinct from Uniswap
-   - Optimized to replicate PumpFun's bonding curve model
+   - Implements an exponential bonding curve formula rather than a constant product model
+   - Optimized to provide predictable pricing with smooth gradients
    - Determines token pricing during the initial phase
    - Individually deployed for each CULT token
 
    ```solidity
-   // Simplified bonding curve calculation
-   function calculatePurchaseReturn(uint256 ethAmount) public view returns (uint256) {
-       uint256 supply = token.totalSupply();
-       uint256 reserveBalance = address(this).balance;
-       
-       // Constant product formula with adjustments for CULT's specific curve
-       return supply * (
-           (1 + ethAmount / reserveBalance) ** curveExponent - 1
-       );
+   // Actual bonding curve implementation
+   // The formula used is y = A * e^(B * x) where:
+   // - y is the price of the token
+   // - A is a constant that scales the curve
+   // - B is a constant that affects the curve's steepness
+   // - x is the current supply of tokens
+   
+   function getEthBuyQuote(
+       uint256 currentSupply,
+       uint256 monOrderSize
+   ) external pure returns (uint256) {
+       uint256 x0 = currentSupply;
+       uint256 deltaY = monOrderSize;
+
+       // calculate exp(b*x0)
+       uint256 exp_b_x0 = uint256((int256(B.mulWad(x0))).expWad());
+
+       // calculate exp(b*x0) + (dy*b/a)
+       uint256 exp_b_x1 = exp_b_x0 + deltaY.fullMulDiv(B, A);
+
+       uint256 deltaX = uint256(int256(exp_b_x1).lnWad()).divWad(B) - x0;
+
+       return deltaX;
    }
    ```
 
@@ -153,7 +167,7 @@ The interaction between contracts follows a specific flow for various operations
 
 #### Token Purchase Flow
 
-1. User initiates a token purchase with ETH
+1. User initiates a token purchase with MON
 2. System checks if token is in bonding curve phase:
    - If yes, bonding curve contract calculates token output
    - If no, routes transaction to appropriate liquidity pool
@@ -161,7 +175,7 @@ The interaction between contracts follows a specific flow for various operations
    - Creator receives a portion of fees
    - Platform receives a portion
    - Other token holders may receive a portion
-4. Remaining ETH goes to bonding curve reserve or liquidity pool
+4. Remaining MON goes to bonding curve reserve or liquidity pool
 5. Tokens are minted or transferred to the buyer
 6. Events are emitted and captured by indexer
 
@@ -241,8 +255,8 @@ The front-end provides an intuitive interface for users to interact with the CUL
    - Airdrop Center: View and claim available airdrops
 
 3. **State Management**
-   - React Context for global state
-   - SWR for data fetching and caching
+   - Zustand for global state management
+   - Tanstack Query for data fetching and caching
    - Local storage for user preferences
    - Wallet connection state via wagmi
 
@@ -354,16 +368,16 @@ The token creation process is designed to be simple for users while handling com
 
 ### Dynamic Pricing Mechanism
 
-CULT implements a constant product bonding curve similar to but distinct from Uniswap's formula:
+CULT implements an exponential bonding curve formula for token pricing:
 
 1. **Bonding Curve Design**
-   - Based on the constant product formula: `x * y = k`
-   - Modified with custom parameters for CULT's specific curve
+   - Based on the exponential formula: `y = A * e^(B * x)`
+   - A and B are carefully calibrated constants that control the curve
    - Optimized for gradual price discovery and reduced volatility
 
 2. **Price Calculation**
-   - For buys: calculates token output based on ETH input
-   - For sells: calculates ETH output based on token input
+   - For buys: calculates token output based on MON input
+   - For sells: calculates MON output based on token input
    - Includes slippage considerations and reserves management
 
 3. **Benefits of the Bonding Curve Approach**
@@ -419,7 +433,7 @@ As tokens mature, they transition from bonding curve to traditional AMM liquidit
    - Safety mechanisms prevent premature transitions
 
 2. **Liquidity Deployment**
-   - ETH from bonding curve reserve is extracted
+   - MON from bonding curve reserve is extracted
    - Paired with appropriate amount of tokens
    - Deployed to Uniswap V3 pool (currently PancakeSwap on testnet)
    - Future support for Uniswap V4 when available on Monad
@@ -496,28 +510,75 @@ The Merkle tree implementation ensures efficient and secure airdrops:
    - Versioning for multiple airdrop phases
    - Audit trails for transparency
 
+## Development and Deployment
+
+### Prerequisites
+
+- Node.js (v16+)
+- Yarn or npm
+- Foundry or Hardhat for smart contract development
+- Access to Monad testnet
+
+### Local Development
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-org/cult-monad.git
+   cd cult-monad
+   ```
+
+2. Install dependencies:
+   ```bash
+   yarn install
+   ```
+
+3. Set up environment variables:
+   ```bash
+   cp .env.example .env.local
+   # Edit .env.local with your API keys and configuration
+   ```
+
+4. Start the development server:
+   ```bash
+   yarn dev
+   ```
+
+### Deployment
+
+1. Deploy smart contracts to Monad testnet:
+   ```bash
+   cd packages/hardhat
+   npx hardhat run scripts/deploy.ts --network monad-testnet
+   ```
+
+2. Update contract addresses in the front-end:
+   ```bash
+   cd packages/nextjs
+   # Update contract addresses in configuration
+   ```
+
+3. Deploy the front-end:
+   ```bash
+   yarn build
+  
+   ```
 
 ## Security Considerations
 
-The CULT platform incorporates several security measures:
+The CULT platform includes basic security measures:
 
-1. **Smart Contract Security**
-   - Comprehensive test suite with high coverage
-   - External audit by security firms (planned)
-   - Formal verification of critical functions
-   - Timelocks and access controls
+1. **Smart Contract Safety**
+   - Standard reentrancy protections
+   - Role-based access controls
+   - Follow common security patterns
 
-2. **Front-end Security**
-   - Input validation and sanitization
-   - Protection against common web vulnerabilities
-   - Secure wallet integration
-   - Rate limiting and anti-bot measures
+2. **Front-end Protection**
+   - Client-side input validation
+   - Secure wallet connection flow
 
-3. **Back-end Security**
-   - Secure API design
-   - Authentication and authorization
-   - Data validation and sanitization
-   - Monitoring and alerting
+3. **Backend Security**
+   - API validation through Envio
+   - IPFS content verification
 
 ## Technologies and Dependencies
 
@@ -529,8 +590,7 @@ The CULT platform incorporates several security measures:
 ### Back-end Services
 - **Envio**: Event indexing and data processing
 - **IPFS/Pinata**: Decentralized storage for token metadata and images
-- **Node.js**: Server-side JavaScript runtime
-- **Express**: Web server framework
+- **GraphQL**: API query language for data fetching
 
 ### Front-end
 - **Next.js**: React framework for web applications
@@ -540,12 +600,19 @@ The CULT platform incorporates several security measures:
 - **Tailwind CSS**: Utility-first CSS framework
 - **Scaffold ETH**: Ethereum development stack and boilerplate
 - **Privy**: Authentication and identity management
+- **Zustand**: Lightweight state management
+- **Tanstack Query**: Data fetching and caching library
+- **React Hook Form**: Form validation and handling
+- **DaisyUI**: Component library for Tailwind CSS
+- **Radix UI**: Unstyled, accessible component primitives
 
 ### Development Tools
 - **Hardhat/Foundry**: Smart contract development frameworks
 - **OpenZeppelin**: Smart contract security libraries
 - **ethers.js**: Ethereum JavaScript library
 - **Typechain**: TypeScript bindings for Ethereum smart contracts
+- **Merkletreejs**: Merkle tree implementation for airdrops
+- **Vercel**: Deployment and hosting platform
 
 ## Future Roadmap
 
@@ -557,10 +624,12 @@ The CULT platform incorporates several security measures:
 
 ### Phase 2: Mainnet Preparation
 - Complete security audit of all smart contracts
-- Migrate from Envio to custom Webhooks and database
+- Optimize the reputation system algorithms for better scoring
+- Implement real-time websocket updates for diamond hand rankings
+- Create custom webhooks and database for improved analytics
 - Integrate with Uniswap V4 when available on Monad
-- Implement enhanced analytics and monitoring
+- Enhanced analytics dashboard for each user
 
 
 
-*This technical documentation provides a comprehensive overview of the CULT platform's architecture and implementation. The modular design, focus on gas efficiency, and seamless user experience showcase the platform's technical sophistication while leveraging Monad's accelerated EVM capabilities.* 
+*This technical documentation provides a comprehensive overview of the CULT platform's architecture and implementation. The modular design, focus on gas efficiency, and seamless user experience showcase the platform's technical sophistication while leveraging Monad's accelerated EVM capabilities.*   
