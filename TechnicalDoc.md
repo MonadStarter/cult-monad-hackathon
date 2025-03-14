@@ -496,66 +496,6 @@ The Merkle tree implementation ensures efficient and secure airdrops:
    - Versioning for multiple airdrop phases
    - Audit trails for transparency
 
-## Development and Deployment
-
-### Prerequisites
-
-- Node.js (v16+)
-- Yarn or npm
-- Foundry or Hardhat for smart contract development
-- Access to Monad testnet
-
-### Local Development
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-org/cult-monad.git
-   cd cult-monad
-   ```
-
-2. Install dependencies:
-   ```bash
-   yarn install
-   ```
-
-3. Set up environment variables:
-   ```bash
-   cp .env.example .env.local
-   # Edit .env.local with your API keys and configuration
-   ```
-
-4. Start the development server:
-   ```bash
-   yarn dev
-   ```
-
-5. For smart contract development:
-   ```bash
-   cd packages/hardhat
-   yarn install
-   npx hardhat compile
-   npx hardhat test
-   ```
-
-### Deployment
-
-1. Deploy smart contracts to Monad testnet:
-   ```bash
-   cd packages/hardhat
-   npx hardhat run scripts/deploy.ts --network monad-testnet
-   ```
-
-2. Update contract addresses in the front-end:
-   ```bash
-   cd packages/nextjs
-   # Update contract addresses in configuration
-   ```
-
-3. Deploy the front-end:
-   ```bash
-   yarn build
-   # Deploy using your preferred hosting solution (Vercel, Netlify, etc.)
-   ```
 
 ## Security Considerations
 
@@ -621,22 +561,6 @@ The CULT platform incorporates several security measures:
 - Integrate with Uniswap V4 when available on Monad
 - Implement enhanced analytics and monitoring
 
-## Contributing
 
-Contributions to CULT are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-Please ensure your code follows the project's coding standards and includes appropriate tests.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
----
 
 *This technical documentation provides a comprehensive overview of the CULT platform's architecture and implementation. The modular design, focus on gas efficiency, and seamless user experience showcase the platform's technical sophistication while leveraging Monad's accelerated EVM capabilities.* 
