@@ -1,5 +1,6 @@
 # Cult Trade
 **Deployment Link** :  https://cult-monad-hackathon-nextjs-en4y.vercel.app/
+**Link for Detailed Technical Implemenation:** https://github.com/MonadStarter/cult-monad-hackathon/blob/main/TechnicalDoc.md
 
 ## Overview
 
