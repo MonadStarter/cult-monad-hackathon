@@ -38,7 +38,10 @@ CULT reimagines token creation and distribution on Monad. The platform enables u
 Key features:
 - **One-click Token Creation**: Generate and deploy ERC-20 tokens with custom parameters
 - **Bonding Curve Economics**: Dynamic pricing model that ensures liquidity and price discovery
-- **Fair Airdrop System**: Target specific communities with Merkle-proof based distribution
+- **Reputation System**: Users earn reputation points based on holding and trading activity on the platform. Each user will have a reputation score and probability to get in the diamond hands list.
+- **Diamond Hands List**: Top 10,000 users refreshed hourly with airdrops for incentivized holding. Based on reputation score, users have varying probabilities to get onto the list.
+- **Airdrops**: Every coin on Cult must airdrop a portion of supply (1-50%). Creators can airdrop to charities, NFT communities, and top holders.
+- **Creator Earnings**: Creators earn from LP fees and bonding curves using Uniswap v4, incentivizing them to increase token popularity rather than dumping tokens.
 - **Automatic Liquidity**: Seamless transition from bonding curve to DEX liquidity pools
 - **Gas-Efficient Design**: Leveraging Monad's accelerated EVM for cost-effective operations
 
@@ -371,28 +374,37 @@ CULT implements a constant product bonding curve similar to but distinct from Un
 
 ### Airdrop System
 
-The platform features an innovative airdrop mechanism:
+The platform features an innovative airdrop mechanism based on reputation scoring, which differentiates CULT from other token platforms:
 
-1. **Community Selection**
+1. **Reputation-Based Distribution**
+   - Users earn reputation points through platform activities:
+     - Holding tokens (duration and amount)
+     - Trading activity (frequency and volume)
+     - Community participation
+   - Reputation score determines probability of inclusion in Diamond Hands list
+   - Top 10,000 users by reputation are refreshed hourly
+   - Dynamic system that rewards genuine engagement over whale dominance
+
+2. **Community Selection**
    - Token creators select from predefined communities:
-     - Diamond hands (active traders/holders)
+     - Diamond hands (active traders/holders based on reputation)
      - NFT collection holders
+     - Charities and non-profits
      - Early CULT adopters
-     - Custom communities (future feature)
 
-2. **Merkle Root Generation**
+3. **Merkle Root Generation**
    - Back-end computes Merkle tree from eligible addresses
-   - Updates diamond hands list hourly based on on-chain activity
+   - Updates diamond hands list hourly based on reputation scores
    - Generates and stores Merkle root on-chain
    - Maintains Merkle proofs off-chain for claiming
 
-3. **Claiming Process**
+4. **Claiming Process**
    - User connects wallet and checks eligibility
    - System automatically fetches appropriate Merkle proof
    - Smart contract verifies proof and releases tokens
    - User receives tokens without understanding the complexity
 
-4. **Security Measures**
+5. **Security Measures**
    - Centralized Merkle root management prevents gaming
    - Whitelisted roots ensure only valid communities can be selected
    - Time-locks prevent front-running of airdrop announcements
@@ -609,19 +621,6 @@ The CULT platform incorporates several security measures:
 - Integrate with Uniswap V4 when available on Monad
 - Implement enhanced analytics and monitoring
 
-### Phase 3: Feature Expansion
-- Additional bonding curve models
-- More airdrop strategies and community integrations
-- Governance mechanisms for community-owned tokens
-- Advanced tokenomics features
-- Mobile application development
-
-### Phase 4: Ecosystem Growth
-- Developer APIs and SDKs
-- Integration with other DeFi protocols
-- Cross-chain bridging and interoperability
-- DAO formation for protocol governance
-
 ## Contributing
 
 Contributions to CULT are welcome! Please follow these steps:
@@ -640,4 +639,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ---
 
-*This technical documentation provides a comprehensive overview of the CULT platform's architecture and implementation. The modular design, focus on gas efficiency, and seamless user experience showcase the platform's technical sophistication while leveraging Monad's accelerated EVM capabilities.*
+*This technical documentation provides a comprehensive overview of the CULT platform's architecture and implementation. The modular design, focus on gas efficiency, and seamless user experience showcase the platform's technical sophistication while leveraging Monad's accelerated EVM capabilities.* 
