@@ -2,7 +2,7 @@
 
 ## Overview
 
-Cult is a revolutionary platform transforming how people perceive and trade cultural tokens. We believe cultural tokenization represents the future where attention is the real currency. Our platform introduces a groundbreaking reputation system that aligns incentives for token holders, tokens, and creators, ensuring all parties benefit from long-term holding and loyalty.
+Cult will change the way how people perceive and trade cultural tokens. Cultural tokenization IS the future where attention is the real currency. Our platform introduces a new reputation system that aligns incentives for token holders, tokens, and creators, ensuring all parties benefit from long-term holding and loyalty.
 
 <img width="1407" alt="Screenshot 2025-03-13 at 10 12 55 PM](https://github.com/user-attachments/assets/36f33f3f-a182-4ce9-a598-e0b36e8a61ad" />
 
