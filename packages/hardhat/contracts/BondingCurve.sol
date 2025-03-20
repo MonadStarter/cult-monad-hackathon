@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.23;
 
-import {FixedPointMathLib} from "solady/src/utils/FixedPointMathLib.sol";
+import { FixedPointMathLib } from "solady/src/utils/FixedPointMathLib.sol";
 
 /// @title Bonding Curve Contract
 /// @notice This contract implements a bonding curve mechanism for token pricing.
@@ -23,11 +23,11 @@ contract BondingCurve {
 
     /// @notice The A parameter for the bonding curve equation
     // uint256 public immutable A = 600000000000; // 0.0000006 MON
-    uint256 public immutable A = 1060848709;
+    uint256 public immutable A = 1060848709; //120000000000000
 
     /// @notice The B parameter for the bonding curve equation
     // uint256 public immutable B = 693000000000; //  0.000000693 MON
-    uint256 public immutable B = 4379701787;
+    uint256 public immutable B = 4379701787; //259000000
 
     /// ==================== Errors ==================== ///
     error InsufficientLiquidity();
@@ -38,10 +38,7 @@ contract BondingCurve {
     /// @param currentSupply The current supply of tokens.
     /// @param ethOrderSize The size of the ETH order.
     /// @return The number of tokens to sell.
-    function getEthSellQuote(
-        uint256 currentSupply,
-        uint256 ethOrderSize
-    ) external pure returns (uint256) {
+    function getEthSellQuote(uint256 currentSupply, uint256 ethOrderSize) external pure returns (uint256) {
         uint256 deltaY = ethOrderSize;
         uint256 x0 = currentSupply;
         uint256 exp_b_x0 = uint256((int256(B.mulWad(x0))).expWad());
@@ -57,10 +54,7 @@ contract BondingCurve {
     /// @param currentSupply The current supply of tokens.
     /// @param tokensToSell The number of tokens to sell.
     /// @return The amount of ETH received.
-    function getTokenSellQuote(
-        uint256 currentSupply,
-        uint256 tokensToSell
-    ) external pure returns (uint256) {
+    function getTokenSellQuote(uint256 currentSupply, uint256 tokensToSell) external pure returns (uint256) {
         if (currentSupply < tokensToSell) revert InsufficientLiquidity();
         uint256 x0 = currentSupply;
         uint256 x1 = x0 - tokensToSell;
@@ -78,10 +72,7 @@ contract BondingCurve {
     /// @param currentSupply The current supply of tokens.
     /// @param ethOrderSize The size of the ETH order.
     /// @return The number of tokens to buy.
-    function getEthBuyQuote(
-        uint256 currentSupply,
-        uint256 ethOrderSize
-    ) external pure returns (uint256) {
+    function getEthBuyQuote(uint256 currentSupply, uint256 ethOrderSize) external pure returns (uint256) {
         uint256 x0 = currentSupply;
         uint256 deltaY = ethOrderSize;
 
@@ -100,10 +91,7 @@ contract BondingCurve {
     /// @param currentSupply The current supply of tokens.
     /// @param tokenOrderSize The number of tokens to buy.
     /// @return The amount of ETH required.
-    function getTokenBuyQuote(
-        uint256 currentSupply,
-        uint256 tokenOrderSize
-    ) external pure returns (uint256) {
+    function getTokenBuyQuote(uint256 currentSupply, uint256 tokenOrderSize) external pure returns (uint256) {
         uint256 x0 = currentSupply;
         uint256 x1 = tokenOrderSize + currentSupply;
 
