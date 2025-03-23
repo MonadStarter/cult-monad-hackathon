@@ -34,7 +34,7 @@ export const cultTokensQuery = gql`
 
 // Function to fetch data with pagination
 export const fetchDiscoverTokenData = async (first: number, skip: number): Promise<CultTokensResponse> => {
-  const response: any = await request(envioEndpoint, cultTokensQuery, { first, skip });
+  const response: any = await request(envioEndpoint as any, cultTokensQuery, { first, skip });
   // Transform each token so ipfsData is a single object rather than an array.
   const normalizedCultTokens = response.CultToken.map((token: any) => {
     return {
