@@ -150,10 +150,13 @@ contract CultFactory is ICultFactory, UUPSUpgradeable, ReentrancyGuardUpgradeabl
         return ERC1967Utils.getImplementation();
     }
 
-    function updateMerkleRoot(bytes32 _merkleRoot, uint32 _holderCount) external onlyOwner {
-        if (_merkleRoot == 0) revert InvalidMerkleRoot();
-        if (_holderCount == 0) revert InvalidParameters();
-        validMerkleRoots[_merkleRoot] = _holderCount;
+    function updateMerkleRoot(bytes32[] memory _merkleRoots, uint32[] memory _holderCounts) external onlyOwner {
+        if (_merkleRoots.length != _holderCounts.length) revert InvalidParameters();
+        for (uint256 i = 0; i < _merkleRoots.length; i++) {
+            if (_merkleRoots[i] == 0) revert InvalidMerkleRoot();
+            if (_holderCounts[i] == 0) revert InvalidParameters();
+            validMerkleRoots[_merkleRoots[i]] = _holderCounts[i];
+        }
     }
 
     /// ==================== Private Functions ==================== ///
