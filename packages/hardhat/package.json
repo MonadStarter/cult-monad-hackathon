@@ -18,7 +18,8 @@
     "lint": "eslint --config ./.eslintrc.json --ignore-path ./.eslintignore ./*.ts ./deploy/**/*.ts ./scripts/**/*.ts ./test/**/*.ts",
     "lint-staged": "eslint --config ./.eslintrc.json --ignore-path ./.eslintignore",
     "test": "REPORT_GAS=true hardhat test --network hardhat",
-    "verify": "hardhat etherscan-verify"
+    "verify": "hardhat etherscan-verify",
+    "deploy-subgraph": "goldsky subgraph deploy culttokens/v2 --from-abi constants/goldsky/monad_testnet.json"
   },
   "dependencies": {
     "@inquirer/password": "^4.0.2",
