@@ -498,7 +498,8 @@ contract Cult is ICult, Initializable, ERC20Upgradeable, ReentrancyGuardUpgradea
         if (payout < MIN_ORDER_SIZE) revert EthAmountTooSmall();
 
         // Burn the tokens from the seller
-        _burn(msg.sender, tokensToSell);
+        _sellBurn(msg.sender, tokensToSell);
+        //_burn(msg.sender, tokensToSell);
 
         return payout;
     }
