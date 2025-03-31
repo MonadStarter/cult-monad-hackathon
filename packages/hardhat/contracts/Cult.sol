@@ -23,10 +23,12 @@ contract Cult is ICult, Initializable, ERC20Upgradeable, ReentrancyGuardUpgradea
     /// ==================== Constants ==================== ///
     /// @notice Maximum total supply of the Cult token (10B tokens)
     uint256 public constant MAX_TOTAL_SUPPLY = 10_000_000_000e18;
-    /// @notice Supply allocated for the primary market (2B tokens = 20% of MAX_TOTAL_SUPPLY)
-    uint256 internal constant PRIMARY_MARKET_SUPPLY = 2_000_000_000e18;
-    /// @notice Supply allocated for the secondary market (8B tokens = 80% of MAX_TOTAL_SUPPLY)
-    uint256 internal constant SECONDARY_MARKET_SUPPLY = 8_000_000_000e18;
+    /// @notice Supply allocated for the primary market (5B tokens = 50% of MAX_TOTAL_SUPPLY)
+    uint256 internal constant PRIMARY_MARKET_SUPPLY = 5_000_000_000e18;
+    /// @notice Supply airdropped when token got deployed
+    uint256 public AIRDROPPED_SUPPLY;
+    /// @notice Supply allocated for the secondary market (Max - (total_supply))
+    uint256 public SECONDARY_MARKET_SUPPLY;
     /// @notice Total fee in basis points (bps) 1%
     uint256 public constant TOTAL_FEE_BPS = 100;
     /// @notice Fee percentage for the token creator, as a portion of TOTAL_FEE_BPS (25% = 2500)
@@ -76,6 +78,9 @@ contract Cult is ICult, Initializable, ERC20Upgradeable, ReentrancyGuardUpgradea
     BondingCurve public bondingCurve;
     /// @notice Current market type (BONDING_CURVE or UNISWAP_POOL).
     MarketType public marketType;
+
+    // Flag to identify operation type
+    bool private _isBuySellAirdropOperation;
 
     /// ==================== Constructor ==================== ///
     /// @notice Constructor to set immutable addresses.
@@ -146,7 +151,10 @@ contract Cult is ICult, Initializable, ERC20Upgradeable, ReentrancyGuardUpgradea
         address token1 = WETH < address(this) ? address(this) : WETH;
         uint160 sqrtPriceX96 = token0 == WETH ? POOL_SQRT_PRICE_X96_WETH_0 : POOL_SQRT_PRICE_X96_TOKEN_0;
 
-        _mint(airdropContract, airdropAmount);
+        //Minting to airdrop contract, similar to buy operation
+        //_mint(airdropContract, airdropAmount);
+        _buyMint(airdropContract, airdropAmount);
+        AIRDROPPED_SUPPLY = airdropAmount; 
         // Create and initialize the Uniswap V3 pool
         poolAddress = INonfungiblePositionManager(nonfungiblePositionManager).createAndInitializePoolIfNecessary(
             token0,
@@ -235,7 +243,8 @@ contract Cult is ICult, Initializable, ERC20Upgradeable, ReentrancyGuardUpgradea
             (totalCost, trueOrderSize, fee, refund, shouldGraduateMarket) = _validateBondingCurveBuy(minOrderSize);
 
             // Mint the tokens to the recipient
-            _mint(recipient, trueOrderSize);
+//            _mint(recipient, trueOrderSize);
+            _buyMint(recipient, trueOrderSize);
 
             // Handle the fees
             _disperseFees(fee, orderReferrer);
@@ -427,6 +436,8 @@ contract Cult is ICult, Initializable, ERC20Upgradeable, ReentrancyGuardUpgradea
         _burn(msg.sender, tokensToBurn);
     }
 
+    
+
     /// @notice Force claim any accrued secondary rewards from the market's liquidity position.
     /// @param pushEthRewards Whether to push the ETH directly to the recipients.
     function claimSecondaryRewards(bool pushEthRewards) external {
@@ -492,6 +503,20 @@ contract Cult is ICult, Initializable, ERC20Upgradeable, ReentrancyGuardUpgradea
         return payout;
     }
 
+function _buyMint(address account, uint256 amount) internal {
+    _isBuySellAirdropOperation = true;
+    _mint(account, amount);
+    
+    _isBuySellAirdropOperation = false;
+}
+
+function _sellBurn(address account, uint256 amount) internal {
+    _isBuySellAirdropOperation = true;
+    _burn(account, amount);
+    
+    _isBuySellAirdropOperation = false;
+}
+
     /// @dev Handles a Uniswap V3 sell order.
     /// @param tokensToSell The number of tokens to sell.
     /// @param minPayoutSize The minimum ETH payout to prevent slippage.
@@ -529,21 +554,73 @@ contract Cult is ICult, Initializable, ERC20Upgradeable, ReentrancyGuardUpgradea
     }
 
     /// ==================== Internal Functions ==================== ///
+
+        // Define the ERC20 storage location using the same slot as ERC20Upgradeable
+    // keccak256(abi.encode(uint256(keccak256("openzeppelin.storage.ERC20")) - 1)) & ~bytes32(uint256(0xff))
+    bytes32 private constant ERC20_STORAGE_LOCATION = 0x52c63247e1f47db19d5ce0460030c497f067ca4cebf71ba98eeadabe20bace00;
+
+
+    function _getERC20StorageInternal() private pure returns (ERC20Upgradeable.ERC20Storage storage $) {
+        assembly {
+            $.slot := ERC20_STORAGE_LOCATION
+        }
+    }
+
     /// @dev Overrides ERC20's _update function to
     ///      - Prevent transfers to the pool if the market has not graduated.
     ///      - Emit the superset `CultTokenTransfer` event with each ERC20 transfer.
     /// @param from The address from which tokens are transferred.
     /// @param to The address to which tokens are transferred.
     /// @param value The amount of tokens transferred.
+    // function _update(address from, address to, uint256 value) internal virtual override {
+    //     if (marketType == MarketType.BONDING_CURVE && to == poolAddress) {
+    //         revert MarketNotGraduated();
+    //     }
+
+    //     super._update(from, to, value);
+
+    //     emit CultTokenTransfer(from, to, value, balanceOf(from), balanceOf(to), totalSupply());
+    // }
+
+
     function _update(address from, address to, uint256 value) internal virtual override {
+        
         if (marketType == MarketType.BONDING_CURVE && to == poolAddress) {
             revert MarketNotGraduated();
         }
 
-        super._update(from, to, value);
+        ERC20Storage storage $ = _getERC20StorageInternal();
+        
+        // Update balances logic - copied from original _update
+        if (from == address(0)) {
+            $._totalSupply += value;
+        } else {
+            uint256 fromBalance = $._balances[from];
+            if (fromBalance < value) {
+                revert ERC20InsufficientBalance(from, fromBalance, value);
+            }
+            unchecked {
+                $._balances[from] = fromBalance - value;
+            }
+        }
 
-        emit CultTokenTransfer(from, to, value, balanceOf(from), balanceOf(to), totalSupply());
-    }
+        if (to == address(0)) {
+            unchecked {
+                $._totalSupply -= value;
+            }
+        } else {
+            unchecked {
+                $._balances[to] += value;
+            }
+        }
+
+        // Only emit Transfer event if it's not a buy/sell operation and we listen to this for our DB
+        if (!_isBuySellAirdropOperation) {
+            emit CultTokenTransfer(from, to, value, balanceOf(from), balanceOf(to), totalSupply());
+        }
+        //emit normal transfer everytime so other indexers can also listed
+         emit Transfer(from, to, value);
+}
 
     /// @dev Validates a bonding curve buy order and if necessary, recalculates the order data if the size is greater than the remaining supply.
     /// @param minOrderSize The minimum tokens to prevent slippage.
@@ -571,7 +648,7 @@ contract Cult is ICult, Initializable, ERC20Upgradeable, ReentrancyGuardUpgradea
         if (trueOrderSize < minOrderSize) revert SlippageBoundsExceeded();
 
         // Calculate the maximum number of tokens that can be bought
-        uint256 maxRemainingTokens = PRIMARY_MARKET_SUPPLY - totalSupply();
+        uint256 maxRemainingTokens = PRIMARY_MARKET_SUPPLY - (totalSupply() - AIRDROPPED_SUPPLY);
 
         // Start the market if the order size equals the number of remaining tokens
         if (trueOrderSize == maxRemainingTokens) {
@@ -609,7 +686,7 @@ contract Cult is ICult, Initializable, ERC20Upgradeable, ReentrancyGuardUpgradea
         // Convert the bonding curve's accumulated ETH to WETH
         uint256 ethLiquidity = address(this).balance;
         IWETH(WETH).deposit{ value: ethLiquidity }();
-
+        SECONDARY_MARKET_SUPPLY = MAX_TOTAL_SUPPLY - totalSupply();
         // Mint the secondary market supply to this contract
         _mint(address(this), SECONDARY_MARKET_SUPPLY);
 
@@ -782,4 +859,5 @@ contract Cult is ICult, Initializable, ERC20Upgradeable, ReentrancyGuardUpgradea
     function _calculateFee(uint256 amount, uint256 bps) internal pure returns (uint256) {
         return (amount * bps) / 10_000;
     }
+
 }

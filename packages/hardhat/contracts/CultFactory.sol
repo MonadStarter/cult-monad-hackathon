@@ -129,9 +129,9 @@ contract CultFactory is ICultFactory, UUPSUpgradeable, ReentrancyGuardUpgradeabl
     ) internal view returns (uint32 recipentCount) {
         /// @dev The airdrop percentage is calculated in basis points, where 100% is equivalent to 1,000,000.
         /// Therefore, an airdrop percentage of 10,000 represents 1% of the total supply.
-
+        // Max airdrop rn is 10%
         if (_airdropPercent > 0) {
-            if (_airdropPercent < 10000 || _airdropPercent > (BASIS_POINTS / 2)) revert InvalidAirdropPercentage();
+            if (_airdropPercent < 10000 || _airdropPercent > (BASIS_POINTS / 10)) revert InvalidAirdropPercentage();
             if (_merkleRoots.length > 4) revert InvalidMerkleRoot();
             for (uint256 i = 0; i < _merkleRoots.length; i++) {
                 uint32 validMerkleRootHolderCount = validMerkleRoots[_merkleRoots[i]];
