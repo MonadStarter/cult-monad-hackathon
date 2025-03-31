@@ -287,7 +287,7 @@ contract Cult is ICult, Initializable, ERC20Upgradeable, ReentrancyGuardUpgradea
             revert MarketAlreadyGraduated();
         }
 
-        return bondingCurve.getEthBuyQuote(totalSupply(), ethOrderSize);
+        return bondingCurve.getEthBuyQuote(totalSupply() - AIRDROPPED_SUPPLY, ethOrderSize);
     }
 
     /// @notice The number of tokens for selling a given amount of ETH.
@@ -299,7 +299,7 @@ contract Cult is ICult, Initializable, ERC20Upgradeable, ReentrancyGuardUpgradea
             revert MarketAlreadyGraduated();
         }
 
-        return bondingCurve.getEthSellQuote(totalSupply(), ethOrderSize);
+        return bondingCurve.getEthSellQuote(totalSupply() - AIRDROPPED_SUPPLY, ethOrderSize);
     }
 
     /// @notice The amount of ETH needed to buy a given number of tokens.
@@ -311,7 +311,7 @@ contract Cult is ICult, Initializable, ERC20Upgradeable, ReentrancyGuardUpgradea
             revert MarketAlreadyGraduated();
         }
 
-        return bondingCurve.getTokenBuyQuote(totalSupply(), tokenOrderSize);
+        return bondingCurve.getTokenBuyQuote(totalSupply() - AIRDROPPED_SUPPLY, tokenOrderSize);
     }
 
     /// @notice The amount of ETH that can be received for selling a given number of tokens.
@@ -323,7 +323,7 @@ contract Cult is ICult, Initializable, ERC20Upgradeable, ReentrancyGuardUpgradea
             revert MarketAlreadyGraduated();
         }
 
-        return bondingCurve.getTokenSellQuote(totalSupply(), tokenOrderSize);
+        return bondingCurve.getTokenSellQuote(totalSupply()- AIRDROPPED_SUPPLY, tokenOrderSize);
     }
 
     /// @notice Transfers tokens to a specified address.
@@ -489,7 +489,7 @@ contract Cult is ICult, Initializable, ERC20Upgradeable, ReentrancyGuardUpgradea
     /// @return The amount of ETH received.
     function _handleBondingCurveSell(uint256 tokensToSell, uint256 minPayoutSize) private returns (uint256) {
         // Get quote for the number of ETH that can be received for the number of tokens to sell
-        uint256 payout = bondingCurve.getTokenSellQuote(totalSupply(), tokensToSell);
+        uint256 payout = bondingCurve.getTokenSellQuote(totalSupply() - AIRDROPPED_SUPPLY, tokensToSell);
 
         // Ensure the payout is greater than the minimum payout size
         if (payout < minPayoutSize) revert SlippageBoundsExceeded();
@@ -643,7 +643,7 @@ function _sellBurn(address account, uint256 amount) internal {
         uint256 remainingEth = totalCost - fee;
 
         // Get quote for the number of tokens that can be bought with the amount of ETH remaining
-        trueOrderSize = bondingCurve.getEthBuyQuote(totalSupply(), remainingEth);
+        trueOrderSize = bondingCurve.getEthBuyQuote(totalSupply() - AIRDROPPED_SUPPLY, remainingEth);
 
         // Ensure the order size is greater than the minimum order size
         if (trueOrderSize < minOrderSize) revert SlippageBoundsExceeded();
@@ -662,7 +662,7 @@ function _sellBurn(address account, uint256 amount) internal {
             trueOrderSize = maxRemainingTokens;
 
             // Calculate the amount of ETH needed to buy the remaining tokens
-            uint256 ethNeeded = bondingCurve.getTokenBuyQuote(totalSupply(), trueOrderSize);
+            uint256 ethNeeded = bondingCurve.getTokenBuyQuote(totalSupply() - AIRDROPPED_SUPPLY, trueOrderSize);
 
             // Recalculate the fee with the updated order size
             fee = _calculateFee(ethNeeded, TOTAL_FEE_BPS);
