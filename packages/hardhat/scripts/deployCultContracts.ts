@@ -6,8 +6,9 @@ export const setupContracts = async () => {
   let tx, txr, usdAddress, USDC;
   const accounts = await ethers.getSigners();
   const networkName = network.name;
-  const owner = accounts[0].address;
+  
   const deployer = networkConfig[networkName].deployer;
+  const owner = networkConfig[networkName].deployer;//accounts[0].address;
   console.log(owner, deployer);
 
   if (deployer?.toLowerCase() !== owner.toLowerCase()) {
@@ -21,7 +22,7 @@ export const setupContracts = async () => {
   await cultRewards.waitForDeployment();
   // console.log("CultRewards deployed:", cultRewards.target)
 
-  const CULT_RECS = "0x60187Bc4949eE2F01b507a9F77ad615093f44260"; // CultRecs multisig wallet
+  const CULT_RECS = "0x8f35FcfBA977e2cb168603075c027e611bCE6bAd"; // CultRecs multisig wallet
   const protocolFeeRecipient = CULT_RECS;
   const protocolRewards = cultRewards.target;
   // const weth = "0x4200000000000000000000000000000000000006";

@@ -587,6 +587,19 @@
     },
     {
         "inputs": [],
+        "name": "AIRDROPPED_SUPPLY",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
         "name": "MAX_TOTAL_SUPPLY",
         "outputs": [
             {
@@ -627,6 +640,19 @@
     {
         "inputs": [],
         "name": "PROTOCOL_FEE_BPS",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "SECONDARY_MARKET_SUPPLY",
         "outputs": [
             {
                 "internalType": "uint256",
