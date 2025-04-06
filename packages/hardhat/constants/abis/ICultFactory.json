@@ -61,6 +61,24 @@
                 "internalType": "address",
                 "name": "airdropContract",
                 "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "bytes32[]",
+                "name": "merkleRoots",
+                "type": "bytes32[]"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "totalAmount",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "totalAirdropRecipientCount",
+                "type": "uint256"
             }
         ],
         "name": "CultTokenCreated",

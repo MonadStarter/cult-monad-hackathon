@@ -1,0 +1,39 @@
+{
+    "version": "1",
+    "name": "culttokens",
+    "abis": {   
+        "airdropContract": { "path": "../../../hardhat/constants/abis/AirdropContract.json" },
+        "cultFactoryContract": { "path": "../../../hardhat/constants/abis/CultFactory.json" },
+        "cultContract": { "path": "../../../hardhat/constants/abis/Cult.json" },
+        "cultRewardsContract": { "path": "../../../hardhat/constants/abis/CultRewards.json" }
+    },
+    "chains": ["monad-testnet"],
+    "instances": [
+        {
+            "abi": "airdropContract",
+            "address": "0x116f9fae3e48058F91d0489d537436f9bD3903E3",
+            "chain": "monad-testnet",
+            "startBlock": 10284334
+        },
+        {
+            "abi": "cultFactoryContract",
+            "address": "0xaB35CE6C03b72F14C801Ff0E50B6EcFB26f208D2",
+            "chain": "monad-testnet",
+            "startBlock": 10284334
+        },
+        {
+            "abi": "cultContract",
+            "source": {
+                "abi": "cultFactoryContract",
+                "eventSignature": "CultTokenCreated(address,address,address,address,string,string,string,address,address,address)",
+                "addressParam": "tokenAddress"
+            }
+        },
+        {
+            "abi": "cultRewardsContract",
+            "address": "0x3d7cDa0c54e6df5A976CA622BB805a78c6Eaa9DC",
+            "chain": "monad-testnet",
+            "startBlock": 10284334
+        }
+    ]
+}

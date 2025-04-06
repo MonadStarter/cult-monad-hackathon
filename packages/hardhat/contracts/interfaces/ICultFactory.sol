@@ -22,7 +22,10 @@ interface ICultFactory {
         string symbol,
         address tokenAddress,
         address poolAddress,
-        address airdropContract
+        address airdropContract,
+        bytes32[] merkleRoots,
+        uint256 totalAmount,
+        uint256 totalAirdropRecipientCount
     );
 
     /// @notice Deploys a Cult ERC20 token

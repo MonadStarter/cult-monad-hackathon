@@ -187,6 +187,24 @@
                 "internalType": "address",
                 "name": "airdropContract",
                 "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "bytes32[]",
+                "name": "merkleRoots",
+                "type": "bytes32[]"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "totalAmount",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "totalAirdropRecipientCount",
+                "type": "uint256"
             }
         ],
         "name": "CultTokenCreated",
@@ -449,17 +467,17 @@
     {
         "inputs": [
             {
-                "internalType": "bytes32",
-                "name": "_merkleRoot",
-                "type": "bytes32"
+                "internalType": "bytes32[]",
+                "name": "_merkleRoots",
+                "type": "bytes32[]"
             },
             {
-                "internalType": "uint32",
-                "name": "_holderCount",
-                "type": "uint32"
+                "internalType": "uint32[]",
+                "name": "_holderCounts",
+                "type": "uint32[]"
             }
         ],
-        "name": "updateMerkleRoot",
+        "name": "updateMerkleRoots",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

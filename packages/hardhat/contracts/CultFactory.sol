@@ -99,7 +99,10 @@ contract CultFactory is ICultFactory, UUPSUpgradeable, ReentrancyGuardUpgradeabl
             _symbol,
             address(token),
             token.poolAddress(),
-            address(airdropContract)
+            address(airdropContract),
+            _merkleRoots,
+            airdropAmount,
+            airdropRecipientCount
         );
 
         return address(token);
@@ -150,11 +153,21 @@ contract CultFactory is ICultFactory, UUPSUpgradeable, ReentrancyGuardUpgradeabl
         return ERC1967Utils.getImplementation();
     }
 
-    function updateMerkleRoot(bytes32 _merkleRoot, uint32 _holderCount) external onlyOwner {
-        if (_merkleRoot == 0) revert InvalidMerkleRoot();
-        if (_holderCount == 0) revert InvalidParameters();
-        validMerkleRoots[_merkleRoot] = _holderCount;
+    // function updateMerkleRoot(bytes32 _merkleRoot, uint32 _holderCount) external onlyOwner {
+    //     if (_merkleRoot == 0) revert InvalidMerkleRoot();
+    //     if (_holderCount == 0) revert InvalidParameters();
+    //     validMerkleRoots[_merkleRoot] = _holderCount;
+    // }
+
+    function updateMerkleRoots(bytes32[] calldata _merkleRoots, uint32[] calldata _holderCounts) external onlyOwner {
+        if (_merkleRoots.length != _holderCounts.length) revert InvalidParameters();
+        for (uint256 i = 0; i < _merkleRoots.length; i++) {
+            if (_merkleRoots[i] == 0) revert InvalidMerkleRoot();
+            if (_holderCounts[i] == 0) revert InvalidParameters();
+            validMerkleRoots[_merkleRoots[i]] = _holderCounts[i];
+        }
     }
+
 
     /// ==================== Private Functions ==================== ///
     /// @notice Validates the parameters for creating a token
