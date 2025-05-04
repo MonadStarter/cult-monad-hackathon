@@ -3,7 +3,7 @@ import { networkConfig } from "../helper-hardhat-config";
 import { CultFactory } from "../typechain-types";
 export const updateMerkleRoot = async () => {
   // Expect three parameters: factory address, merkle root, and holder count.
-  const factoryAddress = "0x72c06FFD9015aCd5314C4f550DcA15a2055be9c4";
+  const factoryAddress = "0xF385031Eda388C35396B5E6796Af015820c4bC70";
   const merkleRoot = "0xa1f997c08e69f3d077c8514ada48bc66ef9c84b6f3d0d672ad282ee0af16b2d4"; // should be a valid 0x-prefixed 32-byte hex string
   const holderCount = 2;
 

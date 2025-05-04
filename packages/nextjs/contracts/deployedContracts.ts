@@ -13,7 +13,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   10143: {
     CultRewards: {
-      address: "0x96b889782F9E61eA0290296048a2AC2efaD02Ff2",
+      address: "0x6ce743F0Cd70a0d7ad7fBE8d41Ff8Af70B72517b",
       abi: CultRewardsAbi as Abi,
       inheritedFunctions: {},
       deploymentFile: "",
@@ -22,7 +22,7 @@ const deployedContracts = {
       verified: false,
     },
     BondingCurve: {
-      address: "0x3e653aF26547a0d5A7Ca11303B143F26119505a3",
+      address: "0xA118A791e4388522fba820E8e1b2DC70c2e39F81",
       abi: BondingCurveAbi as Abi,
       inheritedFunctions: {},
       deploymentFile: "",
@@ -31,7 +31,7 @@ const deployedContracts = {
       verified: false,
     },
     AirdropContract: {
-      address: "0x407685f18b518d37A94F431741e4E8CdCbf16909",
+      address: "0x8E588eFd27AC02979437618Cfa67727C3574Ad04",
       abi: AirdropContractAbi as Abi,
       inheritedFunctions: {},
       deploymentFile: "",
@@ -40,22 +40,23 @@ const deployedContracts = {
       verified: false,
     },
     Cult: {
-      address: "0x136C67fAF6B0291Efffc2858d9C7d93f57929E26",
+      address: "0x56eE3a5C45f4D7a1f50a427cb6B0F1005B2bD9B4",
       abi: CultAbi as Abi,
       inheritedFunctions: {},
       deploymentFile: "",
       deploymentScript: "deploy.js",
       constructorArgs: [
-        "0x60187Bc4949eE2F01b507a9F77ad615093f44260",
-        "0x96b889782F9E61eA0290296048a2AC2efaD02Ff2",
+        "0x71AF57DFDE2420426440B5cbCD5aB6695195925B",
+        "0x6ce743F0Cd70a0d7ad7fBE8d41Ff8Af70B72517b",
         "0x261D8c5e9742e6f7f1076Fa1F560894524e19cad",
-        "0x50ff23E9A8D5DAc05744C367c9DDd588D027982B",
-        "0x201B36B26b816D061fC552B679f8279Db0Fbbc6A",
+        "0x3dcc735c74f10fe2b9db2bb55c40fbbbf24490f7",
+        "0x4c4eabd5fb1d1a7234a48692551eaecff8194ca7",
       ],
       verified: false,
     },
+
     CultFactory: {
-      address: "0x72c06FFD9015aCd5314C4f550DcA15a2055be9c4",
+      address: "0x98Bd8F988CEaC045395e45B8F7CEF5E2e49e7dB7",
       abi: CultFactoryAbi as Abi,
       inheritedFunctions: {},
       deploymentFile: "",
