@@ -13,7 +13,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   10143: {
     CultRewards: {
-      address: "0x6ce743F0Cd70a0d7ad7fBE8d41Ff8Af70B72517b",
+      address: "0xC8F6cF1aAE2b490ceAbE1DA16650c2Bd7Cd01c43",
       abi: CultRewardsAbi as Abi,
       inheritedFunctions: {},
       deploymentFile: "",
@@ -22,7 +22,7 @@ const deployedContracts = {
       verified: false,
     },
     BondingCurve: {
-      address: "0xA118A791e4388522fba820E8e1b2DC70c2e39F81",
+      address: "0x5E07a463aACa7Ac39FD3683BdBe12432303E7db1",
       abi: BondingCurveAbi as Abi,
       inheritedFunctions: {},
       deploymentFile: "",
@@ -31,7 +31,7 @@ const deployedContracts = {
       verified: false,
     },
     AirdropContract: {
-      address: "0x8E588eFd27AC02979437618Cfa67727C3574Ad04",
+      address: "0x5279E188E5B476c764FC95Ca25434A2327b7ED12",
       abi: AirdropContractAbi as Abi,
       inheritedFunctions: {},
       deploymentFile: "",
@@ -40,23 +40,23 @@ const deployedContracts = {
       verified: false,
     },
     Cult: {
-      address: "0x56eE3a5C45f4D7a1f50a427cb6B0F1005B2bD9B4",
+      address: "0x82EB6053CF00a34B9e1EC1CD605809a3Fc03A933",
       abi: CultAbi as Abi,
       inheritedFunctions: {},
       deploymentFile: "",
       deploymentScript: "deploy.js",
       constructorArgs: [
         "0x71AF57DFDE2420426440B5cbCD5aB6695195925B",
-        "0x6ce743F0Cd70a0d7ad7fBE8d41Ff8Af70B72517b",
-        "0x261D8c5e9742e6f7f1076Fa1F560894524e19cad",
+        "0xC8F6cF1aAE2b490ceAbE1DA16650c2Bd7Cd01c43",
+        // "0x261D8c5e9742e6f7f1076Fa1F560894524e19cad", // WETH
+        "0x760AfE86e5de5fa0Ee542fc7B7B713e1c5425701", // WMON
         "0x3dcc735c74f10fe2b9db2bb55c40fbbbf24490f7",
         "0x4c4eabd5fb1d1a7234a48692551eaecff8194ca7",
       ],
       verified: false,
     },
-
     CultFactory: {
-      address: "0x98Bd8F988CEaC045395e45B8F7CEF5E2e49e7dB7",
+      address: "0x25651115895bC3ca9133069DB6141e17CD789740",
       abi: CultFactoryAbi as Abi,
       inheritedFunctions: {},
       deploymentFile: "",
